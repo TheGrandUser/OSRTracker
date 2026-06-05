@@ -26,11 +26,11 @@ public class DefaultActivationHandler : ActivationHandler<LaunchActivatedEventAr
 
    protected async override Task HandleInternalAsync(LaunchActivatedEventArgs args)
    {
-      if (string.IsNullOrEmpty(appStateService.CampaignDbPath))
-      {
-         // Nav to welcome window
-      }
-      else
+      //if (string.IsNullOrEmpty(appStateService.CampaignDbPath))
+      //{
+      //   // Nav to welcome window
+      //}
+      //else
       {
          _navigationService.NavigateTo(typeof(MainViewModel).FullName!, args.Arguments);
       }

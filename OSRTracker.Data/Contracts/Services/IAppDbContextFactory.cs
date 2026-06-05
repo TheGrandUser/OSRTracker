@@ -8,4 +8,5 @@ namespace OSRTracker.Data.Contracts.Services;
 public interface IAppDbContextFactory : IDbContextFactory<AppDbContext>
 {
    void SetDbPath(string filePath);
+   bool HasPath { get; }
 }

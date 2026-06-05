@@ -5,11 +5,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
 using OSRTracker.Contracts.Messages;
 using OSRTracker.Contracts.Services;
 using OSRTracker.Data;
+using OSRTracker.Models;
 using OSRTracker.Services;
+using OSRTracker.Views.Dialogs;
 
 namespace OSRTracker.ViewModels;
 
@@ -22,6 +25,9 @@ public partial class MainViewModel : ObservableRecipient
       this.appStateService = appStateService;
    }
 
+   [ObservableProperty]
+   public partial bool IsBusy { get; set; }
+
    [RelayCommand]
    private async Task CreateCampaign()
    {
@@ -31,6 +37,8 @@ public partial class MainViewModel : ObservableRecipient
 
          picker.FileTypeChoices.Add("Campaign File", [".cdb"]);
 
+         IsBusy = true;
+
          var file = await picker.PickSaveFileAsync();
 
          if (string.IsNullOrEmpty(file?.Path))
@@ -38,11 +46,34 @@ public partial class MainViewModel : ObservableRecipient
             return;
          }
 
-         await this.appStateService.CreateCampaignAsync(file.Path);
+         var inputRequest = new InputTextRequest("Campaign Name", "Enter a name for your campaign.", Path.GetFileNameWithoutExtension(file.Path));
+
+         var name = await WeakReferenceMessenger.Default.Send(inputRequest);
+
+         if (string.IsNullOrEmpty(name)) { return; }
+
+
+         var systemRequest = new SelectRpgSystemRequest();
+
+         var systemResponse = await WeakReferenceMessenger.Default.Send(systemRequest);
+
+         if (systemResponse is SelectRpgResponse.Cancelled)
+         {
+            return;
+         }
+
+
+         SystemDto? rpgSystem = systemResponse is SelectRpgResponse.Success success ? success.RpgSystem : null;
+
+
+         await this.appStateService.CreateCampaignAsync(file.Path, name, rpgSystem);
 
       }
       catch (OperationCanceledException) { }
-
+      finally
+      {
+         IsBusy = false;
+      }
    }
 
    [RelayCommand]
@@ -51,6 +82,8 @@ public partial class MainViewModel : ObservableRecipient
       try
       {
          FileOpenPicker picker = new FileOpenPicker(App.MainWindow.AppWindow.Id);
+
+         IsBusy = true;
 
          picker.ViewMode = PickerViewMode.Thumbnail;
          //picker.SuggestedStartLocation
@@ -66,5 +99,9 @@ public partial class MainViewModel : ObservableRecipient
          await this.appStateService.OpenCampaignAsync(file.Path);
       }
       catch (OperationCanceledException) { }
+      finally
+      {
+         IsBusy = false;
+      }
    }
 }

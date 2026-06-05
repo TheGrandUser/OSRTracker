@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 
 using OSRTracker.Activation;
@@ -12,6 +13,7 @@ using OSRTracker.Data.Contracts.Services;
 using OSRTracker.Models;
 using OSRTracker.Services;
 using OSRTracker.ViewModels;
+using OSRTracker.Views.Pages;
 using OSRTracker.Views;
 
 
@@ -65,8 +67,14 @@ public partial class App : Application
 
       Host = Microsoft.Extensions.Hosting.Host.
       CreateDefaultBuilder().
-      UseContentRoot(AppContext.BaseDirectory).
-      ConfigureServices((context, services) =>
+      UseContentRoot(AppContext.BaseDirectory)
+#if DEBUG
+      .ConfigureLogging(logging =>
+      {
+         logging.AddDebug();
+      })
+#endif
+      .ConfigureServices((context, services) =>
       {
          // Default Activation Handler
          services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
@@ -82,35 +90,23 @@ public partial class App : Application
          services.AddSingleton<IPageService, PageService>();
          services.AddSingleton<INavigationService, NavigationService>();
 
+
          // Core Services
-         //services.AddSingleton<ISampleDataService, SampleDataService>();
+         services.AddTransient<IRpgSystemFileService, RpgSystemFileService>();
          services.AddSingleton<IFileService, FileService>();
 
          services.AddSingleton<IAppStateService, AppStateService>();
 
-         services.AddDbContextFactory<AppDbContext>((sp, options) =>
-         {
-            //var appState = sp.GetRequiredService<IAppStateService>();
-
-            options.UseSqlite(sqliteOptions =>
-            {
-               sqliteOptions.MigrationsAssembly(typeof(App).Assembly);
-            });
-         });
-
-         services.AddSingleton<IAppDbContextFactory, AppDbContextFactory>();
+         services.AddSingleton<IAppDbContextFactory, AppDbContextFactory2>();
 
          // Views and ViewModels
-         //services.AddTransient<DataGridViewModel>();
-         //services.AddTransient<DataGridPage>();
-         //services.AddTransient<ListDetails1ViewModel>();
-         //services.AddTransient<ListDetails1Page>();
-         //services.AddTransient<ListDetailsViewModel>();
-         //services.AddTransient<ListDetailsPage>();
          services.AddTransient<MainViewModel>();
          services.AddTransient<MainPage>();
          services.AddTransient<ShellPage>();
          services.AddTransient<ShellViewModel>();
+         services.AddTransient<SystemEditorViewModel>();
+         services.AddTransient<SystemEditorPage>();
+         
 
          // Configuration
          services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));

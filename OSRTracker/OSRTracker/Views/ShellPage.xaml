@@ -9,7 +9,8 @@
     xmlns:helpers="using:OSRTracker.Helpers"
     xmlns:behaviors="using:OSRTracker.Behaviors"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+  Loaded="OnLoaded">
 
   <Grid>
     <Grid x:Name="AppTitleBar"
@@ -50,11 +51,11 @@
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
           </NavigationViewItem.Icon>
         </NavigationViewItem>
-        <!--<NavigationViewItem x:Uid="Shell_ListDetails" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.ListDetailsViewModel">
+        <NavigationViewItem x:Uid="Shell_SystemEditor" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.SystemEditorViewModel">
           <NavigationViewItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xea37;"/>
           </NavigationViewItem.Icon>
-        </NavigationViewItem>-->
+        </NavigationViewItem>
         <!--<NavigationViewItem x:Uid="Shell_ListDetails1" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.ListDetails1ViewModel">
           <NavigationViewItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xea37;"/>
@@ -92,6 +93,7 @@
       <Grid Margin="{StaticResource NavigationViewPageContentMargin}">
         <Frame x:Name="NavigationFrame" />
       </Grid>
+      
     </NavigationView>
   </Grid>
 </Page>

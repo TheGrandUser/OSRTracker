@@ -123,4 +123,34 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>OSR Tracker</value>
   </data>
+  <data name="Characters_NoSelection.Text" xml:space="preserve">
+    <value>Select a character from the list</value>
+  </data>
+  <data name="DB_CampaignNotFound" xml:space="preserve">
+    <value>Campaign not found</value>
+  </data>
+  <data name="Delves_NoSelection.Text" xml:space="preserve">
+    <value>Select a delve from the list</value>
+  </data>
+  <data name="Sessions_NoSelection.Text" xml:space="preserve">
+    <value>Select a session from the list</value>
+  </data>
+  <data name="Shell_Characters.Content" xml:space="preserve">
+    <value>Characters</value>
+  </data>
+  <data name="Shell_Delves.Content" xml:space="preserve">
+    <value>Delves</value>
+  </data>
+  <data name="Shell_Main.Content" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="Shell_Sessions.Content" xml:space="preserve">
+    <value>Sessions</value>
+  </data>
+  <data name="Shell_SystemEditor.Content" xml:space="preserve">
+    <value>System Editor</value>
+  </data>
+  <data name="Shell_Treasure.Content" xml:space="preserve">
+    <value>Treasure</value>
+  </data>
 </root>

@@ -10,6 +10,4 @@ public class CampaignSettings
 
     public string Name { get; set; } = string.Empty;
     public string SystemName { get; set; } = string.Empty;
-
-    public List<string> AttributeNames { get; set; } = [];
 }

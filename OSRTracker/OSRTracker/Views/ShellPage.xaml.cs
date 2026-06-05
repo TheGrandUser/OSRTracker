@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -10,9 +11,11 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OSRTracker.Contracts.Messages;
 using OSRTracker.Contracts.Services;
 using OSRTracker.Helpers;
 using OSRTracker.ViewModels;
+using OSRTracker.Views.Dialogs;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
@@ -26,73 +29,88 @@ namespace OSRTracker.Views;
 /// </summary>
 public sealed partial class ShellPage : Page
 {
-    public ShellViewModel ViewModel
-    {
-        get;
-    }
+   public ShellViewModel ViewModel {
+      get;
+   }
 
-    public ShellPage(ShellViewModel viewModel)
-    {
-        ViewModel = viewModel;
-        InitializeComponent();
+   private readonly IRpgSystemFileService rpgSystemFileService;
 
-        ViewModel.NavigationService.Frame = NavigationFrame;
-        ViewModel.NavigationViewService.Initialize(NavigationViewControl);
+   public ShellPage(ShellViewModel viewModel, IRpgSystemFileService rpgSystemFileService)
+   {
+      ViewModel = viewModel;
+      this.rpgSystemFileService = rpgSystemFileService;
+      InitializeComponent();
 
-        // TODO: Set the title bar icon by updating /Assets/WindowIcon.ico.
-        // A custom title bar is required for full window theme and Mica support.
-        // https://docs.microsoft.com/windows/apps/develop/title-bar?tabs=winui3#full-customization
-        App.MainWindow.ExtendsContentIntoTitleBar = true;
-        App.MainWindow.SetTitleBar(AppTitleBar);
-        App.MainWindow.Activated += MainWindow_Activated;
-        AppTitleBarText.Text = "AppDisplayName".GetLocalized();
-    }
+      ViewModel.NavigationService.Frame = NavigationFrame;
+      ViewModel.NavigationViewService.Initialize(NavigationViewControl);
 
+      // TODO: Set the title bar icon by updating /Assets/WindowIcon.ico.
+      // A custom title bar is required for full window theme and Mica support.
+      // https://docs.microsoft.com/windows/apps/develop/title-bar?tabs=winui3#full-customization
+      App.MainWindow.ExtendsContentIntoTitleBar = true;
+      App.MainWindow.SetTitleBar(AppTitleBar);
+      App.MainWindow.Activated += MainWindow_Activated;
+      AppTitleBarText.Text = "AppDisplayName".GetLocalized();
 
-    private void OnLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
-    {
-        TitleBarHelper.UpdateTitleBar(RequestedTheme);
+      WeakReferenceMessenger.Default.Register<InputTextRequest>(this, ShowInputDialog);
+   }
 
-        KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.Left, VirtualKeyModifiers.Menu));
-        KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.GoBack));
-    }
+   private async void ShowInputDialog(object recipient, InputTextRequest msg)
+   {
+      var result = await this.ShowInputTextDialogAsync(msg.Title, msg.Message, msg.DefaultText);
+      msg.Reply(result);
+   }
 
-    private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
-    {
-        App.AppTitlebar = AppTitleBarText as UIElement;
-    }
+   private async void ShowSelectRpgSystemDialog(object recipient, SelectRpgSystemRequest msg)
+   {
+      var result = await this.ShowSelectRpgSystemDialogAsync(this.rpgSystemFileService);
+      msg.Reply(result);
+   }
 
-    private void NavigationViewControl_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
-    {
-        AppTitleBar.Margin = new Thickness()
-        {
-            Left = sender.CompactPaneLength * (sender.DisplayMode == NavigationViewDisplayMode.Minimal ? 2 : 1),
-            Top = AppTitleBar.Margin.Top,
-            Right = AppTitleBar.Margin.Right,
-            Bottom = AppTitleBar.Margin.Bottom
-        };
-    }
+   private void OnLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+   {
+      TitleBarHelper.UpdateTitleBar(RequestedTheme);
 
-    private static KeyboardAccelerator BuildKeyboardAccelerator(VirtualKey key, VirtualKeyModifiers? modifiers = null)
-    {
-        var keyboardAccelerator = new KeyboardAccelerator() { Key = key };
+      KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.Left, VirtualKeyModifiers.Menu));
+      KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.GoBack));
+   }
 
-        if (modifiers.HasValue)
-        {
-            keyboardAccelerator.Modifiers = modifiers.Value;
-        }
+   private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
+   {
+      App.AppTitlebar = AppTitleBarText as UIElement;
+   }
 
-        keyboardAccelerator.Invoked += OnKeyboardAcceleratorInvoked;
+   private void NavigationViewControl_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
+   {
+      AppTitleBar.Margin = new Thickness()
+      {
+         Left = sender.CompactPaneLength * (sender.DisplayMode == NavigationViewDisplayMode.Minimal ? 2 : 1),
+         Top = AppTitleBar.Margin.Top,
+         Right = AppTitleBar.Margin.Right,
+         Bottom = AppTitleBar.Margin.Bottom
+      };
+   }
 
-        return keyboardAccelerator;
-    }
+   private static KeyboardAccelerator BuildKeyboardAccelerator(VirtualKey key, VirtualKeyModifiers? modifiers = null)
+   {
+      var keyboardAccelerator = new KeyboardAccelerator() { Key = key };
 
-    private static void OnKeyboardAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-    {
-        var navigationService = App.GetService<INavigationService>();
+      if (modifiers.HasValue)
+      {
+         keyboardAccelerator.Modifiers = modifiers.Value;
+      }
 
-        var result = navigationService.GoBack();
+      keyboardAccelerator.Invoked += OnKeyboardAcceleratorInvoked;
 
-        args.Handled = result;
-    }
+      return keyboardAccelerator;
+   }
+
+   private static void OnKeyboardAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+   {
+      var navigationService = App.GetService<INavigationService>();
+
+      var result = navigationService.GoBack();
+
+      args.Handled = result;
+   }
 }

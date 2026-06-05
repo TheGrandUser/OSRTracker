@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using OSRTracker.Core.Models;
+using OSRTracker.Models;
 
 namespace OSRTracker.Contracts.Services;
 
@@ -11,6 +12,6 @@ public interface IAppStateService
 
    CampaignSettings? Campaign { get; }
 
-   Task CreateCampaignAsync(string path);
+   Task CreateCampaignAsync(string path, string campaignName, SystemDto? rpgSystem);
    Task OpenCampaignAsync(string path);
 }

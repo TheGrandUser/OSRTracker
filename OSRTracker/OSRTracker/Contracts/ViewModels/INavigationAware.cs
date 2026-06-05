@@ -6,3 +6,11 @@ public interface INavigationAware
 
     void OnNavigatedFrom();
 }
+
+
+//public interface IAsyncNavigationAware
+//{
+//   Task OnNavigatedToAsync(object parameter);
+
+//   Task OnNavigatedFromAsync();
+//}
