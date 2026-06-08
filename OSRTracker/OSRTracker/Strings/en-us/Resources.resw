@@ -135,6 +135,9 @@
   <data name="Sessions_NoSelection.Text" xml:space="preserve">
     <value>Select a session from the list</value>
   </data>
+  <data name="Shell_CharacterRoster.Content" xml:space="preserve">
+    <value>Character Roster</value>
+  </data>
   <data name="Shell_Characters.Content" xml:space="preserve">
     <value>Characters</value>
   </data>

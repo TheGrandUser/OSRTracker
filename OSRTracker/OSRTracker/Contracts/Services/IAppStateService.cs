@@ -14,4 +14,6 @@ public interface IAppStateService
 
    Task CreateCampaignAsync(string path, string campaignName, SystemDto? rpgSystem);
    Task OpenCampaignAsync(string path);
+
+   Task RollbackCampaignAsync(string path);
 }

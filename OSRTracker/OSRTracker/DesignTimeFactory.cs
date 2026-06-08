@@ -10,7 +10,7 @@ namespace OSRTracker;
 
 internal class DesignTimeFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
-   private DbContextOptions<AppDbContext> options;
+   private readonly DbContextOptions<AppDbContext> options;
 
    public DesignTimeFactory()
    {
@@ -19,11 +19,11 @@ internal class DesignTimeFactory : IDesignTimeDbContextFactory<AppDbContext>
       optionsBuilder.UseSqlite<AppDbContext>("Data Source=designtime.db",
          ob =>
          {
-            ob.MigrationsAssembly(typeof(DesignTimeFactory).Assembly);
+            ob.MigrationsAssembly(typeof(AppDbContext).Assembly);
          });
       //optionsBuilder.
 
-      this.options = optionsBuilder.Options;
+      options = optionsBuilder.Options;
    }
 
    public AppDbContext CreateDbContext(string[] args)

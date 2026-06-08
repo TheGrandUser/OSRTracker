@@ -18,18 +18,18 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
-    <CommandBar Background="Transparent">
+    <CommandBar Background="Transparent" HorizontalAlignment="Left">
       <AppBarButton Icon="Document" Label="New" Command="{x:Bind ViewModel.CreateCampaignCommand}" />
       <AppBarButton Icon="OpenFile" Label="Open" Command="{x:Bind ViewModel.OpenCampaignCommand}" />
-
+      <!--<AppBarButton Icon="Undo"  Label="Rollback" Command="{x:Bind ViewModel.RollbackCommand}" />-->
     </CommandBar>
 
-    <Border
+    <!--<Border
       Grid.Row="1"
       Height="64" Width="64"
       BorderBrush="Cyan"
       BorderThickness="3"
-      HorizontalAlignment="Center" VerticalAlignment="Center">
+      HorizontalAlignment="Center" VerticalAlignment="Center">-->
       
     <ProgressRing Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource ResourceKey=boolToVis}}"
                   IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
@@ -40,7 +40,7 @@
                   HorizontalAlignment="Center" VerticalAlignment="Center">
       
     </ProgressRing>
-    </Border>
+    <!--</Border>-->
     
   </Grid>
 </Page>

@@ -5,6 +5,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using OSRTracker.Contracts.Services;
 using OSRTracker.ViewModels;
+using OSRTracker.ViewModels.Pages;
+using OSRTracker.ViewModels.Pages.SystemEditor;
 using OSRTracker.Views.Pages;
 
 namespace OSRTracker.Services;
@@ -17,6 +19,7 @@ public class PageService : IPageService
    {
       Configure<MainViewModel, MainPage>();
       Configure<SystemEditorViewModel, SystemEditorPage>();
+      Configure<CharacterRosterViewModel, CharacterRosterPage>();
    }
 
    public Type GetPageType(string key)

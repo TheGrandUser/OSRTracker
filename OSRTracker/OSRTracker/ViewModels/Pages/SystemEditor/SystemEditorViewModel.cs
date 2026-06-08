@@ -16,10 +16,9 @@ using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
 using OSRTracker.Models;
 using OSRTracker.Services;
-using OSRTracker.ViewModels.Pages.SystemEditor;
 using ThrottleDebounce;
 
-namespace OSRTracker.ViewModels;
+namespace OSRTracker.ViewModels.Pages.SystemEditor;
 
 public partial class SystemEditorViewModel : ObservableObject, INavigationAware
 {
@@ -202,6 +201,8 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
       var classDefViewModel = new ClassDefinitionViewModel(classDef, dbContext, attributes);
 
       classes.Add(classDefViewModel);
+
+      this.SelectedClass = classDefViewModel;
    }
 
    [RelayCommand]

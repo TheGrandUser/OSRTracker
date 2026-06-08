@@ -62,12 +62,12 @@ internal class AppDbContextFactory2 : IAppDbContextFactory
 
       optionsBuilder.UseSqlite(connectionString, sqliteOptions =>
       {
-         sqliteOptions.MigrationsAssembly(typeof(App).Assembly);
+         sqliteOptions.MigrationsAssembly(typeof(AppDbContext).Assembly);
 
          // Add other common options here:
          // sqliteOptions.EnableRetryOnFailure(); // if needed
       })
-         .UseModel(OSRTracker.CompiledModels.AppDbContextModel.Instance)
+         .UseModel(OSRTracker.Data.CompiledModels.AppDbContextModel.Instance)
 #if DEBUG
          //.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
          .UseLoggerFactory(loggerFactory)

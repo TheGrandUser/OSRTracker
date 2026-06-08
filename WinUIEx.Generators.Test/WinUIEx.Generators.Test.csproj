@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\OSRTracker.Core\ViewModels\RowWrapperBase.cs" Link="RowWrapperBase.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+		<ProjectReference Include="..\WinUIEx.Generators\WinUIEx.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+</Project>

@@ -17,10 +17,12 @@ namespace OSRTracker.Services;
 internal class AppStateService : IAppStateService
 {
    private readonly IServiceProvider serviceProvider;
+   private readonly IAppDbContextFactory dbContextFactory;
 
-   public AppStateService(IServiceProvider serviceProvider)
+   public AppStateService(IServiceProvider serviceProvider, IAppDbContextFactory appDbContextFactory)
    {
       this.serviceProvider = serviceProvider;
+      dbContextFactory = appDbContextFactory;
    }
 
    public CampaignSettings? Campaign {
@@ -32,14 +34,12 @@ internal class AppStateService : IAppStateService
    {
       this.CampaignDbPath = path;
 
-      var parentDir = Path.GetDirectoryName(path);
+      var parentDir = Path.GetDirectoryName(path)!;
 
       if (!Directory.Exists(parentDir))
       {
          Directory.CreateDirectory(parentDir);
       }
-
-      var dbContextFactory = serviceProvider.GetRequiredService<IAppDbContextFactory>();
 
       dbContextFactory.SetDbPath(path);
 
@@ -98,6 +98,46 @@ internal class AppStateService : IAppStateService
       this.CampaignDbPath = path;
 
       var startTime = watch.Elapsed;
+      
+      dbContextFactory.SetDbPath(path);
+
+      using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+      var gotDbTime = watch.Elapsed;
+
+      await dbContext.Database.MigrateAsync();
+
+      var afterMigrateCheckTime = watch.Elapsed;
+
+      var campaign = await dbContext.CampaignSettings.FindAsync(1);
+
+      Campaign = campaign;
+
+      var loadedCampaignTime = watch.Elapsed;
+
+      WeakReferenceMessenger.Default.Send<CampaignOpened>();
+      watch.Stop();
+
+      var finalTime = watch.Elapsed;
+
+      Debug.WriteLine(
+         $"""
+         Start Time: - - - - {startTime}
+         Got DB Time:        {gotDbTime}
+         After Migrate Time: {afterMigrateCheckTime}
+         Loaded Campn Time:  {loadedCampaignTime}
+         Final Time:         {finalTime}
+         """);
+   }
+
+
+   public async Task RollbackCampaignAsync(string path)
+   {
+      Stopwatch watch = new Stopwatch();
+      watch.Start();
+      this.CampaignDbPath = path;
+
+      var startTime = watch.Elapsed;
       var dbContextFactory = serviceProvider.GetRequiredService<IAppDbContextFactory>();
 
       var gotFactoryTime = watch.Elapsed;
@@ -108,11 +148,12 @@ internal class AppStateService : IAppStateService
 
       var gotDbTime = watch.Elapsed;
 
-      await dbContext.Database.MigrateAsync();
+      await dbContext.Database.MigrateAsync("20260604054841_LevelXP Property");
 
       var afterMigrateCheckTime = watch.Elapsed;
 
-      var campaign = await dbContext.GetCampaignAsync();
+      var campaign = await dbContext.CampaignSettings.FindAsync(1);
+      //.GetCampaignAsync();
 
       Campaign = campaign;
 

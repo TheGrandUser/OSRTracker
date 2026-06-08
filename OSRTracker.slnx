@@ -20,4 +20,8 @@
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
   </Project>
+  <Project Path="WinUIEx.Generators.Test/WinUIEx.Generators.Test.csproj" Id="fe5ac85f-7ccb-4a6c-809d-c7f9b238c7b3">
+    <Build Solution="Debug|x86" Project="false" />
+  </Project>
+  <Project Path="WinUIEx.Generators/WinUIEx.Generators.csproj" Id="8ce46e10-5cc1-4eed-b50c-1531cef45434" />
 </Solution>

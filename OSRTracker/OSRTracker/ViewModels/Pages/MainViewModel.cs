@@ -81,6 +81,38 @@ public partial class MainViewModel : ObservableRecipient
    {
       try
       {
+         FileOpenPicker picker = new FileOpenPicker(App.MainWindow.AppWindow.Id)
+         {
+            ViewMode = PickerViewMode.Thumbnail
+         };
+         
+         picker.FileTypeChoices.Add("Campaign File", [".cdb"]);
+
+         var file = await picker.PickSingleFileAsync();
+
+         if (string.IsNullOrEmpty(file?.Path))
+         {
+            return;
+         }
+
+         IsBusy = true;
+
+         await Task.Delay(5);
+
+         await appStateService.OpenCampaignAsync(file.Path);
+      }
+      catch (OperationCanceledException) { }
+      finally
+      {
+         IsBusy = false;
+      }
+   }
+
+   [RelayCommand]
+   private async Task Rollback()
+   {
+      try
+      {
          FileOpenPicker picker = new FileOpenPicker(App.MainWindow.AppWindow.Id);
 
          IsBusy = true;
@@ -96,7 +128,7 @@ public partial class MainViewModel : ObservableRecipient
             return;
          }
 
-         await this.appStateService.OpenCampaignAsync(file.Path);
+         await appStateService.RollbackCampaignAsync(file.Path);
       }
       catch (OperationCanceledException) { }
       finally

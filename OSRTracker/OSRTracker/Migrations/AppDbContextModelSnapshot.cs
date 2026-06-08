@@ -78,7 +78,7 @@ namespace OSRTracker.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AttributeDefinitions");
+                    b.ToTable("AttributeDefinitions", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.CampaignSettings", b =>
@@ -97,7 +97,7 @@ namespace OSRTracker.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CampaignSettings");
+                    b.ToTable("CampaignSettings", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.Character", b =>
@@ -153,7 +153,7 @@ namespace OSRTracker.Migrations
 
                     b.HasIndex("ClassId");
 
-                    b.ToTable("Characters");
+                    b.ToTable("Characters", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.ClassDefinition", b =>
@@ -168,7 +168,7 @@ namespace OSRTracker.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ClassDefinitions");
+                    b.ToTable("ClassDefinitions", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.CurrencyDefinition", b =>
@@ -192,7 +192,7 @@ namespace OSRTracker.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CurrencyDefinitions");
+                    b.ToTable("CurrencyDefinitions", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.Delve", b =>
@@ -210,7 +210,7 @@ namespace OSRTracker.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Delves");
+                    b.ToTable("Delves", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.GeneralXPAward", b =>
@@ -233,7 +233,7 @@ namespace OSRTracker.Migrations
 
                     b.HasIndex("SessionDelveId");
 
-                    b.ToTable("GeneralXPAwards");
+                    b.ToTable("GeneralXPAwards", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.MonsterEntry", b =>
@@ -262,7 +262,7 @@ namespace OSRTracker.Migrations
 
                     b.HasIndex("SessionDelveId");
 
-                    b.ToTable("MonsterEntries");
+                    b.ToTable("MonsterEntries", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.Session", b =>
@@ -287,7 +287,7 @@ namespace OSRTracker.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sessions");
+                    b.ToTable("Sessions", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.SessionDelve", b =>
@@ -313,7 +313,7 @@ namespace OSRTracker.Migrations
                     b.HasIndex("SessionId", "DelveId")
                         .IsUnique();
 
-                    b.ToTable("SessionDelves");
+                    b.ToTable("SessionDelves", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Core.Models.TreasureEntry", b =>
@@ -371,7 +371,7 @@ namespace OSRTracker.Migrations
 
                     b.HasIndex("SessionDelveId");
 
-                    b.ToTable("TreasureEntries");
+                    b.ToTable("TreasureEntries", (string)null);
                 });
 
             modelBuilder.Entity("AttributeDefinitionClassDefinition", b =>
@@ -443,7 +443,7 @@ namespace OSRTracker.Migrations
 
                             b1.HasKey("ClassDefinitionId", "__synthesizedOrdinal");
 
-                            b1.ToTable("ClassDefinitions");
+                            b1.ToTable("ClassDefinitions", (string)null);
 
                             b1
                                 .ToJson("LevelXP")

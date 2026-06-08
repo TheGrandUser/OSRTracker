@@ -64,6 +64,7 @@ public class AppDbContext : DbContext
             entity.HasOne(x => x.Class)
                 .WithMany()
                 .HasForeignKey(a => a.ClassId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 

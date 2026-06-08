@@ -15,6 +15,8 @@ using OSRTracker.Services;
 using OSRTracker.ViewModels;
 using OSRTracker.Views.Pages;
 using OSRTracker.Views;
+using OSRTracker.ViewModels.Pages;
+using OSRTracker.ViewModels.Pages.SystemEditor;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -106,7 +108,8 @@ public partial class App : Application
          services.AddTransient<ShellViewModel>();
          services.AddTransient<SystemEditorViewModel>();
          services.AddTransient<SystemEditorPage>();
-         
+         services.AddTransient<CharacterRosterViewModel>();
+         services.AddTransient<CharacterRosterPage>();
 
          // Configuration
          services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));

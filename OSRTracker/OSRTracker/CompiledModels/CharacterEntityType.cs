@@ -21,7 +21,7 @@ namespace OSRTracker.CompiledModels
                 "OSRTracker.Core.Models.Character",
                 typeof(Character),
                 baseEntityType,
-                propertyCount: 15,
+                propertyCount: 16,
                 navigationCount: 1,
                 skipNavigationCount: 2,
                 foreignKeyCount: 1,
@@ -120,6 +120,13 @@ namespace OSRTracker.CompiledModels
                 fieldInfo: typeof(Character).GetField("<ShareMultiplierXP>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0m);
 
+            var status = runtimeEntityType.AddProperty(
+                "Status",
+                typeof(CharacterStatus),
+                propertyInfo: typeof(Character).GetProperty("Status", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Character).GetField("<Status>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            status.SetSentinelFromProviderValue(0);
+
             var str = runtimeEntityType.AddProperty(
                 "Str",
                 typeof(int),
@@ -149,8 +156,7 @@ namespace OSRTracker.CompiledModels
             var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("ClassId") },
                 principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),
                 principalEntityType,
-                deleteBehavior: DeleteBehavior.Restrict,
-                required: true);
+                deleteBehavior: DeleteBehavior.Restrict);
 
             var @class = declaringEntityType.AddNavigation("Class",
                 runtimeForeignKey,

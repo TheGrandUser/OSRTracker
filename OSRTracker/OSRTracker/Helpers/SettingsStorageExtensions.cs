@@ -23,7 +23,7 @@ public static class SettingsStorageExtensions
         public async Task SaveAsync<T>(string name, T content)
         {
             var file = await folder.CreateFileAsync(GetFileName(name), CreationCollisionOption.ReplaceExisting);
-            var fileContent = await Json.StringifyAsync(content);
+            var fileContent = await Json.StringifyAsync(content!);
 
             await FileIO.WriteTextAsync(file, fileContent);
         }
@@ -43,12 +43,9 @@ public static class SettingsStorageExtensions
 
         public async Task<StorageFile> SaveFileAsync(byte[] content, string fileName, CreationCollisionOption options = CreationCollisionOption.ReplaceExisting)
         {
-            if (content == null)
-            {
-                throw new ArgumentNullException(nameof(content));
-            }
+         ArgumentNullException.ThrowIfNull(content);
 
-            if (string.IsNullOrEmpty(fileName))
+         if (string.IsNullOrEmpty(fileName))
             {
                 throw new ArgumentException("File name is null or empty. Specify a valid file name", nameof(fileName));
             }
@@ -77,7 +74,7 @@ public static class SettingsStorageExtensions
     {
         public async Task SaveAsync<T>(string key, T value)
         {
-            settings.SaveString(key, await Json.StringifyAsync(value));
+            settings.SaveString(key, await Json.StringifyAsync(value!));
         }
 
         public void SaveString(string key, string value)

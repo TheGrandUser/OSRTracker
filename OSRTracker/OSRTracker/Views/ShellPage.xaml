@@ -51,16 +51,18 @@
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
           </NavigationViewItem.Icon>
         </NavigationViewItem>
-        <NavigationViewItem x:Uid="Shell_SystemEditor" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.SystemEditorViewModel">
+        <NavigationViewItem x:Uid="Shell_SystemEditor" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.SystemEditor.SystemEditorViewModel"
+                            IsEnabled="{x:Bind ViewModel.IsProjectOpened, Mode=OneWay}">
           <NavigationViewItem.Icon>
-            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xea37;"/>
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe713;"/>
           </NavigationViewItem.Icon>
         </NavigationViewItem>
-        <!--<NavigationViewItem x:Uid="Shell_ListDetails1" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.ListDetails1ViewModel">
+        <NavigationViewItem x:Uid="Shell_CharacterRoster" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.CharacterRosterViewModel"
+                            IsEnabled="{x:Bind ViewModel.IsProjectOpened, Mode=OneWay}">
           <NavigationViewItem.Icon>
-            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xea37;"/>
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe716;"/>
           </NavigationViewItem.Icon>
-        </NavigationViewItem>-->
+        </NavigationViewItem>
         <!--<NavigationViewItem x:Uid="Shell_DataGrid" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.DataGridViewModel">
           <NavigationViewItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe80a;"/>

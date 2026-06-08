@@ -11,7 +11,7 @@ namespace OSRTracker.CompiledModels
     public partial class AppDbContextModel
     {
         private AppDbContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("e90784d3-410c-475d-9c67-a0b1e851043e"), entityTypeCount: 15)
+            : base(skipDetectChanges: false, modelId: new Guid("4ca9879a-c1b7-4e0b-b587-f24246fd85ca"), entityTypeCount: 15)
         {
         }
 

@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OSRTracker.ViewModels.Pages;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -22,8 +23,19 @@ namespace OSRTracker.Views.Pages;
 /// </summary>
 public sealed partial class CharacterRosterPage : Page
 {
+   public CharacterRosterViewModel ViewModel { get; }
+
    public CharacterRosterPage()
    {
+      ViewModel = App.GetService<CharacterRosterViewModel>();
+      DataContext = ViewModel;
       InitializeComponent();
+
+      
+   }
+
+   private void rosterTable_Sorting(object sender, WinUI.TableView.TableViewSortingEventArgs e)
+   {
+      
    }
 }
