@@ -14,25 +14,17 @@ using OSRTracker.Models;
 
 namespace OSRTracker.Services;
 
-internal class AppStateService : IAppStateService
+internal class AppStateService(IServiceProvider serviceProvider, IAppDbContextFactory appDbContextFactory) : IAppStateService
 {
-   private readonly IServiceProvider serviceProvider;
-   private readonly IAppDbContextFactory dbContextFactory;
+   private readonly IServiceProvider serviceProvider = serviceProvider;
+   private readonly IAppDbContextFactory dbContextFactory = appDbContextFactory;
 
-   public AppStateService(IServiceProvider serviceProvider, IAppDbContextFactory appDbContextFactory)
-   {
-      this.serviceProvider = serviceProvider;
-      dbContextFactory = appDbContextFactory;
-   }
-
-   public CampaignSettings? Campaign {
-      get; private set;
-   }
+   public CampaignSettings? Campaign { get; private set; }
    public string CampaignDbPath { get; private set; } = string.Empty;
 
    public async Task CreateCampaignAsync(string path, string campaignName, SystemDto? rpgSystem)
    {
-      this.CampaignDbPath = path;
+      CampaignDbPath = path;
 
       var parentDir = Path.GetDirectoryName(path)!;
 
@@ -76,7 +68,7 @@ internal class AppStateService : IAppStateService
 
          foreach (var classdef in rpgSystem.Classes)
          {
-            ClassDefinition classEntity = classdef.ToClassDefinition(attributeDefinitions);
+            var classEntity = classdef.ToClassDefinition(attributeDefinitions);
 
             dbContext.ClassDefinitions.Add(classEntity);
          }
@@ -91,11 +83,11 @@ internal class AppStateService : IAppStateService
       WeakReferenceMessenger.Default.Send<CampaignOpened>();
    }
 
-   public async Task OpenCampaignAsync(string path)
+   public async Task<CampaignSettings> OpenCampaignAsync(string path)
    {
-      Stopwatch watch = new Stopwatch();
+      var watch = new Stopwatch();
       watch.Start();
-      this.CampaignDbPath = path;
+      CampaignDbPath = path;
 
       var startTime = watch.Elapsed;
       
@@ -128,14 +120,16 @@ internal class AppStateService : IAppStateService
          Loaded Campn Time:  {loadedCampaignTime}
          Final Time:         {finalTime}
          """);
+
+      return campaign!;
    }
 
 
    public async Task RollbackCampaignAsync(string path)
    {
-      Stopwatch watch = new Stopwatch();
+      var watch = new Stopwatch();
       watch.Start();
-      this.CampaignDbPath = path;
+      CampaignDbPath = path;
 
       var startTime = watch.Elapsed;
       var dbContextFactory = serviceProvider.GetRequiredService<IAppDbContextFactory>();

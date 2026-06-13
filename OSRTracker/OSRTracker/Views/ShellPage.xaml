@@ -10,7 +10,7 @@
     xmlns:behaviors="using:OSRTracker.Behaviors"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d"
-  Loaded="OnLoaded">
+    Loaded="OnLoaded">
 
   <Grid>
     <Grid x:Name="AppTitleBar"
@@ -69,6 +69,7 @@
           </NavigationViewItem.Icon>
         </NavigationViewItem>-->
       </NavigationView.MenuItems>
+      
       <NavigationView.HeaderTemplate>
         <DataTemplate>
           <Grid>
@@ -78,6 +79,7 @@
           </Grid>
         </DataTemplate>
       </NavigationView.HeaderTemplate>
+      
       <i:Interaction.Behaviors>
         <behaviors:NavigationViewHeaderBehavior
                 DefaultHeader="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
@@ -92,10 +94,29 @@
           </behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
         </behaviors:NavigationViewHeaderBehavior>
       </i:Interaction.Behaviors>
+      
       <Grid Margin="{StaticResource NavigationViewPageContentMargin}">
         <Frame x:Name="NavigationFrame" />
       </Grid>
       
     </NavigationView>
+
+
+    <Grid Grid.Row="0" Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource ResourceKey=boolToVis}}"
+          Canvas.ZIndex="2"
+          Background="#44A9A9A9">
+
+      <ProgressRing 
+          IsActive="{x:Bind ViewModel.IsBusy, Mode=OneWay}"
+          Grid.Row="1"
+          Background="LightGreen"
+          IsIndeterminate="True"
+          Height="60" Width="60"
+          HorizontalAlignment="Center" VerticalAlignment="Center">
+
+      </ProgressRing>
+    </Grid>
+
+
   </Grid>
 </Page>
