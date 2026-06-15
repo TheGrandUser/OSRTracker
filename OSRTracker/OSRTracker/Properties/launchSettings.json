@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "OSRTracker (Unpackaged)": {
+      "commandName": "Project"
+    },
+    "OSRTracker (Package)": {
+      "commandName": "MsixPackage"
+    }
+  }
+}

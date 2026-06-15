@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OSRTracker.Core.Models;
+namespace OSRTracker.Models;
 
 public class Character
 {

@@ -11,7 +11,7 @@ using Microsoft.Windows.ApplicationModel.DynamicDependency;
 using Microsoft.Windows.Storage.Pickers;
 using OSRTracker.Contracts.Services;
 using OSRTracker.Contracts.ViewModels;
-using OSRTracker.Core.Models;
+using OSRTracker.Models;
 using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
 using OSRTracker.Models;

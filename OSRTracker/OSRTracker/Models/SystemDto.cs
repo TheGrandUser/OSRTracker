@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using OSRTracker.Core.Models;
+using OSRTracker.Models;
 
 namespace OSRTracker.Models;
 

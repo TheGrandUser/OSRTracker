@@ -1,4 +1,4 @@
-﻿using OSRTracker.Core.Models;
+﻿using OSRTracker.Models;
 using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
 

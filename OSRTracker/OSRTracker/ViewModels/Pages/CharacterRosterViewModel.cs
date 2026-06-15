@@ -9,7 +9,7 @@ using CommunityToolkit.WinUI.Collections;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using OSRTracker.Contracts.ViewModels;
-using OSRTracker.Core.Models;
+using OSRTracker.Models;
 using OSRTracker.ViewModels;
 using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
@@ -218,7 +218,7 @@ public partial class CharacterViewModel : UpdateableElementViewModel
    {
       character.Name = Name;
       character.PlayerName = PlayerName;
-      character.CharacterType = CharacterType?.CharacterType ?? Core.Models.CharacterType.PC;
+      character.CharacterType = CharacterType?.CharacterType ?? Models.CharacterType.PC;
       character.ClassId = Class?.Id;
       character.Level = Level;
       character.CurrentXP = CurrentXP;
@@ -279,8 +279,8 @@ public partial class CharacterVMWrapper : RowWrapperBase<CharacterViewModel>
          Name = "",
          Class = null,
          ClassId = null,
-         CharacterType = Core.Models.CharacterType.PC,
-         Status = Core.Models.CharacterStatus.Active,
+         CharacterType = Models.CharacterType.PC,
+         Status = Models.CharacterStatus.Active,
       };
 
       var entry = dbContext.Characters.Add(character);

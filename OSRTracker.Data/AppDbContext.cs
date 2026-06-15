@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OSRTracker.Core.Models;
+using OSRTracker.Models;
 
 namespace OSRTracker.Data;
 

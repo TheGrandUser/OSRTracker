@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using OSRTracker.Core.Models;
+using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
 #nullable disable

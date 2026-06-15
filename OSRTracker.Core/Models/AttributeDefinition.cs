@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace OSRTracker.Core.Models;
+namespace OSRTracker.Models;
 
 public class AttributeDefinition
 {

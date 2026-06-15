@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using OSRTracker.Core.Models;
+using OSRTracker.Models;
 using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
 using OSRTracker.ViewModels.Pages.SystemEditor;

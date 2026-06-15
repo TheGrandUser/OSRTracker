@@ -7,10 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using OSRTracker.Contracts.Messages;
 using OSRTracker.Contracts.Services;
-using OSRTracker.Core.Models;
+using OSRTracker.Models;
 using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
-using OSRTracker.Models;
 
 namespace OSRTracker.Services;
 
