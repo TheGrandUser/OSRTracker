@@ -18,7 +18,7 @@ namespace OSRTracker.Data.CompiledModels
         public static RuntimeEntityType Create(RuntimeModel model, RuntimeEntityType baseEntityType = null)
         {
             var runtimeEntityType = model.AddEntityType(
-                "OSRTracker.Core.Models.LevelXPRequirement",
+                "OSRTracker.Models.LevelXPRequirement",
                 typeof(LevelXPRequirement),
                 baseEntityType,
                 propertyCount: 3,

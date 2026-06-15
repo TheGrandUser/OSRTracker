@@ -18,7 +18,7 @@ namespace OSRTracker.Data.CompiledModels
         public static RuntimeEntityType Create(RuntimeModel model, RuntimeEntityType baseEntityType = null)
         {
             var runtimeEntityType = model.AddEntityType(
-                "OSRTracker.Core.Models.TreasureEntry",
+                "OSRTracker.Models.TreasureEntry",
                 typeof(TreasureEntry),
                 baseEntityType,
                 propertyCount: 7,
@@ -96,7 +96,7 @@ namespace OSRTracker.Data.CompiledModels
             {
                 var complexProperty = declaringType.AddComplexProperty("Location",
                     typeof(LocationReference),
-                    "OSRTracker.Core.Models.TreasureEntry.Location#LocationReference",
+                    "OSRTracker.Models.TreasureEntry.Location#LocationReference",
                     typeof(LocationReference),
                     propertyInfo: typeof(TreasureEntry).GetProperty("Location", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                     fieldInfo: typeof(TreasureEntry).GetField("<Location>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
@@ -143,7 +143,7 @@ namespace OSRTracker.Data.CompiledModels
             {
                 var complexProperty = declaringType.AddComplexProperty("MagicItemDetails",
                     typeof(MagicItemDetails),
-                    "OSRTracker.Core.Models.TreasureEntry.MagicItemDetails#MagicItemDetails",
+                    "OSRTracker.Models.TreasureEntry.MagicItemDetails#MagicItemDetails",
                     typeof(MagicItemDetails),
                     propertyInfo: typeof(TreasureEntry).GetProperty("MagicItemDetails", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                     fieldInfo: typeof(TreasureEntry).GetField("<MagicItemDetails>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),

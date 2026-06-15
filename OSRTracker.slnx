@@ -9,10 +9,7 @@
   </Folder>
   <Project Path="OSRTracker.Core/OSRTracker.Core.csproj" Id="62440612-6620-4219-a651-d512523df5e2" />
   <Project Path="OSRTracker.Data/OSRTracker.Data.csproj" Id="1a05097b-d390-469c-8b31-6772abb3f9bb" />
-  <Project Path="OSRTracker/OSRTracker (Package)/OSRTracker (Package).wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="86f5daa7-0a4b-4694-8ec6-b248616704d3">
-    <Deploy />
-  </Project>
-  <Project Path="OSRTracker/OSRTracker/OSRTracker.csproj" Id="330dad77-e4e7-4778-b8ff-9f56a316f3d0">
+    <Project Path="OSRTracker/OSRTracker.csproj" Id="330dad77-e4e7-4778-b8ff-9f56a316f3d0">
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />
     <Deploy Solution="Debug|x86" />

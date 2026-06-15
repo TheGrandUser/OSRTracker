@@ -16,7 +16,7 @@ namespace OSRTracker.Data.CompiledModels
         public static RuntimeEntityType Create(RuntimeModel model, RuntimeEntityType baseEntityType = null)
         {
             var runtimeEntityType = model.AddEntityType(
-                "OSRTracker.Core.Models.Delve",
+                "OSRTracker.Models.Delve",
                 typeof(Delve),
                 baseEntityType,
                 propertyCount: 3,

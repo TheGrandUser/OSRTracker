@@ -51,7 +51,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("SessionCharacters", (string)null);
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.CampaignSettings", b =>
+            modelBuilder.Entity("OSRTracker.Models.CampaignSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +74,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("CampaignSettings");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.Character", b =>
+            modelBuilder.Entity("OSRTracker.Models.Character", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -130,7 +130,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("Characters");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.ClassDefinition", b =>
+            modelBuilder.Entity("OSRTracker.Models.ClassDefinition", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,7 +145,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("ClassDefinitions");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.CurrencyDefinition", b =>
+            modelBuilder.Entity("OSRTracker.Models.CurrencyDefinition", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -169,7 +169,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("CurrencyDefinitions");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.Delve", b =>
+            modelBuilder.Entity("OSRTracker.Models.Delve", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -187,7 +187,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("Delves");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.GeneralXPAward", b =>
+            modelBuilder.Entity("OSRTracker.Models.GeneralXPAward", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -210,7 +210,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("GeneralXPAwards");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.MonsterEntry", b =>
+            modelBuilder.Entity("OSRTracker.Models.MonsterEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -239,7 +239,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("MonsterEntries");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.Session", b =>
+            modelBuilder.Entity("OSRTracker.Models.Session", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -264,7 +264,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("Sessions");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.SessionDelve", b =>
+            modelBuilder.Entity("OSRTracker.Models.SessionDelve", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -290,7 +290,7 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("SessionDelves");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.TreasureEntry", b =>
+            modelBuilder.Entity("OSRTracker.Models.TreasureEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -315,7 +315,7 @@ namespace OSRTracker.Data.Migrations
                     b.Property<decimal>("Weight")
                         .HasColumnType("TEXT");
 
-                    b.ComplexProperty(typeof(Dictionary<string, object>), "Location", "OSRTracker.Core.Models.TreasureEntry.Location#LocationReference", b1 =>
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Location", "OSRTracker.Models.TreasureEntry.Location#LocationReference", b1 =>
                         {
                             b1.IsRequired();
 
@@ -332,7 +332,7 @@ namespace OSRTracker.Data.Migrations
                                 .HasColumnName("LocType");
                         });
 
-                    b.ComplexProperty(typeof(Dictionary<string, object>), "MagicItemDetails", "OSRTracker.Core.Models.TreasureEntry.MagicItemDetails#MagicItemDetails", b1 =>
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "MagicItemDetails", "OSRTracker.Models.TreasureEntry.MagicItemDetails#MagicItemDetails", b1 =>
                         {
                             b1.Property<int>("IdentificationStatus")
                                 .HasColumnType("INTEGER");
@@ -350,13 +350,13 @@ namespace OSRTracker.Data.Migrations
 
             modelBuilder.Entity("CharacterGeneralXPAward", b =>
                 {
-                    b.HasOne("OSRTracker.Core.Models.Character", null)
+                    b.HasOne("OSRTracker.Models.Character", null)
                         .WithMany()
                         .HasForeignKey("CharactersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSRTracker.Core.Models.GeneralXPAward", null)
+                    b.HasOne("OSRTracker.Models.GeneralXPAward", null)
                         .WithMany()
                         .HasForeignKey("GeneralXPAwardId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -365,22 +365,22 @@ namespace OSRTracker.Data.Migrations
 
             modelBuilder.Entity("CharacterSession", b =>
                 {
-                    b.HasOne("OSRTracker.Core.Models.Character", null)
+                    b.HasOne("OSRTracker.Models.Character", null)
                         .WithMany()
                         .HasForeignKey("CharactersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSRTracker.Core.Models.Session", null)
+                    b.HasOne("OSRTracker.Models.Session", null)
                         .WithMany()
                         .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.Character", b =>
+            modelBuilder.Entity("OSRTracker.Models.Character", b =>
                 {
-                    b.HasOne("OSRTracker.Core.Models.ClassDefinition", "Class")
+                    b.HasOne("OSRTracker.Models.ClassDefinition", "Class")
                         .WithMany()
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -389,9 +389,9 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("Class");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.ClassDefinition", b =>
+            modelBuilder.Entity("OSRTracker.Models.ClassDefinition", b =>
                 {
-                    b.OwnsMany("OSRTracker.Core.Models.KeyAttribute", "KeyAttributes", b1 =>
+                    b.OwnsMany("OSRTracker.Models.KeyAttribute", "KeyAttributes", b1 =>
                         {
                             b1.Property<int>("ClassDefinitionId");
 
@@ -413,7 +413,7 @@ namespace OSRTracker.Data.Migrations
                                 .HasForeignKey("ClassDefinitionId");
                         });
 
-                    b.OwnsMany("OSRTracker.Core.Models.LevelXPRequirement", "LevelXP", b1 =>
+                    b.OwnsMany("OSRTracker.Models.LevelXPRequirement", "LevelXP", b1 =>
                         {
                             b1.Property<int>("ClassDefinitionId");
 
@@ -439,9 +439,9 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("LevelXP");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.GeneralXPAward", b =>
+            modelBuilder.Entity("OSRTracker.Models.GeneralXPAward", b =>
                 {
-                    b.HasOne("OSRTracker.Core.Models.SessionDelve", "SessionDelve")
+                    b.HasOne("OSRTracker.Models.SessionDelve", "SessionDelve")
                         .WithMany("GeneralXPAwards")
                         .HasForeignKey("SessionDelveId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -450,9 +450,9 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("SessionDelve");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.MonsterEntry", b =>
+            modelBuilder.Entity("OSRTracker.Models.MonsterEntry", b =>
                 {
-                    b.HasOne("OSRTracker.Core.Models.SessionDelve", "SessionDelve")
+                    b.HasOne("OSRTracker.Models.SessionDelve", "SessionDelve")
                         .WithMany("Monsters")
                         .HasForeignKey("SessionDelveId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -461,15 +461,15 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("SessionDelve");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.SessionDelve", b =>
+            modelBuilder.Entity("OSRTracker.Models.SessionDelve", b =>
                 {
-                    b.HasOne("OSRTracker.Core.Models.Delve", "Delve")
+                    b.HasOne("OSRTracker.Models.Delve", "Delve")
                         .WithMany("Sessions")
                         .HasForeignKey("DelveId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OSRTracker.Core.Models.Session", "Session")
+                    b.HasOne("OSRTracker.Models.Session", "Session")
                         .WithMany("Delves")
                         .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -480,9 +480,9 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("Session");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.TreasureEntry", b =>
+            modelBuilder.Entity("OSRTracker.Models.TreasureEntry", b =>
                 {
-                    b.HasOne("OSRTracker.Core.Models.SessionDelve", "SessionDelve")
+                    b.HasOne("OSRTracker.Models.SessionDelve", "SessionDelve")
                         .WithMany("Treasures")
                         .HasForeignKey("SessionDelveId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -491,17 +491,17 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("SessionDelve");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.Delve", b =>
+            modelBuilder.Entity("OSRTracker.Models.Delve", b =>
                 {
                     b.Navigation("Sessions");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.Session", b =>
+            modelBuilder.Entity("OSRTracker.Models.Session", b =>
                 {
                     b.Navigation("Delves");
                 });
 
-            modelBuilder.Entity("OSRTracker.Core.Models.SessionDelve", b =>
+            modelBuilder.Entity("OSRTracker.Models.SessionDelve", b =>
                 {
                     b.Navigation("GeneralXPAwards");
 

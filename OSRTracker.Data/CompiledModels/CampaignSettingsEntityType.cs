@@ -16,7 +16,7 @@ namespace OSRTracker.Data.CompiledModels
         public static RuntimeEntityType Create(RuntimeModel model, RuntimeEntityType baseEntityType = null)
         {
             var runtimeEntityType = model.AddEntityType(
-                "OSRTracker.Core.Models.CampaignSettings",
+                "OSRTracker.Models.CampaignSettings",
                 typeof(CampaignSettings),
                 baseEntityType,
                 propertyCount: 3,

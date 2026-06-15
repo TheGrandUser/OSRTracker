@@ -17,7 +17,7 @@ namespace OSRTracker.Data.CompiledModels
         public static RuntimeEntityType Create(RuntimeModel model, RuntimeEntityType baseEntityType = null)
         {
             var runtimeEntityType = model.AddEntityType(
-                "OSRTracker.Core.Models.AttributeDefinition",
+                "OSRTracker.Models.AttributeDefinition",
                 typeof(AttributeDefinition),
                 baseEntityType,
                 propertyCount: 3,

@@ -18,7 +18,7 @@ namespace OSRTracker.Data.CompiledModels
         public static RuntimeEntityType Create(RuntimeModel model, RuntimeEntityType baseEntityType = null)
         {
             var runtimeEntityType = model.AddEntityType(
-                "OSRTracker.Core.Models.GeneralXPAward",
+                "OSRTracker.Models.GeneralXPAward",
                 typeof(GeneralXPAward),
                 baseEntityType,
                 propertyCount: 4,
