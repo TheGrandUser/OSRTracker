@@ -1,6 +1,15 @@
 ﻿using System.Collections.Immutable;
+using OSRTracker.Helpers;
 
 namespace OSRTracker.Models;
+
+public readonly record struct AttributeDefinitionId(int Id) : IEntityId<AttributeDefinitionId>
+{
+   public static AttributeDefinitionId Empty { get; } = new(0);
+   public static AttributeDefinitionId Create(int id) => new(id);
+
+   public override string ToString() => $"Attribute Definition {Id}";
+}
 
 public class AttributeDefinition
 {
@@ -12,9 +21,8 @@ public class AttributeDefinition
       new AttributeDefinition() { Name = "Con", Ordinal = 5 },
       new AttributeDefinition() { Name = "Cha", Ordinal = 6 },
       ];
-   public int Id {
-      get; set;
-   }
+   public AttributeDefinitionId Id { get; set; }
    public string Name { get; set; } = string.Empty;
    public int Ordinal { get; set; }
 }
+

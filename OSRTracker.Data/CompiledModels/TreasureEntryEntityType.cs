@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
@@ -30,12 +31,14 @@ namespace OSRTracker.Data.CompiledModels
 
             var id = runtimeEntityType.AddProperty(
                 "Id",
-                typeof(int),
+                typeof(TreasureEntryId),
                 propertyInfo: typeof(TreasureEntry).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(TreasureEntry).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                valueGenerated: ValueGenerated.OnAdd,
-                afterSaveBehavior: PropertySaveBehavior.Throw,
-                sentinel: 0);
+                afterSaveBehavior: PropertySaveBehavior.Throw);
+            id.SetValueConverter(new ValueConverter<TreasureEntryId, int>(
+                int (TreasureEntryId x) => x.Id,
+                TreasureEntryId (int id) => new TreasureEntryId(id)));
+            id.SetSentinelFromProviderValue(0);
 
             var apparentValue = runtimeEntityType.AddProperty(
                 "ApparentValue",
@@ -66,10 +69,10 @@ namespace OSRTracker.Data.CompiledModels
 
             var sessionDelveId = runtimeEntityType.AddProperty(
                 "SessionDelveId",
-                typeof(int),
+                typeof(SessionDelveId),
                 propertyInfo: typeof(TreasureEntry).GetProperty("SessionDelveId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(TreasureEntry).GetField("<SessionDelveId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                sentinel: 0);
+                fieldInfo: typeof(TreasureEntry).GetField("<SessionDelveId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            sessionDelveId.SetSentinelFromProviderValue(0);
 
             var weight = runtimeEntityType.AddProperty(
                 "Weight",

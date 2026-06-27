@@ -7,7 +7,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x86;x64</Platforms>
     <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
-		<PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <!-- Ensure a concrete platform/runtime is selected by default to avoid AnyCPU when packaging MSIX -->
+    <Platform>x64</Platform>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <WinUISDKReferences>false</WinUISDKReferences>
 		<EnableMsixTooling>true</EnableMsixTooling>
@@ -25,6 +28,8 @@
     <None Remove="Views\Dialogs\InputPromptDialog.xaml" />
     <None Remove="Views\MainPage.xaml" />
     <None Remove="Views\Pages\CharacterRosterPage.xaml" />
+    <None Remove="Views\Pages\Main\CampaignStateView.xaml" />
+    <None Remove="Views\Pages\Main\CreateSessionTrackDialog.xaml" />
     <None Remove="Views\ShellPage.xaml" />
     <None Remove="Views\SystemEditorPage.xaml" />
   </ItemGroup>
@@ -57,19 +62,19 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.3.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.3.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.3.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.9" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.2.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="3.0.1" />
     <PackageReference Include="ThrottleDebounce" Version="2.0.2" />
     <PackageReference Include="WinUI.TableView" Version="1.4.1" />
 		<PackageReference Include="WinUIEx" Version="2.9.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.9" />
   </ItemGroup>
 
   <ItemGroup>
@@ -131,6 +136,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Views\Pages\Main\CreateSessionTrackDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Pages\Main\CampaignStateView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Pages\Main\WelcomeStateView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Views\Pages\CharacterRosterPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -151,5 +174,6 @@
     <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 </Project>

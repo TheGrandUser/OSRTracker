@@ -49,6 +49,7 @@ static class DialogExtensions
 
          return result == ContentDialogResult.Primary ? inputBox.Text?.Trim() : null;
       }
+
       public async Task<SelectRpgResponse> ShowSelectRpgSystemDialogAsync(IRpgSystemFileService rpgSystemFileService)
       {
          var dialog = new ContentDialog()
@@ -84,6 +85,8 @@ static class DialogExtensions
             return new SelectRpgResponse.Cancelled();
          }
       }
+
+      
    }
 
 }

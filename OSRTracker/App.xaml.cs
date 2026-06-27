@@ -1,22 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
-
 using OSRTracker.Activation;
 using OSRTracker.Contracts.Services;
 using OSRTracker.Core.Contracts.Services;
 using OSRTracker.Core.Services;
-using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
 using OSRTracker.Models;
 using OSRTracker.Services;
 using OSRTracker.ViewModels;
-using OSRTracker.Views.Pages;
-using OSRTracker.Views;
 using OSRTracker.ViewModels.Pages;
+using OSRTracker.ViewModels.Pages.Main;
 using OSRTracker.ViewModels.Pages.SystemEditor;
+using OSRTracker.Views;
+using OSRTracker.Views.Pages;
+using OSRTracker.Views.Pages.Main;
+using Windows.ApplicationModel;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -67,6 +69,9 @@ public partial class App : Application
    {
       InitializeComponent();
 
+      TypeMappings.AddTypeMappings();
+      
+
       Host = Microsoft.Extensions.Hosting.Host.
       CreateDefaultBuilder().
       UseContentRoot(AppContext.BaseDirectory)
@@ -103,6 +108,8 @@ public partial class App : Application
 
          // Views and ViewModels
          services.AddTransient<MainViewModel>();
+         services.AddTransient<WelcomeStateViewModel>();
+         services.AddTransient<CampaignStateViewModel>();
          services.AddTransient<MainPage>();
          services.AddTransient<ShellPage>();
          services.AddTransient<ShellViewModel>();
@@ -134,5 +141,14 @@ public partial class App : Application
       base.OnLaunched(args);
 
       await App.GetService<IActivationService>().ActivateAsync(args);
+   }
+
+   internal static string GetVersion()
+   {
+      var package = Package.Current;
+      var packageId = package.Id;
+      var version = packageId.Version;
+
+      return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
    }
 }

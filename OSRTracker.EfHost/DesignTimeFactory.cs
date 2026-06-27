@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using OSRTracker.Data;
 
-namespace OSRTracker;
+namespace OSRTracker.EfHost;
 
-
-internal class DesignTimeFactory : IDesignTimeDbContextFactory<AppDbContext>
+public class DesignTimeFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
    private readonly DbContextOptions<AppDbContext> options;
 

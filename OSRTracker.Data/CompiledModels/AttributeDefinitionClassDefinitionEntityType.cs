@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
 #nullable disable
@@ -30,13 +31,13 @@ namespace OSRTracker.Data.CompiledModels
 
             var classDefinitionId = runtimeEntityType.AddProperty(
                 "ClassDefinitionId",
-                typeof(int),
+                typeof(ClassDefinitionId),
                 propertyInfo: runtimeEntityType.FindIndexerPropertyInfo(),
                 afterSaveBehavior: PropertySaveBehavior.Throw);
 
             var keyAttributesId = runtimeEntityType.AddProperty(
                 "KeyAttributesId",
-                typeof(int),
+                typeof(AttributeDefinitionId),
                 propertyInfo: runtimeEntityType.FindIndexerPropertyInfo(),
                 afterSaveBehavior: PropertySaveBehavior.Throw);
 

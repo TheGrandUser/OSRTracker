@@ -16,7 +16,7 @@ namespace OSRTracker.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
 
             modelBuilder.Entity("AttributeDefinitionClassDefinition", b =>
                 {
@@ -66,7 +66,6 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.AttributeDefinition", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -84,7 +83,6 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.CampaignSettings", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -103,7 +101,6 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.Character", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Cha")
@@ -162,7 +159,6 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.ClassDefinition", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -177,7 +173,6 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.CurrencyDefinition", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("CountPerUnitWeight")
@@ -201,17 +196,25 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.Delve", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("LocationDescription")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("SessionTrackId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SessionTrackId");
 
                     b.ToTable("Delves");
                 });
@@ -219,7 +222,6 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.GeneralXPAward", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Amount")
@@ -242,7 +244,6 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.MonsterEntry", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -271,24 +272,31 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.Session", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SessioNumber")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SessionNotes")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("SessionNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SessionTrackId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SessionTrackId");
 
                     b.ToTable("Sessions");
                 });
@@ -296,7 +304,6 @@ namespace OSRTracker.Data.Migrations
             modelBuilder.Entity("OSRTracker.Models.SessionDelve", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DelveId")
@@ -319,10 +326,41 @@ namespace OSRTracker.Data.Migrations
                     b.ToTable("SessionDelves");
                 });
 
+            modelBuilder.Entity("OSRTracker.Models.SessionTrack", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("GroupDescription")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SessionTracks");
+                });
+
+            modelBuilder.Entity("OSRTracker.Models.SessionTrackCharacter", b =>
+                {
+                    b.Property<int>("SessionTrackId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("SessionTrackId", "CharacterId");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("SessionTracksCharacters");
+                });
+
             modelBuilder.Entity("OSRTracker.Models.TreasureEntry", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("ApparentValue")
@@ -458,6 +496,17 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("LevelXP");
                 });
 
+            modelBuilder.Entity("OSRTracker.Models.Delve", b =>
+                {
+                    b.HasOne("OSRTracker.Models.SessionTrack", "SessionTrack")
+                        .WithMany("Delves")
+                        .HasForeignKey("SessionTrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SessionTrack");
+                });
+
             modelBuilder.Entity("OSRTracker.Models.GeneralXPAward", b =>
                 {
                     b.HasOne("OSRTracker.Models.SessionDelve", "SessionDelve")
@@ -480,6 +529,17 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("SessionDelve");
                 });
 
+            modelBuilder.Entity("OSRTracker.Models.Session", b =>
+                {
+                    b.HasOne("OSRTracker.Models.SessionTrack", "SessionTrack")
+                        .WithMany("Sessions")
+                        .HasForeignKey("SessionTrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SessionTrack");
+                });
+
             modelBuilder.Entity("OSRTracker.Models.SessionDelve", b =>
                 {
                     b.HasOne("OSRTracker.Models.Delve", "Delve")
@@ -497,6 +557,25 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("Delve");
 
                     b.Navigation("Session");
+                });
+
+            modelBuilder.Entity("OSRTracker.Models.SessionTrackCharacter", b =>
+                {
+                    b.HasOne("OSRTracker.Models.Character", "Character")
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OSRTracker.Models.SessionTrack", "SessionTrack")
+                        .WithMany("Characters")
+                        .HasForeignKey("SessionTrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Character");
+
+                    b.Navigation("SessionTrack");
                 });
 
             modelBuilder.Entity("OSRTracker.Models.TreasureEntry", b =>
@@ -527,6 +606,15 @@ namespace OSRTracker.Data.Migrations
                     b.Navigation("Monsters");
 
                     b.Navigation("Treasures");
+                });
+
+            modelBuilder.Entity("OSRTracker.Models.SessionTrack", b =>
+                {
+                    b.Navigation("Characters");
+
+                    b.Navigation("Delves");
+
+                    b.Navigation("Sessions");
                 });
 #pragma warning restore 612, 618
         }

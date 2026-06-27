@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
@@ -20,19 +22,23 @@ namespace OSRTracker.Data.CompiledModels
                 "OSRTracker.Models.Session",
                 typeof(Session),
                 baseEntityType,
-                propertyCount: 5,
-                navigationCount: 1,
+                propertyCount: 7,
+                navigationCount: 2,
                 skipNavigationCount: 1,
+                foreignKeyCount: 1,
+                unnamedIndexCount: 1,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
                 "Id",
-                typeof(int),
+                typeof(SessionId),
                 propertyInfo: typeof(Session).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(Session).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                valueGenerated: ValueGenerated.OnAdd,
-                afterSaveBehavior: PropertySaveBehavior.Throw,
-                sentinel: 0);
+                afterSaveBehavior: PropertySaveBehavior.Throw);
+            id.SetValueConverter(new ValueConverter<SessionId, int>(
+                int (SessionId x) => x.Id,
+                SessionId (int id) => new SessionId(id)));
+            id.SetSentinelFromProviderValue(0);
 
             var date = runtimeEntityType.AddProperty(
                 "Date",
@@ -41,17 +47,31 @@ namespace OSRTracker.Data.CompiledModels
                 fieldInfo: typeof(Session).GetField("<Date>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            var sessioNumber = runtimeEntityType.AddProperty(
-                "SessioNumber",
-                typeof(string),
-                propertyInfo: typeof(Session).GetProperty("SessioNumber", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(Session).GetField("<SessioNumber>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-
             var sessionNotes = runtimeEntityType.AddProperty(
                 "SessionNotes",
                 typeof(string),
                 propertyInfo: typeof(Session).GetProperty("SessionNotes", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(Session).GetField("<SessionNotes>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            var sessionNumber = runtimeEntityType.AddProperty(
+                "SessionNumber",
+                typeof(string),
+                propertyInfo: typeof(Session).GetProperty("SessionNumber", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Session).GetField("<SessionNumber>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            var sessionTrackId = runtimeEntityType.AddProperty(
+                "SessionTrackId",
+                typeof(SessionTrackId),
+                propertyInfo: typeof(Session).GetProperty("SessionTrackId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Session).GetField("<SessionTrackId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            sessionTrackId.SetSentinelFromProviderValue(0);
+
+            var status = runtimeEntityType.AddProperty(
+                "Status",
+                typeof(SessionStatus),
+                propertyInfo: typeof(Session).GetProperty("Status", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Session).GetField("<Status>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            status.SetSentinelFromProviderValue(0);
 
             var title = runtimeEntityType.AddProperty(
                 "Title",
@@ -64,7 +84,35 @@ namespace OSRTracker.Data.CompiledModels
                 new[] { id });
             runtimeEntityType.SetPrimaryKey(key);
 
+            var index = runtimeEntityType.AddIndex(
+                new[] { sessionTrackId });
+
             return runtimeEntityType;
+        }
+
+        public static RuntimeForeignKey CreateForeignKey1(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
+        {
+            var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("SessionTrackId") },
+                principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),
+                principalEntityType,
+                deleteBehavior: DeleteBehavior.Cascade,
+                required: true);
+
+            var sessionTrack = declaringEntityType.AddNavigation("SessionTrack",
+                runtimeForeignKey,
+                onDependent: true,
+                typeof(SessionTrack),
+                propertyInfo: typeof(Session).GetProperty("SessionTrack", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Session).GetField("<SessionTrack>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            var sessions = principalEntityType.AddNavigation("Sessions",
+                runtimeForeignKey,
+                onDependent: false,
+                typeof(List<Session>),
+                propertyInfo: typeof(SessionTrack).GetProperty("Sessions", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(SessionTrack).GetField("<Sessions>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            return runtimeForeignKey;
         }
 
         public static RuntimeSkipNavigation CreateSkipNavigation1(RuntimeEntityType declaringEntityType, RuntimeEntityType targetEntityType, RuntimeEntityType joinEntityType)

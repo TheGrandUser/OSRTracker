@@ -27,9 +27,9 @@ namespace OSRTracker.Data.CompiledModels
 
             var classDefinitionId = runtimeEntityType.AddProperty(
                 "ClassDefinitionId",
-                typeof(int),
-                afterSaveBehavior: PropertySaveBehavior.Throw,
-                sentinel: 0);
+                typeof(ClassDefinitionId),
+                afterSaveBehavior: PropertySaveBehavior.Throw);
+            classDefinitionId.SetSentinelFromProviderValue(0);
 
             var __synthesizedOrdinal = runtimeEntityType.AddProperty(
                 "__synthesizedOrdinal",

@@ -3,6 +3,7 @@ using System;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
@@ -24,12 +25,14 @@ namespace OSRTracker.Data.CompiledModels
 
             var id = runtimeEntityType.AddProperty(
                 "Id",
-                typeof(int),
+                typeof(CurrencyDefinitionId),
                 propertyInfo: typeof(CurrencyDefinition).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(CurrencyDefinition).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                valueGenerated: ValueGenerated.OnAdd,
-                afterSaveBehavior: PropertySaveBehavior.Throw,
-                sentinel: 0);
+                afterSaveBehavior: PropertySaveBehavior.Throw);
+            id.SetValueConverter(new ValueConverter<CurrencyDefinitionId, int>(
+                int (CurrencyDefinitionId x) => x.Id,
+                CurrencyDefinitionId (int id) => new CurrencyDefinitionId(id)));
+            id.SetSentinelFromProviderValue(0);
 
             var countPerUnitWeight = runtimeEntityType.AddProperty(
                 "CountPerUnitWeight",

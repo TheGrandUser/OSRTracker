@@ -14,7 +14,6 @@ using OSRTracker.Contracts.ViewModels;
 using OSRTracker.Models;
 using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
-using OSRTracker.Models;
 using OSRTracker.Services;
 using ThrottleDebounce;
 
@@ -121,7 +120,8 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
 
       dbContext = contextFactory.CreateDbContext();
 
-      campaignSettings = await dbContext.CampaignSettings.FirstAsync(x => x.Id == 1);
+      var soleCampaign = new CampaignId(1);
+      campaignSettings = await dbContext.CampaignSettings.FirstAsync(x => x.Id == soleCampaign);
 
       name = campaignSettings.Name;
       systemName = campaignSettings.SystemName;
@@ -285,7 +285,7 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
             var attribute = importData.Attributes[i];
             var attributeDefinition = new AttributeDefinition
             {
-               Id = i + 1,
+               Id = new AttributeDefinitionId(i + 1),
                Name = attribute,
                Ordinal = i,
             };

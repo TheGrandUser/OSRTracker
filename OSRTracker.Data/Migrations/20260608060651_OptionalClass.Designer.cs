@@ -280,7 +280,7 @@ namespace OSRTracker.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("SessioNumber")
+                    b.Property<string>("SessionNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

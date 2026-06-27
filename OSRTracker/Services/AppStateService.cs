@@ -20,6 +20,7 @@ internal class AppStateService(IServiceProvider serviceProvider, IAppDbContextFa
 
    public CampaignSettings? Campaign { get; private set; }
    public string CampaignDbPath { get; private set; } = string.Empty;
+   public SessionTrackId? ActiveSessionTrackId { get; private set; }
 
    public async Task CreateCampaignAsync(string path, string campaignName, SystemDto? rpgSystem)
    {
@@ -57,7 +58,7 @@ internal class AppStateService(IServiceProvider serviceProvider, IAppDbContextFa
          {
             var attribute = new AttributeDefinition()
             {
-               Id = i + 1,
+               Id = new AttributeDefinitionId(i + 1),
                Name = rpgSystem.Attributes[i],
                Ordinal = i
             };
@@ -100,7 +101,7 @@ internal class AppStateService(IServiceProvider serviceProvider, IAppDbContextFa
 
       var afterMigrateCheckTime = watch.Elapsed;
 
-      var campaign = await dbContext.CampaignSettings.FindAsync(1);
+      var campaign = await dbContext.CampaignSettings.FindAsync(new CampaignId(1));
 
       Campaign = campaign;
 
@@ -145,8 +146,7 @@ internal class AppStateService(IServiceProvider serviceProvider, IAppDbContextFa
 
       var afterMigrateCheckTime = watch.Elapsed;
 
-      var campaign = await dbContext.CampaignSettings.FindAsync(1);
-      //.GetCampaignAsync();
+      var campaign = await dbContext.GetCampaignAsync();
 
       Campaign = campaign;
 
@@ -166,5 +166,12 @@ internal class AppStateService(IServiceProvider serviceProvider, IAppDbContextFa
          Loaded Campn Time:  {loadedCampaignTime}
          Final Time:         {finalTime}
          """);
+   }
+
+   public void SetActiveSessionTrackId(SessionTrackId? activeSessionId)
+   {
+      ActiveSessionTrackId = activeSessionId;
+
+      WeakReferenceMessenger.Default.Send(new ActiveSession(activeSessionId));
    }
 }

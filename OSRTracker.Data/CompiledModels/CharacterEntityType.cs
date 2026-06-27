@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
@@ -23,19 +24,21 @@ namespace OSRTracker.Data.CompiledModels
                 baseEntityType,
                 propertyCount: 16,
                 navigationCount: 1,
-                skipNavigationCount: 2,
+                skipNavigationCount: 3,
                 foreignKeyCount: 1,
                 unnamedIndexCount: 1,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
                 "Id",
-                typeof(int),
+                typeof(CharacterId),
                 propertyInfo: typeof(Character).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(Character).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                valueGenerated: ValueGenerated.OnAdd,
-                afterSaveBehavior: PropertySaveBehavior.Throw,
-                sentinel: 0);
+                afterSaveBehavior: PropertySaveBehavior.Throw);
+            id.SetValueConverter(new ValueConverter<CharacterId, int>(
+                int (CharacterId x) => x.Id,
+                CharacterId (int id) => new CharacterId(id)));
+            id.SetSentinelFromProviderValue(0);
 
             var cha = runtimeEntityType.AddProperty(
                 "Cha",
@@ -53,7 +56,7 @@ namespace OSRTracker.Data.CompiledModels
 
             var classId = runtimeEntityType.AddProperty(
                 "ClassId",
-                typeof(int?),
+                typeof(ClassDefinitionId?),
                 propertyInfo: typeof(Character).GetProperty("ClassId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(Character).GetField("<ClassId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 nullable: true);
@@ -205,6 +208,29 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(IEnumerable<Session>));
 
             var inverse = targetEntityType.FindSkipNavigation("Characters");
+            if (inverse != null)
+            {
+                skipNavigation.Inverse = inverse;
+                inverse.Inverse = skipNavigation;
+            }
+
+            return skipNavigation;
+        }
+
+        public static RuntimeSkipNavigation CreateSkipNavigation3(RuntimeEntityType declaringEntityType, RuntimeEntityType targetEntityType, RuntimeEntityType joinEntityType)
+        {
+            var skipNavigation = declaringEntityType.AddSkipNavigation(
+                "SessionTrack",
+                targetEntityType,
+                joinEntityType.FindForeignKey(
+                    new[] { joinEntityType.FindProperty("CharacterId") },
+                    declaringEntityType.FindKey(new[] { declaringEntityType.FindProperty("Id") }),
+                    declaringEntityType),
+                true,
+                false,
+                typeof(IEnumerable<SessionTrack>));
+
+            var inverse = targetEntityType.FindSkipNavigation("Character");
             if (inverse != null)
             {
                 skipNavigation.Inverse = inverse;

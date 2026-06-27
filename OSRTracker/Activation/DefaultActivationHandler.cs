@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.UI.Xaml;
 using OSRTracker.Contracts.Services;
 using OSRTracker.ViewModels;
+using OSRTracker.ViewModels.Pages.Main;
 
 namespace OSRTracker.Activation;
 

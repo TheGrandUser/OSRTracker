@@ -140,7 +140,7 @@ public partial class CharacterRosterViewModel : ObservableRecipient, INavigation
 
 public class AvailableClass
 {
-   public required int Id { get; set; }
+   public required ClassDefinitionId Id { get; set; }
    public required string Name { get; set; }
 }
 

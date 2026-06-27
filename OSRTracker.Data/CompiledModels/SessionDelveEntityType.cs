@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
@@ -29,19 +30,21 @@ namespace OSRTracker.Data.CompiledModels
 
             var id = runtimeEntityType.AddProperty(
                 "Id",
-                typeof(int),
+                typeof(SessionDelveId),
                 propertyInfo: typeof(SessionDelve).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(SessionDelve).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                valueGenerated: ValueGenerated.OnAdd,
-                afterSaveBehavior: PropertySaveBehavior.Throw,
-                sentinel: 0);
+                afterSaveBehavior: PropertySaveBehavior.Throw);
+            id.SetValueConverter(new ValueConverter<SessionDelveId, int>(
+                int (SessionDelveId x) => x.Id,
+                SessionDelveId (int id) => new SessionDelveId(id)));
+            id.SetSentinelFromProviderValue(0);
 
             var delveId = runtimeEntityType.AddProperty(
                 "DelveId",
-                typeof(int),
+                typeof(DelveId),
                 propertyInfo: typeof(SessionDelve).GetProperty("DelveId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(SessionDelve).GetField("<DelveId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                sentinel: 0);
+                fieldInfo: typeof(SessionDelve).GetField("<DelveId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            delveId.SetSentinelFromProviderValue(0);
 
             var notes = runtimeEntityType.AddProperty(
                 "Notes",
@@ -51,10 +54,10 @@ namespace OSRTracker.Data.CompiledModels
 
             var sessionId = runtimeEntityType.AddProperty(
                 "SessionId",
-                typeof(int),
+                typeof(SessionId),
                 propertyInfo: typeof(SessionDelve).GetProperty("SessionId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(SessionDelve).GetField("<SessionId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                sentinel: 0);
+                fieldInfo: typeof(SessionDelve).GetField("<SessionId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            sessionId.SetSentinelFromProviderValue(0);
 
             var key = runtimeEntityType.AddKey(
                 new[] { id });

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
@@ -27,12 +28,14 @@ namespace OSRTracker.Data.CompiledModels
 
             var id = runtimeEntityType.AddProperty(
                 "Id",
-                typeof(int),
+                typeof(ClassDefinitionId),
                 propertyInfo: typeof(ClassDefinition).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(ClassDefinition).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                valueGenerated: ValueGenerated.OnAdd,
-                afterSaveBehavior: PropertySaveBehavior.Throw,
-                sentinel: 0);
+                afterSaveBehavior: PropertySaveBehavior.Throw);
+            id.SetValueConverter(new ValueConverter<ClassDefinitionId, int>(
+                int (ClassDefinitionId x) => x.Id,
+                ClassDefinitionId (int id) => new ClassDefinitionId(id)));
+            id.SetSentinelFromProviderValue(0);
 
             var name = runtimeEntityType.AddProperty(
                 "Name",

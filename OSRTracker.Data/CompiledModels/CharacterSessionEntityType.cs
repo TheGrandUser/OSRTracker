@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
 #nullable disable
@@ -30,13 +31,13 @@ namespace OSRTracker.Data.CompiledModels
 
             var charactersId = runtimeEntityType.AddProperty(
                 "CharactersId",
-                typeof(int),
+                typeof(CharacterId),
                 propertyInfo: runtimeEntityType.FindIndexerPropertyInfo(),
                 afterSaveBehavior: PropertySaveBehavior.Throw);
 
             var sessionId = runtimeEntityType.AddProperty(
                 "SessionId",
-                typeof(int),
+                typeof(SessionId),
                 propertyInfo: runtimeEntityType.FindIndexerPropertyInfo(),
                 afterSaveBehavior: PropertySaveBehavior.Throw);
 

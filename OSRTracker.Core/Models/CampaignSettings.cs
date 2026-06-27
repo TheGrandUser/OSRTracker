@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OSRTracker.Helpers;
 
 namespace OSRTracker.Models;
 
+public readonly record struct CampaignId(int Id) : IEntityId<CampaignId>
+{
+   public static CampaignId Empty { get; } = new(0);
+   public static CampaignId Create(int id) => new(id);
+   public override string ToString() => $"Campaign {Id}";
+}
+
 public class CampaignSettings
 {
-    public int Id { get; set; }
+    public CampaignId Id { get; set; }
 
     public string Name { get; set; } = string.Empty;
     public string SystemName { get; set; } = string.Empty;

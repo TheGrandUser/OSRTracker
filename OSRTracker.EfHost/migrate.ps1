@@ -11,8 +11,9 @@ if ([string]::IsNullOrWhiteSpace($MigrationName)) {
 Write-Host "Creating migration: $MigrationName" -ForegroundColor Cyan
 
 dotnet ef migrations add $MigrationName `
-   --project ../../OSRTracker.Data `
-   --startup-project ../OSRTracker
+   --project ../OSRTracker.Data `
+   --startup-project ../OSRTracker.EfHost `
+   --context AppDbContext
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Migration creation failed." -ForegroundColor Red
@@ -26,8 +27,8 @@ Write-Host "Updating Compiled Models..." -ForegroundColor Cyan
 
 dotnet ef dbcontext optimize -c AppDbContext `
    --output-dir CompiledModels `
-   --project ../../OSRTracker.Data `
-   --startup-project ../OSRTracker
+   --project ../OSRTracker.Data `
+   --startup-project ../OSRTracker.EfHost
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Warning: Failed to optimize compiled models." -ForegroundColor Yellow

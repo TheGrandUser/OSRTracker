@@ -11,7 +11,7 @@ namespace OSRTracker.Data.CompiledModels
     public partial class AppDbContextModel
     {
         private AppDbContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("cf215d44-e7e8-4bd1-9cc8-6e7fff95053b"), entityTypeCount: 15)
+            : base(skipDetectChanges: false, modelId: new Guid("3339fc2a-3f3f-4952-b216-42015c95e0a6"), entityTypeCount: 17)
         {
         }
 
@@ -31,6 +31,8 @@ namespace OSRTracker.Data.CompiledModels
             var monsterEntry = MonsterEntryEntityType.Create(this);
             var session = SessionEntityType.Create(this);
             var sessionDelve = SessionDelveEntityType.Create(this);
+            var sessionTrack = SessionTrackEntityType.Create(this);
+            var sessionTrackCharacter = SessionTrackCharacterEntityType.Create(this);
             var treasureEntry = TreasureEntryEntityType.Create(this);
 
             AttributeDefinitionClassDefinitionEntityType.CreateForeignKey1(attributeDefinitionClassDefinition, classDefinition);
@@ -40,19 +42,25 @@ namespace OSRTracker.Data.CompiledModels
             CharacterSessionEntityType.CreateForeignKey1(characterSession, character);
             CharacterSessionEntityType.CreateForeignKey2(characterSession, session);
             CharacterEntityType.CreateForeignKey1(character, classDefinition);
+            DelveEntityType.CreateForeignKey1(delve, sessionTrack);
             GeneralXPAwardEntityType.CreateForeignKey1(generalXPAward, sessionDelve);
             LevelXPRequirementEntityType.CreateForeignKey1(levelXPRequirement, classDefinition);
             MonsterEntryEntityType.CreateForeignKey1(monsterEntry, sessionDelve);
+            SessionEntityType.CreateForeignKey1(session, sessionTrack);
             SessionDelveEntityType.CreateForeignKey1(sessionDelve, delve);
             SessionDelveEntityType.CreateForeignKey2(sessionDelve, session);
+            SessionTrackCharacterEntityType.CreateForeignKey1(sessionTrackCharacter, character);
+            SessionTrackCharacterEntityType.CreateForeignKey2(sessionTrackCharacter, sessionTrack);
             TreasureEntryEntityType.CreateForeignKey1(treasureEntry, sessionDelve);
 
             AttributeDefinitionEntityType.CreateSkipNavigation1(attributeDefinition, classDefinition, attributeDefinitionClassDefinition);
             CharacterEntityType.CreateSkipNavigation1(character, generalXPAward, characterGeneralXPAward);
             CharacterEntityType.CreateSkipNavigation2(character, session, characterSession);
+            CharacterEntityType.CreateSkipNavigation3(character, sessionTrack, sessionTrackCharacter);
             ClassDefinitionEntityType.CreateSkipNavigation1(classDefinition, attributeDefinition, attributeDefinitionClassDefinition);
             GeneralXPAwardEntityType.CreateSkipNavigation1(generalXPAward, character, characterGeneralXPAward);
             SessionEntityType.CreateSkipNavigation1(session, character, characterSession);
+            SessionTrackEntityType.CreateSkipNavigation1(sessionTrack, character, sessionTrackCharacter);
 
             AttributeDefinitionClassDefinitionEntityType.CreateAnnotations(attributeDefinitionClassDefinition);
             CharacterGeneralXPAwardEntityType.CreateAnnotations(characterGeneralXPAward);
@@ -68,9 +76,11 @@ namespace OSRTracker.Data.CompiledModels
             MonsterEntryEntityType.CreateAnnotations(monsterEntry);
             SessionEntityType.CreateAnnotations(session);
             SessionDelveEntityType.CreateAnnotations(sessionDelve);
+            SessionTrackEntityType.CreateAnnotations(sessionTrack);
+            SessionTrackCharacterEntityType.CreateAnnotations(sessionTrackCharacter);
             TreasureEntryEntityType.CreateAnnotations(treasureEntry);
 
-            AddAnnotation("ProductVersion", "10.0.8");
+            AddAnnotation("ProductVersion", "10.0.9");
         }
     }
 }

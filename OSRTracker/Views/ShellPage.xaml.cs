@@ -53,6 +53,7 @@ public sealed partial class ShellPage : Page
       AppTitleBarText.Text = "AppDisplayName".GetLocalized();
 
       WeakReferenceMessenger.Default.Register<InputTextRequest>(this, ShowInputDialog);
+      WeakReferenceMessenger.Default.Register<SelectRpgSystemRequest>(this, ShowSelectRpgSystemDialog);
    }
 
    private async void ShowInputDialog(object recipient, InputTextRequest msg)

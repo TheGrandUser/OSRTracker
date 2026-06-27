@@ -13,6 +13,12 @@ Character
 - Statistics (Ability scores, HP, AC)
 - Player?
 
+SessionTrack
+- Name
+- Group Description
+- List of characters associated with this track
+- List of sessions and delves
+
 Session
 - list of Characters present
 - Monsters defeated
