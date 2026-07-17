@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
-using OSRTracker.Core.Contracts.Services;
+using OSRTracker.Contracts.Services;
 
-namespace OSRTracker.Core.Services;
+namespace OSRTracker.Services;
 
 public class FileService : IFileService
 {

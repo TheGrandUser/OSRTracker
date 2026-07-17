@@ -51,23 +51,28 @@
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
           </NavigationViewItem.Icon>
         </NavigationViewItem>
+        
         <NavigationViewItem x:Uid="Shell_SystemEditor" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.SystemEditor.SystemEditorViewModel"
                             IsEnabled="{x:Bind ViewModel.IsProjectOpened, Mode=OneWay}">
           <NavigationViewItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe713;"/>
           </NavigationViewItem.Icon>
         </NavigationViewItem>
-        <NavigationViewItem x:Uid="Shell_CharacterRoster" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.CharacterRosterViewModel"
+        
+        <NavigationViewItem x:Uid="Shell_CharacterRoster" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.CharacterRoster.CharacterRosterViewModel"
                             IsEnabled="{x:Bind ViewModel.IsProjectOpened, Mode=OneWay}">
           <NavigationViewItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe716;"/>
           </NavigationViewItem.Icon>
         </NavigationViewItem>
-        <!--<NavigationViewItem x:Uid="Shell_DataGrid" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.DataGridViewModel">
+        
+        <NavigationViewItem x:Uid="Shell_GamePlay" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.GamePlay.GamePlayViewModel"
+                            IsEnabled="{x:Bind ViewModel.IsProjectOpened, Mode=OneWay}">
           <NavigationViewItem.Icon>
-            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe80a;"/>
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe902;"/>
           </NavigationViewItem.Icon>
-        </NavigationViewItem>-->
+        </NavigationViewItem>
+        
       </NavigationView.MenuItems>
       
       <NavigationView.HeaderTemplate>

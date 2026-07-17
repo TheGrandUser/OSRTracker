@@ -67,7 +67,7 @@ public sealed partial class ClassDefinitionDetailControl : UserControl
          else if (args.Item is string attributeName)
          {
             var newAttribute = ViewModel?.Attributes.FirstOrDefault(a => a.Name.Equals(attributeName));
-            if (newAttribute?.Attribute is { } attribute)
+            if (newAttribute is { } attribute)
             {
                args.Item = attribute;
             }

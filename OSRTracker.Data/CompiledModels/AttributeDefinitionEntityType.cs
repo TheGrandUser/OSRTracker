@@ -30,9 +30,10 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(AttributeDefinitionId),
                 propertyInfo: typeof(AttributeDefinition).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(AttributeDefinition).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd,
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             id.SetValueConverter(new ValueConverter<AttributeDefinitionId, int>(
-                int (AttributeDefinitionId x) => x.Id,
+                int (AttributeDefinitionId x) => x.Value,
                 AttributeDefinitionId (int id) => new AttributeDefinitionId(id)));
             id.SetSentinelFromProviderValue(0);
 

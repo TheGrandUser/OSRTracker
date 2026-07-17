@@ -5,12 +5,12 @@ using OSRTracker.Helpers;
 
 namespace OSRTracker.Models;
 
-public readonly record struct CharacterId(int Id) : IEntityId<CharacterId>
+public readonly record struct CharacterId(int Value) : IEntityId<CharacterId>
 {
    public static CharacterId Empty { get; } = new(0);
 
    public static CharacterId Create(int id) => new(id);
-   public override string ToString() => $"Character {Id}";
+   public override string ToString() => $"Character {Value}";
 }
 
 public class Character
@@ -35,6 +35,8 @@ public class Character
    public int Dex { get; set; }
    public int Con { get; set; }
    public int Cha { get; set; }
+
+   public decimal XPBonus { get; set; }
 }
 
 public enum CharacterType { PC, Hireling, NPC }

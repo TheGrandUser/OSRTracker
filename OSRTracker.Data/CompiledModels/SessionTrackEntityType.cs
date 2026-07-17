@@ -31,9 +31,10 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(SessionTrackId),
                 propertyInfo: typeof(SessionTrack).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(SessionTrack).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd,
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             id.SetValueConverter(new ValueConverter<SessionTrackId, int>(
-                int (SessionTrackId x) => x.Id,
+                int (SessionTrackId x) => x.Value,
                 SessionTrackId (int id) => new SessionTrackId(id)));
             id.SetSentinelFromProviderValue(0);
 

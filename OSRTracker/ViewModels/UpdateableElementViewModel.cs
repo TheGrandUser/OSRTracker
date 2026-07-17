@@ -12,20 +12,20 @@ namespace OSRTracker.ViewModels;
 
 public abstract class UpdateableElementViewModel : ObservableObject, IDisposable
 {
-   bool hasPendingUpdate = false;
+   private bool hasPendingUpdate = false;
    private bool disposedValue;
-   private readonly AppDbContext appDbContext;
+   protected readonly IAppDbContextFactory dbContextFactory;
 
    private readonly RateLimitedAction update;
 
-   protected UpdateableElementViewModel(AppDbContext appDbContext)
+   protected UpdateableElementViewModel(IAppDbContextFactory dbContextFactory)
    {
-      this.appDbContext = appDbContext;
+      this.dbContextFactory = dbContextFactory;
 
-      this.update = Debouncer.Debounce(() => UpdateInternal(), TimeSpan.FromMicroseconds(400));
+      update = Debouncer.Debounce(() => UpdateInternal(), TimeSpan.FromMicroseconds(400));
    }
 
-   protected void SetUpdatableProperty<T>(ref T field, T value, [CallerMemberName]string? propertyName = null)
+   protected void SetUpdatableProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
    {
       if (!EqualityComparer<T>.Default.Equals(field, value))
       {
@@ -38,14 +38,15 @@ public abstract class UpdateableElementViewModel : ObservableObject, IDisposable
 
    public void Update()
    {
-      this.hasPendingUpdate = true;
+      hasPendingUpdate = true;
       update.Invoke();
    }
 
-   public void ForceUpdate(AppDbContext dbContext) {
+   public void ForceUpdate(AppDbContext dbContext)
+   {
       if (hasPendingUpdate)
       {
-         this.update.Dispose();
+         update.Dispose();
          hasPendingUpdate = false;
          UpdateImpl(dbContext);
       }
@@ -53,8 +54,10 @@ public abstract class UpdateableElementViewModel : ObservableObject, IDisposable
 
    private void UpdateInternal()
    {
-      this.hasPendingUpdate = false;
-      
+      hasPendingUpdate = false;
+
+      using var appDbContext = dbContextFactory.CreateDbContext();
+
       UpdateImpl(appDbContext);
 
       appDbContext.SaveChanges();
@@ -67,7 +70,7 @@ public abstract class UpdateableElementViewModel : ObservableObject, IDisposable
       {
          if (disposing)
          {
-            this.update.Dispose();
+            update.Dispose();
             hasPendingUpdate = false;
          }
 

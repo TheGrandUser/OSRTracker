@@ -23,7 +23,7 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(Session),
                 baseEntityType,
                 propertyCount: 7,
-                navigationCount: 2,
+                navigationCount: 5,
                 skipNavigationCount: 1,
                 foreignKeyCount: 1,
                 unnamedIndexCount: 1,
@@ -34,9 +34,10 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(SessionId),
                 propertyInfo: typeof(Session).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(Session).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd,
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             id.SetValueConverter(new ValueConverter<SessionId, int>(
-                int (SessionId x) => x.Id,
+                int (SessionId x) => x.Value,
                 SessionId (int id) => new SessionId(id)));
             id.SetSentinelFromProviderValue(0);
 

@@ -15,12 +15,11 @@ public class DesignTimeFactory : IDesignTimeDbContextFactory<AppDbContext>
    {
       var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-      optionsBuilder.UseSqlite<AppDbContext>("Data Source=designtime.db",
+      optionsBuilder.UseSqlite("Data Source=designtime.db",
          ob =>
          {
             ob.MigrationsAssembly(typeof(AppDbContext).Assembly);
          });
-      //optionsBuilder.
 
       options = optionsBuilder.Options;
    }

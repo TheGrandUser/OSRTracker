@@ -16,7 +16,7 @@ public class AppDbContext : DbContext
 
    }
 
-   static readonly CampaignId Sole = new(1);
+   private static readonly CampaignId Sole = new(1);
 
    private static readonly Func<AppDbContext, Task<CampaignSettings?>> _getCampaign =
        EF.CompileAsyncQuery((AppDbContext ctx) =>
@@ -49,19 +49,25 @@ public class AppDbContext : DbContext
       modelBuilder.Entity<AttributeDefinition>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new AttributeDefinitionId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new AttributeDefinitionId(id))
+            .ValueGeneratedOnAdd();
       });
 
       modelBuilder.Entity<CampaignSettings>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new CampaignId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new CampaignId(id))
+            .ValueGeneratedOnAdd();
       });
 
       modelBuilder.Entity<Character>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new CharacterId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new CharacterId(id))
+            .ValueGeneratedOnAdd();
 
          entity.HasOne(x => x.Class)
                .WithMany()
@@ -73,7 +79,9 @@ public class AppDbContext : DbContext
       modelBuilder.Entity<ClassDefinition>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new ClassDefinitionId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new ClassDefinitionId(id))
+            .ValueGeneratedOnAdd();
 
          entity.OwnsMany(x => x.LevelXP, owner =>
            {
@@ -90,24 +98,35 @@ public class AppDbContext : DbContext
       modelBuilder.Entity<CurrencyDefinition>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new CurrencyDefinitionId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new CurrencyDefinitionId(id))
+            .ValueGeneratedOnAdd();
       });
 
       modelBuilder.Entity<Delve>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new DelveId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new DelveId(id))
+            .ValueGeneratedOnAdd();
       });
 
       modelBuilder.Entity<GeneralXPAward>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new GeneralXPAwardId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new GeneralXPAwardId(id))
+            .ValueGeneratedOnAdd();
 
-         entity.HasOne(x => x.SessionDelve)
+         entity.HasOne(x => x.Session)
                .WithMany(x => x.GeneralXPAwards)
-               .HasForeignKey(x => x.SessionDelveId)
+               .HasForeignKey(x => x.SessionId)
                .OnDelete(DeleteBehavior.Cascade);
+
+         entity.HasOne(x => x.Delve)
+               .WithMany(x => x.GeneralXPAwards)
+               .HasForeignKey(x => x.DelveId)
+               .OnDelete(DeleteBehavior.SetNull);
 
          entity.HasMany(d => d.Characters)
                .WithMany()
@@ -117,18 +136,27 @@ public class AppDbContext : DbContext
       modelBuilder.Entity<MonsterEntry>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new MonsterEntryId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new MonsterEntryId(id))
+            .ValueGeneratedOnAdd();
 
-         entity.HasOne(x => x.SessionDelve)
+         entity.HasOne(x => x.Session)
                .WithMany(x => x.Monsters)
-               .HasForeignKey(x => x.SessionDelveId)
+               .HasForeignKey(x => x.SessionId)
                .OnDelete(DeleteBehavior.Cascade);
+
+         entity.HasOne(x => x.Delve)
+               .WithMany(x => x.Monsters)
+               .HasForeignKey(x => x.DelveId)
+               .OnDelete(DeleteBehavior.SetNull);
       });
 
       modelBuilder.Entity<Session>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new SessionId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new SessionId(id))
+            .ValueGeneratedOnAdd();
 
          entity.HasMany(x => x.Characters)
                .WithMany()
@@ -139,7 +167,9 @@ public class AppDbContext : DbContext
       modelBuilder.Entity<SessionDelve>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new SessionDelveId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new SessionDelveId(id))
+            .ValueGeneratedOnAdd();
 
          entity.HasIndex(x => new { x.SessionId, x.DelveId })
                .IsUnique();
@@ -158,7 +188,9 @@ public class AppDbContext : DbContext
       modelBuilder.Entity<SessionTrack>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new SessionTrackId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new SessionTrackId(id))
+            .ValueGeneratedOnAdd();
 
          entity
             .HasMany(x => x.Sessions)
@@ -182,8 +214,8 @@ public class AppDbContext : DbContext
       modelBuilder.Entity<SessionTrackCharacter>(entity =>
       {
          entity.HasKey(x => new { x.SessionTrackId, x.CharacterId });
-         entity.Property(x => x.SessionTrackId).HasConversion(x => x.Id, id => new SessionTrackId(id));
-         entity.Property(x => x.CharacterId).HasConversion(x => x.Id, id => new CharacterId(id));
+         entity.Property(x => x.SessionTrackId).HasConversion(x => x.Value, id => new SessionTrackId(id));
+         entity.Property(x => x.CharacterId).HasConversion(x => x.Value, id => new CharacterId(id));
 
          entity.Navigation(x => x.SessionTrack).IsRequired();
          entity.Navigation(x => x.Character).IsRequired();
@@ -192,17 +224,25 @@ public class AppDbContext : DbContext
       modelBuilder.Entity<TreasureEntry>(entity =>
       {
          entity.HasKey(x => x.Id);
-         entity.Property(x => x.Id).HasConversion(x => x.Id, id => new TreasureEntryId(id));
+         entity.Property(x => x.Id)
+            .HasConversion(x => x.Value, id => new TreasureEntryId(id))
+            .ValueGeneratedOnAdd();
 
-         entity.HasOne(x => x.SessionDelve)
+         entity.HasOne(x => x.Session)
                .WithMany(x => x.Treasures)
-               .HasForeignKey(x => x.SessionDelveId)
+               .HasForeignKey(x => x.SessionId)
                .OnDelete(DeleteBehavior.Cascade);
+
+         entity.HasOne(x => x.Delve)
+               .WithMany(x => x.Treasures)
+               .HasForeignKey(x => x.DelveId)
+               .OnDelete(DeleteBehavior.SetNull);
 
          entity.ComplexProperty(x => x.Location, b =>
          {
            b.Property(r => r.Type).HasColumnName("LocType").IsRequired();
-           b.Property(r => r.CharacterId).HasColumnName("LocCharacterId");
+           b.Property(r => r.CharacterId).HasColumnName("LocCharacterId")
+            .HasConversion<int?>(x => x.HasValue ? x.Value.Value : null, id => id.HasValue ? new CharacterId(id.Value) : null);
            b.Property(r => r.StoreDescription).HasColumnName("LocStore");
 
            b.IsRequired();

@@ -35,7 +35,7 @@ public partial class ShellViewModel : ObservableRecipient, IRecipient<CampaignOp
       NavigationService.Navigated += OnNavigated;
       NavigationViewService = navigationViewService;
 
-      this.IsProjectOpened = appStateService.Campaign is not null;
+      IsProjectOpened = appStateService.Campaign is not null;
 
       WeakReferenceMessenger.Default.Register<CampaignOpened>(this);
       WeakReferenceMessenger.Default.Register<AppBusyMessage>(this);
@@ -65,7 +65,7 @@ public partial class ShellViewModel : ObservableRecipient, IRecipient<CampaignOp
       message.Reply(new EndBusy(this));
    }
 
-   class EndBusy(ShellViewModel owner) : IDisposable
+   private partial class EndBusy(ShellViewModel owner) : IDisposable
    {
       public void Dispose() => owner.IsBusy = false;
    }

@@ -23,7 +23,7 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(SessionDelve),
                 baseEntityType,
                 propertyCount: 4,
-                navigationCount: 5,
+                navigationCount: 2,
                 foreignKeyCount: 2,
                 unnamedIndexCount: 2,
                 keyCount: 1);
@@ -33,9 +33,10 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(SessionDelveId),
                 propertyInfo: typeof(SessionDelve).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(SessionDelve).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd,
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             id.SetValueConverter(new ValueConverter<SessionDelveId, int>(
-                int (SessionDelveId x) => x.Id,
+                int (SessionDelveId x) => x.Value,
                 SessionDelveId (int id) => new SessionDelveId(id)));
             id.SetSentinelFromProviderValue(0);
 

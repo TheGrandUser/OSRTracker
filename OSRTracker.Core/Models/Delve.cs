@@ -5,11 +5,11 @@ using OSRTracker.Helpers;
 
 namespace OSRTracker.Models;
 
-public readonly record struct DelveId(int Id) : IEntityId<DelveId>
+public readonly record struct DelveId(int Value) : IEntityId<DelveId>
 {
    public static DelveId Empty { get; } = new(0);
    public static DelveId Create(int id) => new(id);
-   public override string ToString() => $"Delve {Id}";
+   public override string ToString() => $"Delve {Value}";
 }
 
 public class Delve
@@ -25,6 +25,10 @@ public class Delve
 
    public SessionTrack? SessionTrack { get; set; }
    public required SessionTrackId SessionTrackId { get; set; }
+
+   public List<TreasureEntry> Treasures { get; set; } = [];
+   public List<MonsterEntry> Monsters { get; set; } = [];
+   public List<GeneralXPAward> GeneralXPAwards { get; set; } = [];
 }
 
 public enum DelveStatus

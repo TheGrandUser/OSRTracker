@@ -5,12 +5,12 @@ using OSRTracker.Helpers;
 
 namespace OSRTracker.Models;
 
-public readonly record struct SessionTrackId(int Id) : IEntityId<SessionTrackId>
+public readonly record struct SessionTrackId(int Value) : IEntityId<SessionTrackId>
 {
    public static SessionTrackId Empty { get; } = new(0);
 
    public static SessionTrackId Create(int id) => new(id);
-   public override string ToString() => $"Session Track {Id}";
+   public override string ToString() => $"Session Track {Value}";
 }
 
 public class SessionTrack

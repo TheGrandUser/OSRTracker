@@ -21,15 +21,15 @@
     <StackPanel Orientation="Vertical" Grid.Row="0">
 
       <StackPanel Orientation="Horizontal">
-        <TextBlock>Campaign Name:</TextBlock>
-        <TextBox Text="{x:Bind ViewModel.Name, Mode=TwoWay}" />
+        <!--<TextBlock>Campaign Name:</TextBlock>-->
+        <TextBox Header="Campaign Name" Text="{x:Bind ViewModel.Name, Mode=TwoWay}" />
         <Button HorizontalAlignment="Right" Command="{x:Bind ViewModel.ImportSystemCommand}">Import</Button>
         <Button HorizontalAlignment="Right" Command="{x:Bind ViewModel.ExportSystemCommand}">Export</Button>
       </StackPanel>
 
       <StackPanel Orientation="Horizontal">
-        <TextBlock>System Name:</TextBlock>
-        <TextBox Text="{x:Bind ViewModel.SystemName, Mode=TwoWay}" />
+        <!--<TextBlock>System Name:</TextBlock>-->
+        <TextBox Header="System Name" Text="{x:Bind ViewModel.SystemName, Mode=TwoWay}" />
       </StackPanel>
 
       <TextBlock>Attributes</TextBlock>

@@ -6,22 +6,26 @@ using Microsoft.UI.Xaml.Controls;
 using OSRTracker.Contracts.Services;
 using OSRTracker.ViewModels;
 using OSRTracker.ViewModels.Pages;
+using OSRTracker.ViewModels.Pages.CharacterRoster;
 using OSRTracker.ViewModels.Pages.Main;
+using OSRTracker.ViewModels.Pages.GamePlay;
 using OSRTracker.ViewModels.Pages.SystemEditor;
 using OSRTracker.Views.Pages;
 using OSRTracker.Views.Pages.Main;
+using OSRTracker.Views.Pages.GamePlay;
 
 namespace OSRTracker.Services;
 
 public class PageService : IPageService
 {
-   private readonly Dictionary<string, Type> _pages = new();
+   private readonly Dictionary<string, Type> _pages = [];
 
    public PageService()
    {
       Configure<MainViewModel, MainPage>();
       Configure<SystemEditorViewModel, SystemEditorPage>();
       Configure<CharacterRosterViewModel, CharacterRosterPage>();
+      Configure<GamePlayViewModel, GamePlayPage>();
    }
 
    public Type GetPageType(string key)

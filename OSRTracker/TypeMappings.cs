@@ -25,6 +25,9 @@ internal class TypeMappings
       Setup<SessionTrackId>();
       Setup<TreasureEntryId>();
 
+      SqlMapper.AddTypeHandler(new JsonTypeHandler<LevelXPRequirement[]>());
+      SqlMapper.AddTypeHandler(new JsonTypeHandler<List<LevelXPRequirement>>());
+
 
       static void Setup<T>() where T : struct, IEntityId<T>
       {
@@ -33,6 +36,12 @@ internal class TypeMappings
       }
    }
 
+}
+
+internal class JsonTypeHandler<T> : SqlMapper.TypeHandler<T>
+{
+   public override T? Parse(object value) => value is string json ? Json.ToObject<T>(json) : default;
+   public override void SetValue(IDbDataParameter parameter, T? value) => parameter.Value = value is null ? null : Json.Stringify(value);
 }
 
 internal class EntityIdTypeConverter<T> : TypeConverter
@@ -59,11 +68,11 @@ internal class EntityIdTypeConverter<T> : TypeConverter
       {
          if (destinationType == typeof(int))
          {
-            return id.Id;
+            return id.Value;
          }
          else if (destinationType == typeof(string))
          {
-            return id.Id.ToString();
+            return id.Value.ToString();
          }
       }
 
@@ -87,6 +96,6 @@ internal class EntityIdTypeHandler<T> : SqlMapper.TypeHandler<T>
    public override void SetValue(IDbDataParameter parameter, T value)
    {
       parameter.DbType = DbType.Int32;
-      parameter.Value = value.Id;
+      parameter.Value = value.Value;
    }
 }

@@ -4,26 +4,26 @@ using OSRTracker.Data.Contracts.Services;
 
 namespace OSRTracker.ViewModels.Pages.SystemEditor;
 
-public class AttributeDefinitionViewModel : UpdateableElementViewModel
+public partial class AttributeDefinitionViewModel(AttributeDefinition attributeDefinition, IAppDbContextFactory appDbContext) : UpdateableElementViewModel(appDbContext)
 {
-   private string name;
-
-   public AttributeDefinition Attribute { get; }
-
-   public AttributeDefinitionViewModel(AttributeDefinition attributeDefinition, AppDbContext appDbContext)
-      : base(appDbContext)
-   {
-      Attribute = attributeDefinition;
-      this.name = attributeDefinition.Name;
-   }
+   private string name = attributeDefinition.Name;
 
    protected override void UpdateImpl(AppDbContext dbContext)
    {
-      Attribute.Name = Name;
-      //dbContext.AttributeDefinitions.Update(Attribute);
+      var attribute = dbContext.AttributeDefinitions.Find(Id);
+
+      if (attribute is null)
+      {
+         // Report error?
+
+         return;
+      }
+
+      attribute.Name = Name;
    }
 
-   public int Ordinal => Attribute.Ordinal;
+   public AttributeDefinitionId Id { get; } = attributeDefinition.Id;
+   public int Ordinal { get; } = attributeDefinition.Ordinal;
 
    public string Name { get => name; set => SetUpdatableProperty(ref name, value); }
 }

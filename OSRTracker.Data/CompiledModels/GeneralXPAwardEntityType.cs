@@ -22,11 +22,11 @@ namespace OSRTracker.Data.CompiledModels
                 "OSRTracker.Models.GeneralXPAward",
                 typeof(GeneralXPAward),
                 baseEntityType,
-                propertyCount: 4,
-                navigationCount: 1,
+                propertyCount: 5,
+                navigationCount: 2,
                 skipNavigationCount: 1,
-                foreignKeyCount: 1,
-                unnamedIndexCount: 1,
+                foreignKeyCount: 2,
+                unnamedIndexCount: 2,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -34,9 +34,10 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(GeneralXPAwardId),
                 propertyInfo: typeof(GeneralXPAward).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(GeneralXPAward).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd,
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             id.SetValueConverter(new ValueConverter<GeneralXPAwardId, int>(
-                int (GeneralXPAwardId x) => x.Id,
+                int (GeneralXPAwardId x) => x.Value,
                 GeneralXPAwardId (int id) => new GeneralXPAwardId(id)));
             id.SetSentinelFromProviderValue(0);
 
@@ -47,50 +48,84 @@ namespace OSRTracker.Data.CompiledModels
                 fieldInfo: typeof(GeneralXPAward).GetField("<Amount>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0);
 
+            var delveId = runtimeEntityType.AddProperty(
+                "DelveId",
+                typeof(DelveId?),
+                propertyInfo: typeof(GeneralXPAward).GetProperty("DelveId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(GeneralXPAward).GetField("<DelveId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+
             var description = runtimeEntityType.AddProperty(
                 "Description",
                 typeof(string),
                 propertyInfo: typeof(GeneralXPAward).GetProperty("Description", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(GeneralXPAward).GetField("<Description>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
-            var sessionDelveId = runtimeEntityType.AddProperty(
-                "SessionDelveId",
-                typeof(SessionDelveId),
-                propertyInfo: typeof(GeneralXPAward).GetProperty("SessionDelveId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(GeneralXPAward).GetField("<SessionDelveId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-            sessionDelveId.SetSentinelFromProviderValue(0);
+            var sessionId = runtimeEntityType.AddProperty(
+                "SessionId",
+                typeof(SessionId),
+                propertyInfo: typeof(GeneralXPAward).GetProperty("SessionId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(GeneralXPAward).GetField("<SessionId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            sessionId.SetSentinelFromProviderValue(0);
 
             var key = runtimeEntityType.AddKey(
                 new[] { id });
             runtimeEntityType.SetPrimaryKey(key);
 
             var index = runtimeEntityType.AddIndex(
-                new[] { sessionDelveId });
+                new[] { delveId });
+
+            var index0 = runtimeEntityType.AddIndex(
+                new[] { sessionId });
 
             return runtimeEntityType;
         }
 
         public static RuntimeForeignKey CreateForeignKey1(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
         {
-            var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("SessionDelveId") },
+            var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("DelveId") },
                 principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),
                 principalEntityType,
-                deleteBehavior: DeleteBehavior.Cascade,
-                required: true);
+                deleteBehavior: DeleteBehavior.SetNull);
 
-            var sessionDelve = declaringEntityType.AddNavigation("SessionDelve",
+            var delve = declaringEntityType.AddNavigation("Delve",
                 runtimeForeignKey,
                 onDependent: true,
-                typeof(SessionDelve),
-                propertyInfo: typeof(GeneralXPAward).GetProperty("SessionDelve", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(GeneralXPAward).GetField("<SessionDelve>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+                typeof(Delve),
+                propertyInfo: typeof(GeneralXPAward).GetProperty("Delve", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(GeneralXPAward).GetField("<Delve>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
             var generalXPAwards = principalEntityType.AddNavigation("GeneralXPAwards",
                 runtimeForeignKey,
                 onDependent: false,
                 typeof(List<GeneralXPAward>),
-                propertyInfo: typeof(SessionDelve).GetProperty("GeneralXPAwards", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(SessionDelve).GetField("<GeneralXPAwards>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+                propertyInfo: typeof(Delve).GetProperty("GeneralXPAwards", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Delve).GetField("<GeneralXPAwards>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            return runtimeForeignKey;
+        }
+
+        public static RuntimeForeignKey CreateForeignKey2(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
+        {
+            var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("SessionId") },
+                principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),
+                principalEntityType,
+                deleteBehavior: DeleteBehavior.Cascade,
+                required: true);
+
+            var session = declaringEntityType.AddNavigation("Session",
+                runtimeForeignKey,
+                onDependent: true,
+                typeof(Session),
+                propertyInfo: typeof(GeneralXPAward).GetProperty("Session", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(GeneralXPAward).GetField("<Session>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            var generalXPAwards = principalEntityType.AddNavigation("GeneralXPAwards",
+                runtimeForeignKey,
+                onDependent: false,
+                typeof(List<GeneralXPAward>),
+                propertyInfo: typeof(Session).GetProperty("GeneralXPAwards", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Session).GetField("<GeneralXPAwards>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
             return runtimeForeignKey;
         }

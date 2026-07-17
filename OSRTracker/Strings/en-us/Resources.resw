@@ -147,6 +147,9 @@
   <data name="Shell_Main.Content" xml:space="preserve">
     <value>Main</value>
   </data>
+  <data name="Shell_GamePlay.Content" xml:space="preserve">
+    <value>Session</value>
+  </data>
   <data name="Shell_Sessions.Content" xml:space="preserve">
     <value>Sessions</value>
   </data>

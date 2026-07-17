@@ -28,9 +28,10 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(CampaignId),
                 propertyInfo: typeof(CampaignSettings).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(CampaignSettings).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd,
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             id.SetValueConverter(new ValueConverter<CampaignId, int>(
-                int (CampaignId x) => x.Id,
+                int (CampaignId x) => x.Value,
                 CampaignId (int id) => new CampaignId(id)));
             id.SetSentinelFromProviderValue(0);
 

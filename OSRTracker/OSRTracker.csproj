@@ -23,11 +23,13 @@
   <ItemGroup>
     <None Remove="Styles\FontSizes.xaml" />
     <None Remove="Styles\TextBlock.xaml" />
+    <None Remove="Styles\TextBox.xaml" />
     <None Remove="Styles\Thickness.xaml" />
     <None Remove="Views\ClassDefinitionDetailControl.xaml" />
     <None Remove="Views\Dialogs\InputPromptDialog.xaml" />
     <None Remove="Views\MainPage.xaml" />
     <None Remove="Views\Pages\CharacterRosterPage.xaml" />
+    <None Remove="Views\Pages\GamePlay\ApplySessionXPDialog.xaml" />
     <None Remove="Views\Pages\Main\CampaignStateView.xaml" />
     <None Remove="Views\Pages\Main\CreateSessionTrackDialog.xaml" />
     <None Remove="Views\ShellPage.xaml" />
@@ -133,6 +135,24 @@
 
   <ItemGroup>
     <Folder Include="Views\Pages\SystemEditor\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Pages\GamePlay\ApplySessionXPDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Pages\Sessions\SessionPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

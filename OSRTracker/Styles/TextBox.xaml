@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style x:Key="InlineEditableTextBoxBaseStyle" TargetType="TextBox">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0,0,0,1" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Padding" Value="2,4,2,6" />
+    <Setter Property="MinWidth" Value="120" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TextBox">
+          <Grid>
+
+            <!-- Common visual states -->
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+
+                <VisualState x:Name="PointerOver">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Baseline" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+
+                <VisualState x:Name="Focused">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Baseline" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentFillColorDefaultBrush}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <DoubleAnimation Storyboard.TargetName="FocusVisual"
+                                             Storyboard.TargetProperty="Opacity"
+                                             To="1" Duration="0:0:0.15" />
+                  </Storyboard>
+                </VisualState>
+
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Baseline" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextFillColorDisabledBrush}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            
+            <ScrollViewer x:Name="ContentElement"
+                                  Padding="{TemplateBinding Padding}"
+                                  IsTabStop="False"
+                                  HorizontalScrollMode="Disabled"
+                                  VerticalScrollMode="Disabled"
+                                  VerticalAlignment="Center" />
+
+            <!-- Baseline -->
+            <Rectangle x:Name="Baseline"
+                               Height="2"
+                               VerticalAlignment="Bottom"
+                               Fill="{TemplateBinding BorderBrush}" />
+
+            <!-- Focus underline -->
+            <Rectangle x:Name="FocusVisual"
+                               Height="3"
+                               VerticalAlignment="Bottom"
+                               Fill="{ThemeResource AccentFillColorDefaultBrush}"
+                               Opacity="0" />
+
+            <ContentPresenter x:Name="PlaceholderTextContentPresenter"
+                                      Margin="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding PlaceholderText}"
+                                      Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                      IsHitTestVisible="False"
+                                      VerticalAlignment="Center" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+
+  </Style>
+
+  <Style x:Key="InlineTitleTextBoxStyle" 
+       TargetType="TextBox" 
+       BasedOn="{StaticResource InlineEditableTextBoxBaseStyle}">
+    <Setter Property="FontSize" Value="28" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Padding" Value="2,6,2,8" />
+  </Style>
+
+  <Style x:Key="InlineSubtitleTextBoxStyle" 
+       TargetType="TextBox" 
+       BasedOn="{StaticResource InlineEditableTextBoxBaseStyle}">
+    <Setter Property="FontSize" Value="20" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="Padding" Value="2,4,2,6" />
+  </Style>
+
+  <Style x:Key="InlineBodyTextBoxStyle" 
+       TargetType="TextBox" 
+       BasedOn="{StaticResource InlineEditableTextBoxBaseStyle}">
+    <Setter Property="FontSize" Value="15" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+
+</ResourceDictionary>

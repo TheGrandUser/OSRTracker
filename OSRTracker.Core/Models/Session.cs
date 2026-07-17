@@ -5,12 +5,12 @@ using OSRTracker.Helpers;
 
 namespace OSRTracker.Models;
 
-public readonly record struct SessionId(int Id) : IEntityId<SessionId>
+public readonly record struct SessionId(int Value) : IEntityId<SessionId>
 {
    public static SessionId Empty { get; } = new(0);
 
    public static SessionId Create(int id) => new(id);
-   public override string ToString() => $"Session {Id}";
+   public override string ToString() => $"Session {Value}";
 }
 
 public class Session
@@ -31,6 +31,11 @@ public class Session
 
    public List<Character> Characters { get; set; } = [];
    public List<SessionDelve> Delves { get; set; } = [];
+
+
+   public List<TreasureEntry> Treasures { get; set; } = [];
+   public List<MonsterEntry> Monsters { get; set; } = [];
+   public List<GeneralXPAward> GeneralXPAwards { get; set; } = [];
 }
 
 public enum SessionStatus

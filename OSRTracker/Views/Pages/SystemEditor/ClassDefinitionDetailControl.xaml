@@ -26,7 +26,7 @@
     </Grid.RowDefinitions>
 
     <TextBlock Text="Class Name:" Grid.Row="0" Grid.Column="0" />
-    <TextBox Text="{Binding Name, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
+    <TextBox Header="Class Name" Text="{Binding Name, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
 
 
     <controls:TokenizingTextBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="KeyAttributesTextBox"

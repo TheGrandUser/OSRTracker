@@ -28,9 +28,10 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(CurrencyDefinitionId),
                 propertyInfo: typeof(CurrencyDefinition).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(CurrencyDefinition).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd,
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             id.SetValueConverter(new ValueConverter<CurrencyDefinitionId, int>(
-                int (CurrencyDefinitionId x) => x.Id,
+                int (CurrencyDefinitionId x) => x.Value,
                 CurrencyDefinitionId (int id) => new CurrencyDefinitionId(id)));
             id.SetSentinelFromProviderValue(0);
 

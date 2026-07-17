@@ -22,11 +22,11 @@ namespace OSRTracker.Data.CompiledModels
                 "OSRTracker.Models.TreasureEntry",
                 typeof(TreasureEntry),
                 baseEntityType,
-                propertyCount: 7,
+                propertyCount: 8,
                 complexPropertyCount: 2,
-                navigationCount: 1,
-                foreignKeyCount: 1,
-                unnamedIndexCount: 1,
+                navigationCount: 2,
+                foreignKeyCount: 2,
+                unnamedIndexCount: 2,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -34,9 +34,10 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(TreasureEntryId),
                 propertyInfo: typeof(TreasureEntry).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(TreasureEntry).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd,
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             id.SetValueConverter(new ValueConverter<TreasureEntryId, int>(
-                int (TreasureEntryId x) => x.Id,
+                int (TreasureEntryId x) => x.Value,
                 TreasureEntryId (int id) => new TreasureEntryId(id)));
             id.SetSentinelFromProviderValue(0);
 
@@ -46,6 +47,13 @@ namespace OSRTracker.Data.CompiledModels
                 propertyInfo: typeof(TreasureEntry).GetProperty("ApparentValue", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(TreasureEntry).GetField("<ApparentValue>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0m);
+
+            var delveId = runtimeEntityType.AddProperty(
+                "DelveId",
+                typeof(DelveId?),
+                propertyInfo: typeof(TreasureEntry).GetProperty("DelveId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(TreasureEntry).GetField("<DelveId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
 
             var description = runtimeEntityType.AddProperty(
                 "Description",
@@ -67,12 +75,12 @@ namespace OSRTracker.Data.CompiledModels
                 fieldInfo: typeof(TreasureEntry).GetField("<Quantiy>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0);
 
-            var sessionDelveId = runtimeEntityType.AddProperty(
-                "SessionDelveId",
-                typeof(SessionDelveId),
-                propertyInfo: typeof(TreasureEntry).GetProperty("SessionDelveId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(TreasureEntry).GetField("<SessionDelveId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-            sessionDelveId.SetSentinelFromProviderValue(0);
+            var sessionId = runtimeEntityType.AddProperty(
+                "SessionId",
+                typeof(SessionId),
+                propertyInfo: typeof(TreasureEntry).GetProperty("SessionId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(TreasureEntry).GetField("<SessionId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            sessionId.SetSentinelFromProviderValue(0);
 
             var weight = runtimeEntityType.AddProperty(
                 "Weight",
@@ -88,7 +96,10 @@ namespace OSRTracker.Data.CompiledModels
             runtimeEntityType.SetPrimaryKey(key);
 
             var index = runtimeEntityType.AddIndex(
-                new[] { sessionDelveId });
+                new[] { delveId });
+
+            var index0 = runtimeEntityType.AddIndex(
+                new[] { sessionId });
 
             return runtimeEntityType;
         }
@@ -180,25 +191,49 @@ namespace OSRTracker.Data.CompiledModels
 
         public static RuntimeForeignKey CreateForeignKey1(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
         {
-            var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("SessionDelveId") },
+            var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("DelveId") },
                 principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),
                 principalEntityType,
-                deleteBehavior: DeleteBehavior.Cascade,
-                required: true);
+                deleteBehavior: DeleteBehavior.SetNull);
 
-            var sessionDelve = declaringEntityType.AddNavigation("SessionDelve",
+            var delve = declaringEntityType.AddNavigation("Delve",
                 runtimeForeignKey,
                 onDependent: true,
-                typeof(SessionDelve),
-                propertyInfo: typeof(TreasureEntry).GetProperty("SessionDelve", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(TreasureEntry).GetField("<SessionDelve>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+                typeof(Delve),
+                propertyInfo: typeof(TreasureEntry).GetProperty("Delve", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(TreasureEntry).GetField("<Delve>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
             var treasures = principalEntityType.AddNavigation("Treasures",
                 runtimeForeignKey,
                 onDependent: false,
                 typeof(List<TreasureEntry>),
-                propertyInfo: typeof(SessionDelve).GetProperty("Treasures", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(SessionDelve).GetField("<Treasures>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+                propertyInfo: typeof(Delve).GetProperty("Treasures", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Delve).GetField("<Treasures>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            return runtimeForeignKey;
+        }
+
+        public static RuntimeForeignKey CreateForeignKey2(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
+        {
+            var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("SessionId") },
+                principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),
+                principalEntityType,
+                deleteBehavior: DeleteBehavior.Cascade,
+                required: true);
+
+            var session = declaringEntityType.AddNavigation("Session",
+                runtimeForeignKey,
+                onDependent: true,
+                typeof(Session),
+                propertyInfo: typeof(TreasureEntry).GetProperty("Session", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(TreasureEntry).GetField("<Session>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            var treasures = principalEntityType.AddNavigation("Treasures",
+                runtimeForeignKey,
+                onDependent: false,
+                typeof(List<TreasureEntry>),
+                propertyInfo: typeof(Session).GetProperty("Treasures", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Session).GetField("<Treasures>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
             return runtimeForeignKey;
         }

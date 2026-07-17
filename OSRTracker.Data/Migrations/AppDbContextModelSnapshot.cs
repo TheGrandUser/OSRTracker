@@ -77,7 +77,7 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AttributeDefinitions");
+                    b.ToTable("AttributeDefinitions", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.CampaignSettings", b =>
@@ -95,7 +95,7 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CampaignSettings");
+                    b.ToTable("CampaignSettings", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.Character", b =>
@@ -153,7 +153,7 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasIndex("ClassId");
 
-                    b.ToTable("Characters");
+                    b.ToTable("Characters", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.ClassDefinition", b =>
@@ -167,7 +167,7 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ClassDefinitions");
+                    b.ToTable("ClassDefinitions", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.CurrencyDefinition", b =>
@@ -190,7 +190,7 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CurrencyDefinitions");
+                    b.ToTable("CurrencyDefinitions", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.Delve", b =>
@@ -216,7 +216,7 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasIndex("SessionTrackId");
 
-                    b.ToTable("Delves");
+                    b.ToTable("Delves", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.GeneralXPAward", b =>
@@ -227,23 +227,31 @@ namespace OSRTracker.Data.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("DelveId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("SessionDelveId")
+                    b.Property<int>("SessionId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SessionDelveId");
+                    b.HasIndex("DelveId");
 
-                    b.ToTable("GeneralXPAwards");
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("GeneralXPAwards", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.MonsterEntry", b =>
                 {
                     b.Property<int>("Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DelveId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -256,7 +264,7 @@ namespace OSRTracker.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("SessionDelveId")
+                    b.Property<int>("SessionId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("XPValue")
@@ -264,9 +272,11 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SessionDelveId");
+                    b.HasIndex("DelveId");
 
-                    b.ToTable("MonsterEntries");
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("MonsterEntries", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.Session", b =>
@@ -298,7 +308,7 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasIndex("SessionTrackId");
 
-                    b.ToTable("Sessions");
+                    b.ToTable("Sessions", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.SessionDelve", b =>
@@ -323,7 +333,7 @@ namespace OSRTracker.Data.Migrations
                     b.HasIndex("SessionId", "DelveId")
                         .IsUnique();
 
-                    b.ToTable("SessionDelves");
+                    b.ToTable("SessionDelves", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.SessionTrack", b =>
@@ -340,7 +350,7 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SessionTracks");
+                    b.ToTable("SessionTracks", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.SessionTrackCharacter", b =>
@@ -355,7 +365,7 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasIndex("CharacterId");
 
-                    b.ToTable("SessionTracksCharacters");
+                    b.ToTable("SessionTracksCharacters", (string)null);
                 });
 
             modelBuilder.Entity("OSRTracker.Models.TreasureEntry", b =>
@@ -365,6 +375,9 @@ namespace OSRTracker.Data.Migrations
 
                     b.Property<decimal>("ApparentValue")
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("DelveId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -376,7 +389,7 @@ namespace OSRTracker.Data.Migrations
                     b.Property<int>("Quantiy")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("SessionDelveId")
+                    b.Property<int>("SessionId")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Weight")
@@ -410,9 +423,11 @@ namespace OSRTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SessionDelveId");
+                    b.HasIndex("DelveId");
 
-                    b.ToTable("TreasureEntries");
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("TreasureEntries", (string)null);
                 });
 
             modelBuilder.Entity("AttributeDefinitionClassDefinition", b =>
@@ -483,7 +498,7 @@ namespace OSRTracker.Data.Migrations
 
                             b1.HasKey("ClassDefinitionId", "__synthesizedOrdinal");
 
-                            b1.ToTable("ClassDefinitions");
+                            b1.ToTable("ClassDefinitions", (string)null);
 
                             b1
                                 .ToJson("LevelXP")
@@ -509,24 +524,38 @@ namespace OSRTracker.Data.Migrations
 
             modelBuilder.Entity("OSRTracker.Models.GeneralXPAward", b =>
                 {
-                    b.HasOne("OSRTracker.Models.SessionDelve", "SessionDelve")
+                    b.HasOne("OSRTracker.Models.Delve", "Delve")
                         .WithMany("GeneralXPAwards")
-                        .HasForeignKey("SessionDelveId")
+                        .HasForeignKey("DelveId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("OSRTracker.Models.Session", "Session")
+                        .WithMany("GeneralXPAwards")
+                        .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SessionDelve");
+                    b.Navigation("Delve");
+
+                    b.Navigation("Session");
                 });
 
             modelBuilder.Entity("OSRTracker.Models.MonsterEntry", b =>
                 {
-                    b.HasOne("OSRTracker.Models.SessionDelve", "SessionDelve")
+                    b.HasOne("OSRTracker.Models.Delve", "Delve")
                         .WithMany("Monsters")
-                        .HasForeignKey("SessionDelveId")
+                        .HasForeignKey("DelveId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("OSRTracker.Models.Session", "Session")
+                        .WithMany("Monsters")
+                        .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SessionDelve");
+                    b.Navigation("Delve");
+
+                    b.Navigation("Session");
                 });
 
             modelBuilder.Entity("OSRTracker.Models.Session", b =>
@@ -580,27 +609,37 @@ namespace OSRTracker.Data.Migrations
 
             modelBuilder.Entity("OSRTracker.Models.TreasureEntry", b =>
                 {
-                    b.HasOne("OSRTracker.Models.SessionDelve", "SessionDelve")
+                    b.HasOne("OSRTracker.Models.Delve", "Delve")
                         .WithMany("Treasures")
-                        .HasForeignKey("SessionDelveId")
+                        .HasForeignKey("DelveId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("OSRTracker.Models.Session", "Session")
+                        .WithMany("Treasures")
+                        .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SessionDelve");
+                    b.Navigation("Delve");
+
+                    b.Navigation("Session");
                 });
 
             modelBuilder.Entity("OSRTracker.Models.Delve", b =>
                 {
+                    b.Navigation("GeneralXPAwards");
+
+                    b.Navigation("Monsters");
+
                     b.Navigation("Sessions");
+
+                    b.Navigation("Treasures");
                 });
 
             modelBuilder.Entity("OSRTracker.Models.Session", b =>
                 {
                     b.Navigation("Delves");
-                });
 
-            modelBuilder.Entity("OSRTracker.Models.SessionDelve", b =>
-                {
                     b.Navigation("GeneralXPAwards");
 
                     b.Navigation("Monsters");

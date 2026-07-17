@@ -9,5 +9,5 @@ public interface IEntityId<T> where T : IEntityId<T>
    static abstract T Create(int id);
    static abstract T Empty { get; }
 
-   int Id { get; }
+   int Value { get; }
 }

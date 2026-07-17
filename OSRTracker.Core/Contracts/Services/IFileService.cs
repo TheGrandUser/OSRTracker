@@ -1,4 +1,4 @@
-﻿namespace OSRTracker.Core.Contracts.Services;
+﻿namespace OSRTracker.Contracts.Services;
 
 public interface IFileService
 {

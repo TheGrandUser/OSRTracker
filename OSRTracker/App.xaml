@@ -13,6 +13,7 @@
         <ResourceDictionary Source="/Styles/FontSizes.xaml" />
         <ResourceDictionary Source="/Styles/Thickness.xaml" />
         <ResourceDictionary Source="/Styles/TextBlock.xaml" />
+        <ResourceDictionary Source="/Styles/TextBox.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <c:BoolToVisibilityConverter x:Key="boolToVis" />

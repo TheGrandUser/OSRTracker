@@ -35,7 +35,7 @@ namespace OSRTracker.Data.CompiledModels
                 fieldInfo: typeof(SessionTrackCharacter).GetField("<SessionTrackId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             sessionTrackId.SetValueConverter(new ValueConverter<SessionTrackId, int>(
-                int (SessionTrackId x) => x.Id,
+                int (SessionTrackId x) => x.Value,
                 SessionTrackId (int id) => new SessionTrackId(id)));
             sessionTrackId.SetSentinelFromProviderValue(0);
 
@@ -46,7 +46,7 @@ namespace OSRTracker.Data.CompiledModels
                 fieldInfo: typeof(SessionTrackCharacter).GetField("<CharacterId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             characterId.SetValueConverter(new ValueConverter<CharacterId, int>(
-                int (CharacterId x) => x.Id,
+                int (CharacterId x) => x.Value,
                 CharacterId (int id) => new CharacterId(id)));
             characterId.SetSentinelFromProviderValue(0);
 

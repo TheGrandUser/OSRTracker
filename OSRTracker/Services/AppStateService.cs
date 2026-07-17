@@ -172,6 +172,6 @@ internal class AppStateService(IServiceProvider serviceProvider, IAppDbContextFa
    {
       ActiveSessionTrackId = activeSessionId;
 
-      WeakReferenceMessenger.Default.Send(new ActiveSession(activeSessionId));
+      WeakReferenceMessenger.Default.Send(new ActiveSessionTrack(activeSessionId));
    }
 }

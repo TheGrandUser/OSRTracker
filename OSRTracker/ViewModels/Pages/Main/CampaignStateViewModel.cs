@@ -25,7 +25,7 @@ public partial class CampaignStateViewModel : MainStateViewModel
    private readonly ObservableCollection<SessionTrackVM> sessionTracks = [];
    private readonly ObservableCollection<CharacterSummaryVM> characterSummaries = [];
 
-   SessionTrackVM? activeTrack;
+   private SessionTrackVM? activeTrack;
 
    public CampaignStateViewModel(
       IAppDbContextFactory dbContextFactory,
@@ -64,10 +64,10 @@ public partial class CampaignStateViewModel : MainStateViewModel
 
       activeTrack = this.sessionTracks.FirstOrDefault();
 
-      WeakReferenceMessenger.Default.Register<ActiveSession>(this, OnActiveSessionChanged);
+      WeakReferenceMessenger.Default.Register<ActiveSessionTrack>(this, OnActiveSessionChanged);
    }
 
-   private void OnActiveSessionChanged(object recipient, ActiveSession message)
+   private void OnActiveSessionChanged(object recipient, ActiveSessionTrack message)
    {
       foreach (var vm in sessionTracks)
       {
@@ -114,7 +114,7 @@ public partial class CampaignStateViewModel : MainStateViewModel
             FROM Characters as c
             LEFT JOIN ClassDefinitions AS cd
             ON cd.Id = c.ClassId
-            WHERE c.Status = 0 AND c.CharacterType = 0
+            WHERE c.Status = 0 AND c.CharacterType IN (0, 1)
             ORDER BY c.Name ASC
             """);
 
@@ -165,7 +165,7 @@ public partial class CampaignStateViewModel : MainStateViewModel
 
          foreach (var charId in charactersForSession)
          {
-            var summary = characterSummaries.First(sum => sum.Id.Id == charId);
+            var summary = characterSummaries.First(sum => sum.Id.Value == charId);
 
             sessionTrackVM.Characters.Add(summary);
          }

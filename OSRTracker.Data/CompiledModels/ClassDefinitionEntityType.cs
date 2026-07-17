@@ -31,9 +31,10 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(ClassDefinitionId),
                 propertyInfo: typeof(ClassDefinition).GetProperty("Id", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(ClassDefinition).GetField("<Id>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd,
                 afterSaveBehavior: PropertySaveBehavior.Throw);
             id.SetValueConverter(new ValueConverter<ClassDefinitionId, int>(
-                int (ClassDefinitionId x) => x.Id,
+                int (ClassDefinitionId x) => x.Value,
                 ClassDefinitionId (int id) => new ClassDefinitionId(id)));
             id.SetSentinelFromProviderValue(0);
 

@@ -5,23 +5,25 @@ using OSRTracker.Helpers;
 
 namespace OSRTracker.Models;
 
-public readonly record struct GeneralXPAwardId(int Id) : IEntityId<GeneralXPAwardId>
+public readonly record struct GeneralXPAwardId(int Value) : IEntityId<GeneralXPAwardId>
 {
    public static GeneralXPAwardId Empty { get; } = new(0);
 
    public static GeneralXPAwardId Create(int id) => new(id);
-   public override string ToString() => $"General XP Award {Id}";
+   public override string ToString() => $"General XP Award {Value}";
 }
 
 public class GeneralXPAward
 {
-    public GeneralXPAwardId Id { get; set; }
-    public SessionDelveId SessionDelveId { get; set; }
+   public GeneralXPAwardId Id { get; set; }
+   public SessionId SessionId { get; set; }
+   public required Session Session { get; set; }
 
-    public required SessionDelve SessionDelve { get; set; }
+   public DelveId? DelveId { get; set; }
+   public Delve? Delve { get; set; }
 
-    public int Amount { get; set; }
-    public List<Character> Characters { get; set; } = [];
+   public int Amount { get; set; }
+   public List<Character> Characters { get; set; } = [];
 
-    public string Description { get; set; } = string.Empty;
+   public string Description { get; set; } = string.Empty;
 }

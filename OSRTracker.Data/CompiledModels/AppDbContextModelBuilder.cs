@@ -11,7 +11,7 @@ namespace OSRTracker.Data.CompiledModels
     public partial class AppDbContextModel
     {
         private AppDbContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("3339fc2a-3f3f-4952-b216-42015c95e0a6"), entityTypeCount: 17)
+            : base(skipDetectChanges: false, modelId: new Guid("8b362745-41a7-4796-928f-66f3f5e1e284"), entityTypeCount: 17)
         {
         }
 
@@ -43,15 +43,18 @@ namespace OSRTracker.Data.CompiledModels
             CharacterSessionEntityType.CreateForeignKey2(characterSession, session);
             CharacterEntityType.CreateForeignKey1(character, classDefinition);
             DelveEntityType.CreateForeignKey1(delve, sessionTrack);
-            GeneralXPAwardEntityType.CreateForeignKey1(generalXPAward, sessionDelve);
+            GeneralXPAwardEntityType.CreateForeignKey1(generalXPAward, delve);
+            GeneralXPAwardEntityType.CreateForeignKey2(generalXPAward, session);
             LevelXPRequirementEntityType.CreateForeignKey1(levelXPRequirement, classDefinition);
-            MonsterEntryEntityType.CreateForeignKey1(monsterEntry, sessionDelve);
+            MonsterEntryEntityType.CreateForeignKey1(monsterEntry, delve);
+            MonsterEntryEntityType.CreateForeignKey2(monsterEntry, session);
             SessionEntityType.CreateForeignKey1(session, sessionTrack);
             SessionDelveEntityType.CreateForeignKey1(sessionDelve, delve);
             SessionDelveEntityType.CreateForeignKey2(sessionDelve, session);
             SessionTrackCharacterEntityType.CreateForeignKey1(sessionTrackCharacter, character);
             SessionTrackCharacterEntityType.CreateForeignKey2(sessionTrackCharacter, sessionTrack);
-            TreasureEntryEntityType.CreateForeignKey1(treasureEntry, sessionDelve);
+            TreasureEntryEntityType.CreateForeignKey1(treasureEntry, delve);
+            TreasureEntryEntityType.CreateForeignKey2(treasureEntry, session);
 
             AttributeDefinitionEntityType.CreateSkipNavigation1(attributeDefinition, classDefinition, attributeDefinitionClassDefinition);
             CharacterEntityType.CreateSkipNavigation1(character, generalXPAward, characterGeneralXPAward);

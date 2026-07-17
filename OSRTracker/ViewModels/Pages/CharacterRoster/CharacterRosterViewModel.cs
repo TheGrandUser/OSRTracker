@@ -16,12 +16,10 @@ using OSRTracker.Data.Contracts.Services;
 using OSRTracker;
 using System.Diagnostics;
 
-namespace OSRTracker.ViewModels.Pages;
+namespace OSRTracker.ViewModels.Pages.CharacterRoster;
 
 public partial class CharacterRosterViewModel : ObservableRecipient, INavigationAware
 {
-   private AppDbContext? dbContext;
-
    private readonly List<AvailableClass> availableClasses = [];
    private readonly ObservableCollection<CharacterVMWrapper> characters = [];
    private readonly IAppDbContextFactory appDbContextFactory;
@@ -57,9 +55,6 @@ public partial class CharacterRosterViewModel : ObservableRecipient, INavigation
    {
       pageLifetimeCTS?.Cancel();
       pageLifetimeCTS?.Dispose();
-
-      dbContext?.Dispose();
-      dbContext = null;
    }
    public void OnNavigatedTo(object parameter)
    {
@@ -77,7 +72,9 @@ public partial class CharacterRosterViewModel : ObservableRecipient, INavigation
          return;
       }
 
-      dbContext = appDbContextFactory.CreateDbContext();
+      using var dbContext = appDbContextFactory.CreateDbContext();
+
+      await dbContext.Database.OpenConnectionAsync();
 
       var connection = dbContext.Database.GetDbConnection();
 
@@ -110,15 +107,19 @@ public partial class CharacterRosterViewModel : ObservableRecipient, INavigation
       }
 
 
-      await foreach (var character in dbContext.Characters.AsAsyncEnumerable())
-      {
-         var vm = new CharacterVMWrapper(dbContext, availableClasses, new CharacterViewModel(character, dbContext, availableClasses));
-         //var wrapper = new CharacterViewModelWrapper();
+      var charactersDto = connection.QueryUnbufferedAsync<Character>("""
+         SELECT *
+         FROM Characters
+         """);
 
+      await foreach (var character in charactersDto)
+      {
+         var vm = new CharacterVMWrapper(appDbContextFactory, availableClasses, new CharacterViewModel(character, appDbContextFactory, availableClasses));
+         
          characters.Add(vm);
       }
 
-      var blank = new CharacterVMWrapper(dbContext, availableClasses);
+      var blank = new CharacterVMWrapper(appDbContextFactory, availableClasses);
       characters.Add(blank);
 
       charactersView = new AdvancedCollectionView(characters, true);
@@ -131,7 +132,7 @@ public partial class CharacterRosterViewModel : ObservableRecipient, INavigation
       var prior = (CharacterVMWrapper)sender!;
       prior.Realized -= Blank_Realized;
 
-      var blank = new CharacterVMWrapper(dbContext!, availableClasses);
+      var blank = new CharacterVMWrapper(appDbContextFactory, availableClasses);
       characters.Add(blank);
    }
 }
@@ -145,56 +146,29 @@ public class AvailableClass
 }
 
 
-public partial class CharacterViewModel : UpdateableElementViewModel
+public partial class CharacterViewModel(Character character, IAppDbContextFactory dbContextFactory, List<AvailableClass> availableClasses) : UpdateableElementViewModel(dbContextFactory)
 {
-   private readonly Character character;
-   private string name;
-   private string? playerName;
-   private CharacterTypeViewModel? characterType;
-   private CharacterStatusViewModel? characterStatus;
-   private AvailableClass? @class;
-   private int level;
-   private int currentXP;
-   private decimal shareMultiplierXP;
-   private decimal shareMultiplierTreasure;
-   private int str;
-   private int @int;
-   private int wis;
-   private int dex;
-   private int con;
-   private int cha;
+   public CharacterId Id { get; } = character.Id;
 
-   public CharacterViewModel(Character character, AppDbContext appDbContext, List<AvailableClass> availableClasses)
-      : base(appDbContext)
-   {
-      this.character = character;
-
-      name = this.character.Name;
-      playerName = this.character.PlayerName;
-
-      characterType = CharacterTypeViewModel.CharacterTypes[(int)this.character.CharacterType];
-      characterStatus = CharacterStatusViewModel.CharacterStatuses[(int)this.character.Status];
-
-      @class =
-         this.character.ClassId.HasValue
-         ? availableClasses.FirstOrDefault(c => c.Id == this.character.ClassId)
+   private string name = character.Name;
+   private string? playerName = character.PlayerName;
+   private CharacterTypeViewModel? characterType = CharacterTypeViewModel.CharacterTypes[(int)character.CharacterType];
+   private CharacterStatusViewModel? characterStatus = CharacterStatusViewModel.CharacterStatuses[(int)character.Status];
+   private AvailableClass? @class =
+         character.ClassId.HasValue
+         ? availableClasses.FirstOrDefault(c => c.Id == character.ClassId)
          : null;
-
-      level = this.character.Level;
-      currentXP = this.character.CurrentXP;
-
-
-      shareMultiplierXP = this.character.ShareMultiplierXP;
-      shareMultiplierTreasure = this.character.ShareMultiplierTreasure;
-
-      str = this.character.Str;
-      @int = this.character.Int;
-      wis = this.character.Wis;
-      dex = this.character.Dex;
-      con = this.character.Con;
-      cha = this.character.Cha;
-
-   }
+   private int level = character.Level;
+   private int currentXP = character.CurrentXP;
+   private decimal shareMultiplierXP = character.ShareMultiplierXP;
+   private decimal shareMultiplierTreasure = character.ShareMultiplierTreasure;
+   private int str = character.Str;
+   private int @int = character.Int;
+   private int wis = character.Wis;
+   private int dex = character.Dex;
+   private int con = character.Con;
+   private int cha = character.Cha;
+   private decimal xpBonus = character.XPBonus;
 
    public string Name { get => name; set => SetUpdatableProperty(ref name, value); }
    public string? PlayerName { get => playerName; set => SetUpdatableProperty(ref playerName, value); }
@@ -207,6 +181,8 @@ public partial class CharacterViewModel : UpdateableElementViewModel
    public double ShareMultiplierXP { get => (double)shareMultiplierXP; set => SetUpdatableProperty(ref shareMultiplierXP, (decimal)value); }
    public double ShareMultiplierTreasure { get => (double)shareMultiplierTreasure; set => SetUpdatableProperty(ref shareMultiplierTreasure, (decimal)value); }
 
+   public double XPBonus { get => (double)xpBonus; set => SetUpdatableProperty(ref xpBonus, (decimal)value); }
+
    public int Str { get => str; set => SetUpdatableProperty(ref str, value); }
    public int Int { get => @int; set => SetUpdatableProperty(ref @int, value); }
    public int Wis { get => wis; set => SetUpdatableProperty(ref wis, value); }
@@ -216,6 +192,15 @@ public partial class CharacterViewModel : UpdateableElementViewModel
 
    protected override void UpdateImpl(AppDbContext dbContext)
    {
+      var character = dbContext.Characters.Find(Id);
+
+      if (character is null)
+      {
+         // Report error?
+
+         return;
+      }
+
       character.Name = Name;
       character.PlayerName = PlayerName;
       character.CharacterType = CharacterType?.CharacterType ?? Models.CharacterType.PC;
@@ -232,6 +217,8 @@ public partial class CharacterViewModel : UpdateableElementViewModel
       character.Dex = Dex;
       character.Con = Con;
       character.Cha = Cha;
+
+      character.XPBonus = xpBonus;
    }
 }
 
@@ -261,17 +248,9 @@ public class CharacterStatusViewModel(CharacterStatus characterStatus, string na
 }
 
 [GenerateRowWrapper]
-public partial class CharacterVMWrapper : RowWrapperBase<CharacterViewModel>
+public partial class CharacterVMWrapper(IAppDbContextFactory dbContextFactory, List<AvailableClass> availableClasses, CharacterViewModel? initial = null)
+   : RowWrapperBase<CharacterViewModel>(initial)
 {
-   private readonly AppDbContext dbContext;
-   private readonly List<AvailableClass> availableClasses;
-
-   public CharacterVMWrapper(AppDbContext dbContext, List<AvailableClass> availableClasses, CharacterViewModel? initial = null) : base(initial)
-   {
-      this.dbContext = dbContext;
-      this.availableClasses = availableClasses;
-   }
-
    protected override CharacterViewModel Create()
    {
       var character = new Character()
@@ -283,6 +262,8 @@ public partial class CharacterVMWrapper : RowWrapperBase<CharacterViewModel>
          Status = Models.CharacterStatus.Active,
       };
 
+      using var dbContext = dbContextFactory.CreateDbContext();
+
       var entry = dbContext.Characters.Add(character);
 
       if (entry is not null)
@@ -292,7 +273,7 @@ public partial class CharacterVMWrapper : RowWrapperBase<CharacterViewModel>
 
       dbContext.SaveChanges();
 
-      var vm = new CharacterViewModel(character, dbContext, availableClasses);
+      var vm = new CharacterViewModel(character, dbContextFactory, availableClasses);
 
       return vm;
    }

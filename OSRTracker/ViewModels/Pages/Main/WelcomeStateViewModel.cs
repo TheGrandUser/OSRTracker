@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Windows.Storage.Pickers;
 using OSRTracker.Contracts.Messages;
 using OSRTracker.Contracts.Services;
-using OSRTracker.Core.Helpers;
 using OSRTracker.Helpers;
 using OSRTracker.Services;
 using Windows.Storage;

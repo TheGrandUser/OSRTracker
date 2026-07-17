@@ -24,8 +24,6 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
    private readonly IAppDbContextFactory contextFactory;
    private readonly IRpgSystemFileService rpgSystemFileService;
 
-   private AppDbContext? dbContext;
-
    private CampaignSettings? campaignSettings = null;
    private string name;
    private string systemName;
@@ -89,11 +87,10 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
 
    public void OnNavigatedFrom()
    {
-      if (dbContext is null)
-      {
-         return;
-      }
-      //using var dbContext = contextFactory.CreateDbContext();
+
+      using var dbContext = contextFactory.CreateDbContext();
+
+
       foreach (var classDef in classes)
       {
          classDef.ForceUpdate(dbContext);
@@ -102,7 +99,6 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
       dbContext.SaveChanges();
 
       dbContext.Dispose();
-      dbContext = null;
    }
    public void OnNavigatedTo(object parameter)
    {
@@ -118,19 +114,24 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
          return;
       }
 
-      dbContext = contextFactory.CreateDbContext();
+      using var dbContext = contextFactory.CreateDbContext();
 
       var soleCampaign = new CampaignId(1);
-      campaignSettings = await dbContext.CampaignSettings.FirstAsync(x => x.Id == soleCampaign);
+      campaignSettings = await dbContext.CampaignSettings.AsNoTracking().FirstAsync(x => x.Id == soleCampaign);
 
       name = campaignSettings.Name;
       systemName = campaignSettings.SystemName;
       OnPropertyChanged(nameof(Name));
       OnPropertyChanged(nameof(SystemName));
 
+      await dbContext.Database.OpenConnectionAsync();
+
+      var connection = dbContext.Database.GetDbConnection();
+      
+
       await foreach (var attributeDefinition in dbContext.AttributeDefinitions.OrderBy(a => a.Ordinal).AsAsyncEnumerable())
       {
-         var attributeDefinitionViewModel = new AttributeDefinitionViewModel(attributeDefinition, dbContext);
+         var attributeDefinitionViewModel = new AttributeDefinitionViewModel(attributeDefinition, contextFactory);
 
          attributes.Add(attributeDefinitionViewModel);
          attributeDefinitions.Add(attributeDefinition);
@@ -146,7 +147,7 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
                Name = defaultAttribute.Name,
                Ordinal = defaultAttribute.Ordinal
             };
-            var attributeDefinitionViewModel = new AttributeDefinitionViewModel(attributeDefinition, dbContext);
+            var attributeDefinitionViewModel = new AttributeDefinitionViewModel(attributeDefinition, contextFactory);
             attributes.Add(attributeDefinitionViewModel);
             attributeDefinitions.Add(attributeDefinition);
             await dbContext.AttributeDefinitions.AddAsync(attributeDefinition);
@@ -156,7 +157,7 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
 
       await foreach (var classDefinition in dbContext.ClassDefinitions.Include(c => c.KeyAttributes).AsAsyncEnumerable())
       {
-         var classDefinitionViewModel = new ClassDefinitionViewModel(classDefinition, dbContext, attributes);
+         var classDefinitionViewModel = new ClassDefinitionViewModel(classDefinition, contextFactory, attributes);
 
          classes.Add(classDefinitionViewModel);
       }
@@ -165,44 +166,41 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
 
    private void UpdateCampaign()
    {
-
-      if (dbContext is null || campaignSettings is null)
+      if (campaignSettings is null)
       {
          return;
       }
 
-      //dbContext.CampaignSettings.Update(campaignSettings);
+      using var dbContext = contextFactory.CreateDbContext();
+
+      dbContext.CampaignSettings.Update(campaignSettings);
       dbContext.SaveChanges();
    }
 
    [RelayCommand]
    private async Task AddClass()
    {
-      if (dbContext is null)
-      {
-         return;
-      }
-
       var classDef = new ClassDefinition()
       {
+         Id = ClassDefinitionId.Empty,
          Name = "New Class",
          KeyAttributes = [],
          LevelXP = [new LevelXPRequirement(0)]
       };
 
       {
-         //using var dbContext = this.contextFactory.CreateDbContext();
+         using var dbContext = contextFactory.CreateDbContext();
 
-         await dbContext.ClassDefinitions.AddAsync(classDef);
+         var result = await dbContext.ClassDefinitions.AddAsync(classDef);
 
          await dbContext.SaveChangesAsync();
       }
 
-      var classDefViewModel = new ClassDefinitionViewModel(classDef, dbContext, attributes);
+      var classDefViewModel = new ClassDefinitionViewModel(classDef, contextFactory, attributes);
 
       classes.Add(classDefViewModel);
 
-      this.SelectedClass = classDefViewModel;
+      SelectedClass = classDefViewModel;
    }
 
    [RelayCommand]
@@ -227,8 +225,8 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
       var exportData = new SystemDto
       {
          SystemName = campaignSettings.SystemName,
-         Attributes = [.. attributes.OrderBy(a => a.Ordinal).Select(a => a.Attribute.Name)],
-         Classes = [.. classes.Select(c => ClassDto.FromClassDefinition(c.ClassDefinition))]
+         Attributes = [.. attributes.OrderBy(a => a.Ordinal).Select(a => a.Name)],
+         Classes = [.. classes.Select(c => c.CreateExportDto())]
       };
 
       await rpgSystemFileService.ExportAsync(result.Path, exportData);
@@ -237,10 +235,12 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
    [RelayCommand]
    private async Task ImportSystem()
     {
-      if (campaignSettings is null || dbContext is null)
+      if (campaignSettings is null)
       {
          return;
       }
+
+      using var dbContext = contextFactory.CreateDbContext();
 
       if (dbContext.Characters.Any())
       {

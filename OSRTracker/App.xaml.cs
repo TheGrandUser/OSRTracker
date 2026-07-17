@@ -6,19 +6,21 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
 using OSRTracker.Activation;
 using OSRTracker.Contracts.Services;
-using OSRTracker.Core.Contracts.Services;
-using OSRTracker.Core.Services;
+using OSRTracker.Services;
 using OSRTracker.Data.Contracts.Services;
 using OSRTracker.Models;
-using OSRTracker.Services;
 using OSRTracker.ViewModels;
 using OSRTracker.ViewModels.Pages;
+using OSRTracker.ViewModels.Pages.CharacterRoster;
 using OSRTracker.ViewModels.Pages.Main;
 using OSRTracker.ViewModels.Pages.SystemEditor;
 using OSRTracker.Views;
 using OSRTracker.Views.Pages;
 using OSRTracker.Views.Pages.Main;
 using Windows.ApplicationModel;
+using OSRTracker.ViewModels.Pages.GamePlay;
+using OSRTracker.Views.Pages.GamePlay;
+using OSRTracker.ViewModels.Pages.GamePlay.Data;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -43,7 +45,7 @@ public partial class App : Application
    public static T GetService<T>()
        where T : class
    {
-      App cur = (App.Current as App)!;
+      var cur = (App.Current as App)!;
       if (cur.Host.Services.GetService(typeof(T)) is not T service)
       {
          throw new ArgumentException($"{typeof(T)} needs to be registered in ConfigureServices within App.xaml.cs.");
@@ -106,17 +108,25 @@ public partial class App : Application
 
          services.AddSingleton<IAppDbContextFactory, AppDbContextFactory2>();
 
+         services.AddTransient<IGamePlayDataRepo, GamePlayDataRepo>();
+
          // Views and ViewModels
+         services.AddTransient<ShellPage>();
+         services.AddTransient<ShellViewModel>();
+
          services.AddTransient<MainViewModel>();
          services.AddTransient<WelcomeStateViewModel>();
          services.AddTransient<CampaignStateViewModel>();
          services.AddTransient<MainPage>();
-         services.AddTransient<ShellPage>();
-         services.AddTransient<ShellViewModel>();
+
          services.AddTransient<SystemEditorViewModel>();
          services.AddTransient<SystemEditorPage>();
+
          services.AddTransient<CharacterRosterViewModel>();
          services.AddTransient<CharacterRosterPage>();
+
+         services.AddTransient<GamePlayViewModel>();
+         services.AddTransient<GamePlayPage>();
 
          // Configuration
          services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));

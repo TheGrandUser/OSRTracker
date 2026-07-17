@@ -9,7 +9,7 @@
   xmlns:controls="using:CommunityToolkit.WinUI.Controls"
   xmlns:f="using:Windows.Globalization.NumberFormatting"
   xmlns:tv="using:WinUI.TableView"
-  xmlns:vm="using:OSRTracker.ViewModels.Pages"
+  xmlns:vm="using:OSRTracker.ViewModels.Pages.CharacterRoster"
   
   d:DataContext="{d:DesignInstance Type=vm:CharacterRosterViewModel, IsDesignTimeCreatable=False}"
   mc:Ignorable="d">
