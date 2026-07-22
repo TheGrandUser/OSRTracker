@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 
 namespace OSRTracker.Contracts.Messages;
 
-class InputTextRequest : AsyncRequestMessage<string?>
+public class InputTextRequest : AsyncRequestMessage<string?>
 {
    public string Title { get; }
    public string Message { get; }

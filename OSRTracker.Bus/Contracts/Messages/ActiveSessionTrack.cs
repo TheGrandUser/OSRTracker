@@ -5,7 +5,7 @@ using OSRTracker.Models;
 
 namespace OSRTracker.Contracts.Messages;
 
-internal class ActiveSessionTrack(SessionTrackId? id)
+public class ActiveSessionTrack(SessionTrackId? id)
 {
    public SessionTrackId? SessionId { get; } = id;
 }

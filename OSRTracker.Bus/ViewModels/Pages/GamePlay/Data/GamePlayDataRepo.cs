@@ -15,7 +15,7 @@ public interface IGamePlayDataRepo
    Task<GamePlayData?> GetGamePlayDataAsync(SessionTrackId sessionTrackId);
 }
 
-internal class GamePlayDataRepo(IAppDbContextFactory dbContextFactory) : IGamePlayDataRepo
+public class GamePlayDataRepo(IAppDbContextFactory dbContextFactory) : IGamePlayDataRepo
 {
    public async Task<List<SessionTrackItem>> GetSessionTracks()
    {

@@ -6,9 +6,15 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="OSRTracker.Bus/OSRTracker.Bus.csproj" Id="20e2e780-5a3b-4e98-b897-fb83007406b9" />
   <Project Path="OSRTracker.Core/OSRTracker.Core.csproj" Id="62440612-6620-4219-a651-d512523df5e2" />
   <Project Path="OSRTracker.Data/OSRTracker.Data.csproj" Id="1a05097b-d390-469c-8b31-6772abb3f9bb" />
   <Project Path="OSRTracker.EfHost/OSRTracker.EfHost.csproj" Id="54b47ed6-3400-423e-ad22-da9a18a0bf76" />
+  <Project Path="OSRTracker.Tests/OSRTracker.Tests.csproj" Id="6e78e1db-84c2-4b36-9e8d-88d085f1472e">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+    <Deploy />
+  </Project>
   <Project Path="OSRTracker/OSRTracker.csproj" Id="330dad77-e4e7-4778-b8ff-9f56a316f3d0">
     <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="*|x86" Project="x86" />

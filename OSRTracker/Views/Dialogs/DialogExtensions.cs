@@ -9,7 +9,7 @@ using OSRTracker.Contracts.Services;
 
 namespace OSRTracker.Views.Dialogs;
 
-static class DialogExtensions
+internal static class DialogExtensions
 {
    extension(FrameworkElement element)
    {
@@ -66,7 +66,7 @@ static class DialogExtensions
          }
          else if (result == ContentDialogResult.Secondary)
          {
-            FileOpenPicker picker = new FileOpenPicker(App.MainWindow.AppWindow.Id);
+            var picker = new FileOpenPicker(App.MainWindow.AppWindow.Id);
             picker.FileTypeChoices.Add("JSON File", [".json"]);
             var file = await picker.PickSingleFileAsync();
             if (file != null)

@@ -6,11 +6,11 @@ using OSRTracker.Models;
 
 namespace OSRTracker.Contracts.Messages;
 
-abstract record SelectRpgResponse
+public abstract record SelectRpgResponse
 {
    public sealed record Success(SystemDto RpgSystem) : SelectRpgResponse;
    public sealed record Cancelled() : SelectRpgResponse;
    public sealed record BlankSystem() : SelectRpgResponse;
 }
 
-internal class SelectRpgSystemRequest : AsyncRequestMessage<SelectRpgResponse>;
+public class SelectRpgSystemRequest : AsyncRequestMessage<SelectRpgResponse>;

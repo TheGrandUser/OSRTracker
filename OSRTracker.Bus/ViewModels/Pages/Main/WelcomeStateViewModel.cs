@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.WinUI.Collections;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Windows.Storage.Pickers;
 using OSRTracker.Contracts.Messages;
@@ -26,6 +27,8 @@ public partial class WelcomeStateViewModel : MainStateViewModel
    private readonly IAppStateService appStateService;
    private readonly ILocalSettingsService localSettingsService;
    private readonly ILogger<WelcomeStateViewModel> logger;
+   private readonly IAppInfoService appInfoService;
+   private readonly IDialogService dialogService;
 
    public AdvancedCollectionView CampaignsView { get; }
 
@@ -36,11 +39,15 @@ public partial class WelcomeStateViewModel : MainStateViewModel
       List<RecentFile> recentFiles,
       IAppStateService appStateService,
       ILocalSettingsService localSettingsService,
-      ILogger<WelcomeStateViewModel> logger)
+      ILogger<WelcomeStateViewModel> logger,
+      IAppInfoService appInfoService,
+      IDialogService dialogService)
    {
       this.appStateService = appStateService;
       this.localSettingsService = localSettingsService;
       this.logger = logger;
+      this.appInfoService = appInfoService;
+      this.dialogService = dialogService;
       CampaignsView = new AdvancedCollectionView(recentCampaigns);
       CampaignsView.SortDescriptions.Add(new SortDescription(nameof(RecentFile.LastAccessed), SortDirection.Ascending));
 
@@ -51,18 +58,19 @@ public partial class WelcomeStateViewModel : MainStateViewModel
       }
    }
 
-   public static async Task<WelcomeStateViewModel> CreateAsync()
+   public static async Task<WelcomeStateViewModel> CreateAsync(IServiceProvider services)
    {
-      var logger = App.GetService<ILogger<WelcomeStateViewModel>>();
-      var localSettingsService = App.GetService<ILocalSettingsService>();
+      var logger = services.GetRequiredService<ILogger<WelcomeStateViewModel>>();
+      var localSettingsService = services.GetRequiredService<ILocalSettingsService>();
       var recentFiles = await LoadMRU(localSettingsService);
 
       return new WelcomeStateViewModel(
          recentFiles,
-         App.GetService<IAppStateService>(),
+         services.GetRequiredService<IAppStateService>(),
          localSettingsService,
-         logger
-         );
+         logger,
+         services.GetRequiredService<IAppInfoService>(),
+         services.GetRequiredService<IDialogService>());
    }
 
    private static async Task<List<RecentFile>> LoadMRU(ILocalSettingsService localSettingsService)
@@ -131,7 +139,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
 
 
          {
-            recentFile.Version = App.GetVersion();
+            recentFile.Version = appInfoService.GetAppVersion();
             recentFile.SystemName = campaign.SystemName;
             recentFile.LastAccessed = DateTime.UtcNow;
 
@@ -147,11 +155,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
    {
       try
       {
-         var picker = new FileSavePicker(App.MainWindow.AppWindow.Id);
-
-         picker.FileTypeChoices.Add("Campaign File", [".cdb"]);
-
-         var pickResult = await picker.PickSaveFileAsync();
+         var pickResult = await dialogService.PickSaveFileAsync([("Campaign File", [".cdb"])]);
 
          if (string.IsNullOrEmpty(pickResult?.Path))
          {
@@ -199,7 +203,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
                SystemName = rpgSystem?.SystemName,
                Path = file.Path,
                Token = token,
-               Version = App.GetVersion(),
+               Version = appInfoService.GetAppVersion(),
             };
 
             recentCampaigns.Add(recentFile);
@@ -215,14 +219,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
    {
       try
       {
-         var picker = new FileOpenPicker(App.MainWindow.AppWindow.Id)
-         {
-            ViewMode = PickerViewMode.Thumbnail
-         };
-
-         picker.FileTypeChoices.Add("Campaign File", [".cdb"]);
-
-         var pickResult = await picker.PickSingleFileAsync();
+         var pickResult = await dialogService.PickSingleFileAsync([("Campaign File", [".cdb"])]);
 
          if (string.IsNullOrEmpty(pickResult?.Path))
          {
@@ -261,7 +258,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
                Path = file.Path,
                Token = token,
                SystemName = campaign.SystemName,
-               Version = App.GetVersion(),
+               Version = appInfoService.GetAppVersion(),
             };
 
 
@@ -279,14 +276,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
    {
       try
       {
-         var picker = new FileOpenPicker(App.MainWindow.AppWindow.Id)
-         {
-            ViewMode = PickerViewMode.Thumbnail
-         };
-
-         picker.FileTypeChoices.Add("Campaign File", [".cdb"]);
-
-         var file = await picker.PickSingleFileAsync();
+         var file = await dialogService.PickSingleFileAsync([("Campaign File", [".cdb"])]);
 
          if (string.IsNullOrEmpty(file?.Path))
          {

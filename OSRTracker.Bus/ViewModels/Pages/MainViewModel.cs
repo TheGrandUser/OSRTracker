@@ -18,7 +18,6 @@ using OSRTracker.Data.Contracts.Services;
 using OSRTracker.Helpers;
 using OSRTracker.Models;
 using OSRTracker.Services;
-using OSRTracker.Views.Dialogs;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.UI.Popups;
@@ -42,16 +41,16 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<CampaignOpe
    private readonly ILocalSettingsService localSettingsService;
    private readonly ILogger<MainViewModel> logger;
    private readonly IAppDbContextFactory dbContextFactory;
+   private readonly IServiceProvider services;
 
    public MainViewModel(IAppStateService appStateService, ILocalSettingsService localSettingsService, ILogger<MainViewModel> logger,
-      IAppDbContextFactory dbContextFactory)
+      IAppDbContextFactory dbContextFactory, IServiceProvider services)
    {
       this.appStateService = appStateService;
       this.localSettingsService = localSettingsService;
       this.logger = logger;
       this.dbContextFactory = dbContextFactory;
-
-
+      this.services = services;
       State = new EmptyStateViewModel();
 
       if (string.IsNullOrEmpty(appStateService.CampaignDbPath))
@@ -68,7 +67,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<CampaignOpe
 
    private async void LoadWelcome()
    {
-      State = await WelcomeStateViewModel.CreateAsync();
+      State = await WelcomeStateViewModel.CreateAsync(services);
    }
 
    private async void LoadCampaign()

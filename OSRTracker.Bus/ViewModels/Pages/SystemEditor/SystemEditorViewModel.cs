@@ -23,6 +23,7 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
 {
    private readonly IAppDbContextFactory contextFactory;
    private readonly IRpgSystemFileService rpgSystemFileService;
+   private readonly IDialogService dialogService;
 
    private CampaignSettings? campaignSettings = null;
    private string name;
@@ -32,10 +33,11 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
    private readonly ObservableCollection<AttributeDefinitionViewModel> attributes = [];
    private readonly ObservableCollection<AttributeDefinition> attributeDefinitions = [];
 
-   public SystemEditorViewModel(IAppDbContextFactory contextFactory, IRpgSystemFileService rpgSystemFileService)
+   public SystemEditorViewModel(IAppDbContextFactory contextFactory, IRpgSystemFileService rpgSystemFileService, IDialogService dialogService)
    {
       this.contextFactory = contextFactory;
       this.rpgSystemFileService = rpgSystemFileService;
+      this.dialogService = dialogService;
       name = string.Empty;
       systemName = string.Empty;
 
@@ -211,11 +213,7 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
          return;
       }
 
-      var picker = new FileSavePicker(App.MainWindow.AppWindow.Id);
-
-      picker.FileTypeChoices.Add("JSON File", [".json"]);
-
-      var result = await picker.PickSaveFileAsync();
+      var result = await dialogService.PickSaveFileAsync(fileTypeChoices: [("JSON File", [".json"])]);
 
       if (string.IsNullOrEmpty(result.Path))
       {
@@ -245,28 +243,21 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
       if (dbContext.Characters.Any())
       {
          // Show warning dialog about overwriting data
-         var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
-         {
-            Title = "Import System",
-            Content = "Importing this system will overwrite existing character data. Continue?",
-            PrimaryButtonText = "Continue",
-            SecondaryButtonText = "Cancel",
-            XamlRoot = App.MainWindow.Content.XamlRoot,
-         };
 
-         var result = await dialog.ShowAsync();
+         var result = await dialogService.ShowContentDialog(
+            "Import System",
+            "Importing this system will overwrite existing character data. Continue?",
+            primaryButtonText: "Continue",
+            closeButtonText: "Cancel");
+            
          if (result != Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
          {
             return;
          }
       }
 
-      var picker = new FileOpenPicker(App.MainWindow.AppWindow.Id);
-
-      picker.FileTypeChoices.Add("JSON File", [".json"]);
-
       {
-         var result = await picker.PickSingleFileAsync();
+         var result = await dialogService.PickSingleFileAsync([("JSON File", [".json"])]);
 
          if (string.IsNullOrEmpty(result.Path))
          {

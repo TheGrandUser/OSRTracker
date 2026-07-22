@@ -80,6 +80,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OSRTracker.Bus\OSRTracker.Bus.csproj" />
     <ProjectReference Include="..\OSRTracker.Core\OSRTracker.Core.csproj" />
     <ProjectReference Include="..\OSRTracker.Data\OSRTracker.Data.csproj" />
     <ProjectReference Include="..\WinUIEx.Generators\WinUIEx.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />

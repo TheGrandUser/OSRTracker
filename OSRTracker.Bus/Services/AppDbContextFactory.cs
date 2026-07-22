@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
 using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
@@ -42,8 +43,10 @@ internal class AppDbContextFactory : IAppDbContextFactory
 }
 
 
-internal class AppDbContextFactory2 : IAppDbContextFactory
+public class AppDbContextFactory2 : IAppDbContextFactory
 {
+   PooledDbContextFactory<AppDbContext>? innerFactory = null;
+
    string? connectionString;
    private readonly ILoggerFactory loggerFactory;
 
@@ -51,12 +54,32 @@ internal class AppDbContextFactory2 : IAppDbContextFactory
 
    public AppDbContextFactory2(ILoggerFactory loggerFactory)
    {
+
       this.loggerFactory = loggerFactory;
    }
 
    public AppDbContext CreateDbContext()
    {
-      if (string.IsNullOrEmpty(connectionString)) { throw new InvalidOperationException("The database file has not been set."); }
+      if (innerFactory is null) { throw new InvalidOperationException("The database file has not been set."); }
+      //if (string.IsNullOrEmpty(connectionString)) { throw new InvalidOperationException("The database file has not been set."); }
+
+
+      return innerFactory.CreateDbContext();
+      //new AppDbContext(optionsBuilder.Options);
+   }
+
+   public Task<AppDbContext> CreateDbContextAsync()
+   {
+      if (innerFactory is null) { throw new InvalidOperationException("The database file has not been set."); }
+
+      return innerFactory.CreateDbContextAsync();
+   }
+
+   public void SetDbPath(string filePath)
+   {
+      connectionString = $"Data source={filePath};Pooling=True;Cache=Shared";
+
+      HasPath = true;
 
       var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
@@ -77,14 +100,6 @@ internal class AppDbContextFactory2 : IAppDbContextFactory
 
          ;
 
-
-      return new AppDbContext(optionsBuilder.Options);
-   }
-
-   public void SetDbPath(string filePath)
-   {
-      this.connectionString = $"Data source={filePath};Pooling=True;Cache=Shared";
-
-      this.HasPath = true;
+      innerFactory = new PooledDbContextFactory<AppDbContext>(optionsBuilder.Options);
    }
 }

@@ -109,6 +109,8 @@ public partial class App : Application
          services.AddSingleton<IAppDbContextFactory, AppDbContextFactory2>();
 
          services.AddTransient<IGamePlayDataRepo, GamePlayDataRepo>();
+         services.AddTransient<IAppInfoService, AppInfoService>();
+         services.AddTransient<IDialogService, DialogService>();
 
          // Views and ViewModels
          services.AddTransient<ShellPage>();

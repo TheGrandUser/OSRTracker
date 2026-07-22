@@ -13,7 +13,7 @@ using OSRTracker.Data.Contracts.Services;
 
 namespace OSRTracker.Services;
 
-internal class AppStateService(IServiceProvider serviceProvider, IAppDbContextFactory appDbContextFactory) : IAppStateService
+public class AppStateService(IServiceProvider serviceProvider, IAppDbContextFactory appDbContextFactory) : IAppStateService
 {
    private readonly IServiceProvider serviceProvider = serviceProvider;
    private readonly IAppDbContextFactory dbContextFactory = appDbContextFactory;
