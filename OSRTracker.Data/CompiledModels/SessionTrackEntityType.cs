@@ -37,6 +37,8 @@ namespace OSRTracker.Data.CompiledModels
                 int (SessionTrackId x) => x.Value,
                 SessionTrackId (int id) => new SessionTrackId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
             var groupDescription = runtimeEntityType.AddProperty(
                 "GroupDescription",

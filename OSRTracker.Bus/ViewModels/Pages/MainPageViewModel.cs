@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
 using OSRTracker.Contracts.Messages;
 using OSRTracker.Contracts.Services;
+using OSRTracker.Contracts.ViewModels;
 using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
 using OSRTracker.Helpers;
@@ -35,22 +36,21 @@ public abstract class MainStateViewModel : ObservableObject {
    }
 }
 
-public partial class MainViewModel : ObservableRecipient, IRecipient<CampaignOpened>
+public partial class MainPageViewModel : ObservableRecipient, IRecipient<CampaignOpened>, INavigationAware
 {
-   private readonly IAppStateService appStateService;
    private readonly ILocalSettingsService localSettingsService;
-   private readonly ILogger<MainViewModel> logger;
-   private readonly IAppDbContextFactory dbContextFactory;
-   private readonly IServiceProvider services;
+   private readonly IServiceProvider serviceProvider;
+   private readonly ILogger<MainPageViewModel> logger;
 
-   public MainViewModel(IAppStateService appStateService, ILocalSettingsService localSettingsService, ILogger<MainViewModel> logger,
-      IAppDbContextFactory dbContextFactory, IServiceProvider services)
+   public MainPageViewModel(
+      IAppStateService appStateService,
+      ILocalSettingsService localSettingsService,
+      IServiceProvider serviceProvider,
+      ILogger<MainPageViewModel> logger)
    {
-      this.appStateService = appStateService;
       this.localSettingsService = localSettingsService;
+      this.serviceProvider = serviceProvider;
       this.logger = logger;
-      this.dbContextFactory = dbContextFactory;
-      this.services = services;
       State = new EmptyStateViewModel();
 
       if (string.IsNullOrEmpty(appStateService.CampaignDbPath))
@@ -61,36 +61,34 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<CampaignOpe
       {
          LoadCampaign();
       }
-
-      WeakReferenceMessenger.Default.Register(this);
    }
 
    private async void LoadWelcome()
    {
-      State = await WelcomeStateViewModel.CreateAsync(services);
+      State = await WelcomeStateViewModel.CreateAsync(serviceProvider);
    }
 
    private async void LoadCampaign()
    {
-      State = await CampaignStateViewModel.CreateAsync(dbContextFactory, appStateService);
+      State = await CampaignStateViewModel.CreateAsync(serviceProvider);
    }
 
 
    [ObservableProperty]
    public partial MainStateViewModel State { get; set; }
 
-   private static IDisposable SendBusy()
-   {
-      var message = new AppBusyMessage();
-
-      WeakReferenceMessenger.Default.Send(message);
-
-      return message.HasReceivedResponse ? message.Response : Disposable.Empty;
-   }
-
    void IRecipient<CampaignOpened>.Receive(CampaignOpened message)
    {
       LoadCampaign();
+   }
+
+   public void OnNavigatedTo(object parameter)
+   {
+      WeakReferenceMessenger.Default.Register(this);
+   }
+   public void OnNavigatedFrom()
+   {
+      WeakReferenceMessenger.Default.UnregisterAll(this);
    }
 }
 

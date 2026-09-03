@@ -10,18 +10,28 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OSRTracker.Services;
+using OSRTracker.ViewModels.Pages.GamePlay;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace OSRTracker.Tests;
-
-public sealed partial class UnitTestAppWindow : Window
+namespace OSRTracker.Views.Pages.GamePlay;
+/// <summary>
+/// An empty page that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class ApplyDelveXPDialog : ContentDialog, IDialog<ApplyDelveXPDialog, ApplyDelveXPDialogViewModel>
 {
-   public UnitTestAppWindow()
+   public ApplyDelveXPDialog(ApplyDelveXPDialogViewModel viewModel)
    {
       InitializeComponent();
+      ViewModel = viewModel;
+      DataContext = viewModel;
    }
+
+   public ApplyDelveXPDialogViewModel ViewModel { get; }
+
+   public static ApplyDelveXPDialog Create(ApplyDelveXPDialogViewModel vm) => new(vm);
 }

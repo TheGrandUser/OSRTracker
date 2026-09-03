@@ -23,8 +23,7 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(Session),
                 baseEntityType,
                 propertyCount: 7,
-                navigationCount: 5,
-                skipNavigationCount: 1,
+                navigationCount: 6,
                 foreignKeyCount: 1,
                 unnamedIndexCount: 1,
                 keyCount: 1);
@@ -40,6 +39,8 @@ namespace OSRTracker.Data.CompiledModels
                 int (SessionId x) => x.Value,
                 SessionId (int id) => new SessionId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
             var date = runtimeEntityType.AddProperty(
                 "Date",
@@ -114,31 +115,6 @@ namespace OSRTracker.Data.CompiledModels
                 fieldInfo: typeof(SessionTrack).GetField("<Sessions>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
             return runtimeForeignKey;
-        }
-
-        public static RuntimeSkipNavigation CreateSkipNavigation1(RuntimeEntityType declaringEntityType, RuntimeEntityType targetEntityType, RuntimeEntityType joinEntityType)
-        {
-            var skipNavigation = declaringEntityType.AddSkipNavigation(
-                "Characters",
-                targetEntityType,
-                joinEntityType.FindForeignKey(
-                    new[] { joinEntityType.FindProperty("SessionId") },
-                    declaringEntityType.FindKey(new[] { declaringEntityType.FindProperty("Id") }),
-                    declaringEntityType),
-                true,
-                false,
-                typeof(List<Character>),
-                propertyInfo: typeof(Session).GetProperty("Characters", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(Session).GetField("<Characters>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-
-            var inverse = targetEntityType.FindSkipNavigation("Session");
-            if (inverse != null)
-            {
-                skipNavigation.Inverse = inverse;
-                inverse.Inverse = skipNavigation;
-            }
-
-            return skipNavigation;
         }
 
         public static void CreateAnnotations(RuntimeEntityType runtimeEntityType)

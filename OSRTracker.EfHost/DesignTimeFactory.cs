@@ -15,7 +15,7 @@ public class DesignTimeFactory : IDesignTimeDbContextFactory<AppDbContext>
    {
       var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-      optionsBuilder.UseSqlite("Data Source=designtime.db",
+      optionsBuilder.UseSqlite("Data Source=C:\\MigrateDbs\\osr_designtime.db",
          ob =>
          {
             ob.MigrationsAssembly(typeof(AppDbContext).Assembly);

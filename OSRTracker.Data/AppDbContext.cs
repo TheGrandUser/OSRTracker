@@ -36,6 +36,7 @@ public class AppDbContext : DbContext
    public DbSet<GeneralXPAward> GeneralXPAwards { get; set; }
    public DbSet<MonsterEntry> MonsterEntries { get; set; }
    public DbSet<Session> Sessions { get; set; }
+   public DbSet<SessionCharacter> SessionCharacters { get; set; }
    public DbSet<SessionDelve> SessionDelves { get; set; }
    public DbSet<SessionTrack> SessionTracks { get; set; }
    public DbSet<SessionTrackCharacter> SessionTracksCharacters { get; set; }
@@ -51,7 +52,10 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new AttributeDefinitionId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
       });
 
       modelBuilder.Entity<CampaignSettings>(entity =>
@@ -59,7 +63,9 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new CampaignId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
       });
 
       modelBuilder.Entity<Character>(entity =>
@@ -67,7 +73,10 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new CharacterId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
 
          entity.HasOne(x => x.Class)
                .WithMany()
@@ -81,13 +90,16 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new ClassDefinitionId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
 
          entity.OwnsMany(x => x.LevelXP, owner =>
            {
-             owner.ToJson();
-             owner.Property(x => x.XP);
-          });
+              owner.ToJson();
+              owner.Property(x => x.XP);
+           });
 
          entity.HasMany(x => x.KeyAttributes)
                .WithMany()
@@ -100,7 +112,10 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new CurrencyDefinitionId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
       });
 
       modelBuilder.Entity<Delve>(entity =>
@@ -108,7 +123,10 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new DelveId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
       });
 
       modelBuilder.Entity<GeneralXPAward>(entity =>
@@ -116,7 +134,10 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new GeneralXPAwardId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
 
          entity.HasOne(x => x.Session)
                .WithMany(x => x.GeneralXPAwards)
@@ -138,7 +159,10 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new MonsterEntryId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
 
          entity.HasOne(x => x.Session)
                .WithMany(x => x.Monsters)
@@ -151,17 +175,75 @@ public class AppDbContext : DbContext
                .OnDelete(DeleteBehavior.SetNull);
       });
 
+      //modelBuilder.Entity<Session>(entity =>
+      //{
+      //   entity.HasKey(x => x.Id);
+      //   entity.Property(x => x.Id)
+      //      .HasConversion(x => x.Value, id => new SessionId(id))
+      //      .ValueGeneratedOnAdd()
+      //      .HasAnnotation("Sqlite:Autoincrement", true);
+
+      //   entity.HasMany(x => x.Characters)
+      //         .WithMany()
+      //         .UsingEntity(x => x.ToTable("SessionCharacters"));
+
+      //});
+
       modelBuilder.Entity<Session>(entity =>
       {
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new SessionId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
+      });
 
-         entity.HasMany(x => x.Characters)
-               .WithMany()
-               .UsingEntity(x => x.ToTable("SessionCharacters"));
+      modelBuilder.Entity<SessionCharacter>(entity =>
+      {
+         entity.HasKey(x => new { x.SessionId, x.CharacterId });
 
+         entity.Property(x => x.SessionId)
+            .HasConversion(x => x.Value, value => new SessionId(value));
+
+         entity.Property(x => x.CharacterId)
+            .HasConversion(x => x.Value, value => new CharacterId(value));
+
+         entity
+            .HasOne(x => x.Character)
+            .WithMany()
+            .HasForeignKey(x => x.CharacterId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+         entity
+            .HasOne(x => x.Session)
+            .WithMany(x => x.Characters)
+            .HasForeignKey(x => x.SessionId)
+            .OnDelete(DeleteBehavior.Cascade);
+      });
+
+      modelBuilder.Entity<DelveCharacter>(entity =>
+      {
+         entity.HasKey(x => new { x.DelveId, x.CharacterId });
+
+         entity.Property(x => x.DelveId)
+            .HasConversion(x => x.Value, value => new DelveId(value));
+
+         entity.Property(x => x.CharacterId)
+            .HasConversion(x => x.Value, value => new CharacterId(value));
+
+         entity
+            .HasOne(x => x.Character)
+            .WithMany()
+            .HasForeignKey(x => x.CharacterId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+         entity
+            .HasOne<Delve>(x => x.Delve)
+            .WithMany(x => x.Characters)
+            .HasForeignKey(x => x.DelveId)
+            .OnDelete(DeleteBehavior.Cascade);
       });
 
       modelBuilder.Entity<SessionDelve>(entity =>
@@ -169,7 +251,10 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new SessionDelveId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
 
          entity.HasIndex(x => new { x.SessionId, x.DelveId })
                .IsUnique();
@@ -190,7 +275,10 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new SessionTrackId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
 
          entity
             .HasMany(x => x.Sessions)
@@ -226,7 +314,10 @@ public class AppDbContext : DbContext
          entity.HasKey(x => x.Id);
          entity.Property(x => x.Id)
             .HasConversion(x => x.Value, id => new TreasureEntryId(id))
-            .ValueGeneratedOnAdd();
+            .HasColumnType("INTEGER")
+            .ValueGeneratedOnAdd()
+            .UseAutoincrement();
+         //.HasAnnotation("Sqlite:Autoincrement", true);
 
          entity.HasOne(x => x.Session)
                .WithMany(x => x.Treasures)
@@ -240,19 +331,19 @@ public class AppDbContext : DbContext
 
          entity.ComplexProperty(x => x.Location, b =>
          {
-           b.Property(r => r.Type).HasColumnName("LocType").IsRequired();
-           b.Property(r => r.CharacterId).HasColumnName("LocCharacterId")
-            .HasConversion<int?>(x => x.HasValue ? x.Value.Value : null, id => id.HasValue ? new CharacterId(id.Value) : null);
-           b.Property(r => r.StoreDescription).HasColumnName("LocStore");
+            b.Property(r => r.Type).HasColumnName("LocType").IsRequired();
+            b.Property(r => r.CharacterId).HasColumnName("LocCharacterId")
+             .HasConversion<int?>(x => x.HasValue ? x.Value.Value : null, id => id.HasValue ? new CharacterId(id.Value) : null);
+            b.Property(r => r.StoreDescription).HasColumnName("LocStore");
 
-           b.IsRequired();
-        });
+            b.IsRequired();
+         });
 
          entity.ComplexProperty(x => x.MagicItemDetails, b =>
          {
-           b.Property(x => x.TrueValue);
-           b.Property(x => x.IdentificationStatus);
-        });
+            b.Property(x => x.ApparentValue);
+            b.Property(x => x.IdentificationStatus);
+         });
       });
 
    }

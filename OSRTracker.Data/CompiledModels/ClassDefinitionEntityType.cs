@@ -37,6 +37,8 @@ namespace OSRTracker.Data.CompiledModels
                 int (ClassDefinitionId x) => x.Value,
                 ClassDefinitionId (int id) => new ClassDefinitionId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
             var name = runtimeEntityType.AddProperty(
                 "Name",

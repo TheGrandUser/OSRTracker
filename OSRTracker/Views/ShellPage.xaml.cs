@@ -51,21 +51,6 @@ public sealed partial class ShellPage : Page
       App.MainWindow.SetTitleBar(AppTitleBar);
       App.MainWindow.Activated += MainWindow_Activated;
       AppTitleBarText.Text = "AppDisplayName".GetLocalized();
-
-      WeakReferenceMessenger.Default.Register<InputTextRequest>(this, ShowInputDialog);
-      WeakReferenceMessenger.Default.Register<SelectRpgSystemRequest>(this, ShowSelectRpgSystemDialog);
-   }
-
-   private async void ShowInputDialog(object recipient, InputTextRequest msg)
-   {
-      var result = await this.ShowInputTextDialogAsync(msg.Title, msg.Message, msg.DefaultText);
-      msg.Reply(result);
-   }
-
-   private async void ShowSelectRpgSystemDialog(object recipient, SelectRpgSystemRequest msg)
-   {
-      var result = await this.ShowSelectRpgSystemDialogAsync(this.rpgSystemFileService);
-      msg.Reply(result);
    }
 
    private void OnLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)

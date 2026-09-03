@@ -11,13 +11,13 @@ public partial class CharacterViewModel : UpdateableElementViewModel
    public CharacterId Id { get; }
 
    private bool inSession;
-   private readonly ClassDefinition? classDef;
-   private readonly GamePlayViewModel owner;
+   private readonly ClassLevels? classDef;
+   private readonly GamePlayPageViewModel owner;
 
    public CharacterViewModel(
       CharacterDto dto,
-      ClassDefinition? classDef,
-      GamePlayViewModel owner,
+      ClassLevels? classDef,
+      GamePlayPageViewModel owner,
       IAppDbContextFactory dbContextFactory) : base(dbContextFactory)
    {
       this.owner = owner;
@@ -27,7 +27,6 @@ public partial class CharacterViewModel : UpdateableElementViewModel
       Name = dto.Name;
       Level = dto.Level;
       ClassId = dto.ClassId;
-      ClassName = dto.ClassName;
 
       var xpBonus = dto.XPBonus;
 
@@ -55,7 +54,7 @@ public partial class CharacterViewModel : UpdateableElementViewModel
 
    public ClassDefinitionId? ClassId { get; }
 
-   public string? ClassName { get; }
+   public string? ClassName => classDef?.Name;
 
    [ObservableProperty]
    public partial int XP { get; set; }
@@ -93,11 +92,25 @@ public partial class CharacterViewModel : UpdateableElementViewModel
 
       if (InSession)
       {
-         session.Characters.Remove(character);
+         var sessionCharacter = session.Characters.FirstOrDefault(sc => sc.CharacterId == character.Id);
+         if (sessionCharacter is not null)
+         {
+            session.Characters.Remove(sessionCharacter);
+            dbContext.SessionCharacters.Remove(sessionCharacter);
+         }
       }
       else
       {
-         session.Characters.Add(character);
+         var sessionCharacter = new SessionCharacter
+         {
+            SessionId = session.Id,
+            Session = session,
+            CharacterId = character.Id,
+            Character = character,
+            AppliedXP = 0
+         };
+         session.Characters.Add(sessionCharacter);
+         dbContext.SessionCharacters.Add(sessionCharacter);
       }
    }
 }

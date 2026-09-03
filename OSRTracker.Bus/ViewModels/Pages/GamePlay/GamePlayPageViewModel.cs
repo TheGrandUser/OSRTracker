@@ -6,12 +6,10 @@ using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Dapper;
 using Microsoft.EntityFrameworkCore;
 using OSRTracker.Contracts.Messages;
 using OSRTracker.Contracts.Services;
 using OSRTracker.Contracts.ViewModels;
-using OSRTracker.Data;
 using OSRTracker.Data.Contracts.Services;
 using OSRTracker.Models;
 using OSRTracker.ViewModels.Pages.GamePlay.Data;
@@ -19,7 +17,13 @@ using Windows.Web.Http;
 
 namespace OSRTracker.ViewModels.Pages.GamePlay;
 
-public partial class GamePlayViewModel(IAppDbContextFactory dbContextFactory, IAppStateService appStateService, IGamePlayDataRepo gamePlayDataRepo)
+public partial class GamePlayPageViewModel(
+   IAppDbContextFactory dbContextFactory,
+   IAppStateService appStateService,
+   IGamePlayDataRepo gamePlayDataRepo,
+   IXPCalculationService xpCalculationService,
+   IDialogService dialogService,
+   ITimeSource timeSource)
    : ObservableRecipient, INavigationAware
 {
    SessionTrackItem? currentTrackItem;
@@ -90,16 +94,11 @@ public partial class GamePlayViewModel(IAppDbContextFactory dbContextFactory, IA
 
          if (!activeSessionTrackId.HasValue)
          {
-            using var dbContext = dbContextFactory.CreateDbContext();
-            await dbContext.Database.OpenConnectionAsync();
+            var defaultId = await gamePlayDataRepo.GetDefaultSessionTrackId();
 
-            var connection = dbContext.Database.GetDbConnection();
-
-            var id = await connection.QueryFirstOrDefaultAsync<int>("""SELECT st.Id FROM SessionTracks st ORDER BY st.Id LIMIT 1""");
-
-            if (id != 0)
+            if (defaultId.Value != 0)
             {
-               activeSessionTrackId = new SessionTrackId(id);
+               activeSessionTrackId = defaultId;
             }
          }
       }
@@ -234,9 +233,7 @@ public partial class GamePlayViewModel(IAppDbContextFactory dbContextFactory, IA
 
       var sessionNumber = "Session " + (sessionCount + 1);
 
-      var request = new InputTextRequest("Session Title", $"Title for session {sessionCount + 1}", "New Session");
-
-      var result = await WeakReferenceMessenger.Default.Send(request);
+      var result = await dialogService.GetInputAsync("Session Title", $"Title for session {sessionCount + 1}", "New Session");
 
       if (string.IsNullOrEmpty(result))
       {
@@ -248,7 +245,7 @@ public partial class GamePlayViewModel(IAppDbContextFactory dbContextFactory, IA
       var session = new Session()
       {
          SessionTrackId = trackId,
-         Date = DateTime.UtcNow,
+         Date = timeSource.GetUtcNow(),
          SessionNumber = sessionNumber,
          Title = sessionTitle,
          Status = SessionStatus.Active,
@@ -257,6 +254,12 @@ public partial class GamePlayViewModel(IAppDbContextFactory dbContextFactory, IA
 
       dbContext.Sessions.Add(session);
       await dbContext.SaveChangesAsync();
+
+      if (CurrentDelve is not null)
+      {
+         session.Delves.Add(new SessionDelve() { DelveId = CurrentDelve.DelveId, SessionId = session.Id });
+         await dbContext.SaveChangesAsync();
+      }
 
       var data = new SessionData() { SessionId = session.Id, SessionTitle = sessionTitle, SessionNumber = sessionNumber, SessionNotes = "" };
 
@@ -267,118 +270,136 @@ public partial class GamePlayViewModel(IAppDbContextFactory dbContextFactory, IA
    [RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(CanConcludeSession))]
    private async Task ConcludeSession()
    {
-      using var dbContext = dbContextFactory.CreateDbContext();
+      using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
       var id = CurrentSession!.SessionId;
 
-      var session = await dbContext.Sessions.Include(x => x.Characters).FirstAsync(x => x.Id == id);
+      var session = await ApplySessionXPDialogViewModel.GetData(dbContext, id);
 
+      var campaignSettings = await dbContext.CampaignSettings.FirstAsync();
 
+      using var dialogVM = new ApplySessionXPDialogViewModel(xpCalculationService, session, campaignSettings);
 
-      //characters
+      var result = await dialogService.ShowDialogAsync(dialogVM);
+
+      if (result != Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
+      {
+         return;
+      }
+
+      var xpApplications = dialogVM.Characters;
+
+      foreach (var sc in session.Characters)
+      {
+         var xpApp = xpApplications.First(x => x.Character == sc.Character);
+
+         sc.AppliedXP = xpApp.XP + xpApp.BonusXP;
+      }
+
+      session.Status = SessionStatus.Finished;
+
+      await dbContext.SaveChangesAsync();
+
+      CurrentSession.Dispose();
+      CurrentSession = null;
    }
 
    private bool CanStartDelve() => CurrentTrack is not null && CurrentSession is not null && CurrentDelve is null;
    [RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(CanStartDelve))]
    private async Task StartNewDelve()
    {
+      var delveLocation = await dialogService.GetInputAsync("Delve Location", "Location Name for the Delve", "New Delve");
 
+      if (delveLocation is null)
+      {
+         return;
+      }
+
+      using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+      var trackId = CurrentTrack!.SessionTrackId;
+
+      var delveCount = await dbContext.Delves.Where(d => d.SessionTrackId == trackId).CountAsync();
+
+      var delve = new Delve()
+      {
+         SessionTrackId = trackId,
+         LocationName = delveLocation,
+         Status = DelveStatus.Active,
+      };
+
+      dbContext.Delves.Add(delve);
+      await dbContext.SaveChangesAsync();
+
+      if (CurrentSession is not null)
+      {
+         delve.Sessions.Add(new SessionDelve() { DelveId = delve.Id, SessionId = CurrentSession.SessionId });
+         await dbContext.SaveChangesAsync();
+      }
+
+      var data = new DelveData() { DelveId = delve.Id, LocationName = delveLocation, LocationDescription = "" };
+
+      CurrentDelve = new DelveViewModel(data, dbContextFactory);
    }
 
    private bool CanConcludeDelve() => CurrentTrack is not null && CurrentSession is not null && CurrentDelve is not null;
    [RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(CanConcludeDelve))]
    private async Task ConcludeDelve()
    {
+      using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-   }
+      var id = CurrentDelve!.DelveId;
 
-}
+      var delve = await ApplyDelveXPDialogViewModel.GetDataAsync(dbContext, id);
 
+      var campaignSettings = await dbContext.CampaignSettings.FirstAsync();
 
-public partial class SessionTrackViewModel(SessionTrackData data, IAppDbContextFactory dbContextFactory) : UpdateableElementViewModel(dbContextFactory)
-{
-   private string trackName = data.Name;
-   public string TrackName { get => trackName; set => SetUpdatableProperty(ref trackName, value); }
+      using var dialogVM = new ApplyDelveXPDialogViewModel(xpCalculationService, delve, campaignSettings);
 
-   [ObservableProperty]
-   public partial SessionTrackId SessionTrackId { get; set; } = data.Id;
+      var result = await dialogService.ShowDialogAsync(dialogVM);
 
-   private string groupDescription = data.GroupDescription ?? string.Empty;
-   public string GroupDescription { get => groupDescription; set => SetUpdatableProperty(ref groupDescription, value); }
-
-   protected override void UpdateImpl(AppDbContext dbContext)
-   {
-      var sessionTrack = dbContext.SessionTracks.Find(SessionTrackId);
-
-      if (sessionTrack is null)
+      if (result != Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
       {
          return;
       }
 
-      sessionTrack.Name = TrackName;
-      sessionTrack.GroupDescription = GroupDescription;
-   }
-}
+      var xpApplications = dialogVM.Characters;
 
-public partial class SessionViewModel(SessionData data, IAppDbContextFactory dbContextFactory) : UpdateableElementViewModel(dbContextFactory)
-{
-   private string sessionNumber = data.SessionNumber;
-   private string sessionTitle = data.SessionTitle;
-   private string sessionNotes = data.SessionNotes;
-
-   public SessionId SessionId { get; } = data.SessionId;
-
-   public string SessionNumber { get => sessionNumber; set => SetUpdatableProperty(ref sessionNumber, value); }
-
-   public string SessionTitle { get => sessionTitle; set => SetUpdatableProperty(ref sessionTitle, value); }
-
-   public string SessionNotes { get => sessionNotes; set => SetUpdatableProperty(ref sessionNotes, value); }
-
-
-   protected override void UpdateImpl(AppDbContext dbContext)
-   {
-      var session = dbContext.Sessions.Find(SessionId);
-      if (session is null)
+      foreach(var treasure in delve.Treasures)
       {
-         return;
-      }
-      session.SessionNumber = SessionNumber;
-      session.Title = SessionTitle;
-      session.SessionNotes = SessionNotes;
-   }
-}
+         if (treasure.MagicItemDetails is { }  magicDetails)
+         {
+            treasure.ApplicationStatus =
+               (treasure.SaleStatus, magicDetails.IdentificationStatus) switch
+               {
+                  (TreasureSale.SoldWithoutUse, IdentificationStatus.FullyIdentified) => TreasureEntryApplicationStatus.Applied,
+                  (TreasureSale.SoldWithoutUse, IdentificationStatus.PartiallyIdentified) => TreasureEntryApplicationStatus.Applied,
 
-public partial class DelveViewModel(DelveData data, IAppDbContextFactory dbContextFactory) : UpdateableElementViewModel(dbContextFactory)
-{
-   private string locationDescription = data.LocationDescription;
-   private string locationName = data.LocationName;
-   public DelveId DelveId { get; } = data.DelveId;
-   public string LocationDescription { get => locationDescription; set => SetUpdatableProperty(ref locationDescription, value); }
-   public string LocationName { get => locationName; set => SetUpdatableProperty(ref locationName, value); }
-   protected override void UpdateImpl(AppDbContext dbContext)
-   {
-      var delve = dbContext.Delves.Find(DelveId);
-      if (delve is null)
-      {
-         return;
+                  _ => TreasureEntryApplicationStatus.ApparentValueApplied,
+               };
+         }
+         else
+         {
+            treasure.ApplicationStatus = TreasureEntryApplicationStatus.Applied;
+         }
       }
-      delve.LocationDescription = LocationDescription;
-      delve.LocationName = LocationName;
-   }
-}
 
-public partial class SessionDelveViewModel(SessionDelveData data, IAppDbContextFactory dbContextFactory) : UpdateableElementViewModel(dbContextFactory)
-{
-   private string notes = data.Notes;
-   public SessionDelveId SessionDelveId { get; } = data.SessionDelveId;
-   public string Notes { get => notes; set => SetUpdatableProperty(ref notes, value); }
-   protected override void UpdateImpl(AppDbContext dbContext)
-   {
-      var sessionDelve = dbContext.SessionDelves.Find(SessionDelveId);
-      if (sessionDelve is null)
+      foreach (var xpApp in xpApplications)
       {
-         return;
+         var delveCharacter = delve.Characters.FirstOrDefault(dc => dc.CharacterId == xpApp.Character.Id);
+
+         if(delveCharacter is null)
+         {
+            delveCharacter = new DelveCharacter() { CharacterId = xpApp.Character.Id, DelveId = delve.Id, AppliedXP = xpApp.XP + xpApp.BonusXP };
+            delve.Characters.Add(delveCharacter);
+         }
+         else
+         {
+            delveCharacter.AppliedXP = xpApp.XP + xpApp.BonusXP;
+         }
       }
-      sessionDelve.Notes = Notes;
+
+      await dbContext.SaveChangesAsync();
    }
+
 }

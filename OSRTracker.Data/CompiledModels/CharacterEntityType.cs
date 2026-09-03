@@ -22,9 +22,9 @@ namespace OSRTracker.Data.CompiledModels
                 "OSRTracker.Models.Character",
                 typeof(Character),
                 baseEntityType,
-                propertyCount: 16,
+                propertyCount: 17,
                 navigationCount: 1,
-                skipNavigationCount: 3,
+                skipNavigationCount: 2,
                 foreignKeyCount: 1,
                 unnamedIndexCount: 1,
                 keyCount: 1);
@@ -40,6 +40,8 @@ namespace OSRTracker.Data.CompiledModels
                 int (CharacterId x) => x.Value,
                 CharacterId (int id) => new CharacterId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
             var cha = runtimeEntityType.AddProperty(
                 "Cha",
@@ -145,6 +147,13 @@ namespace OSRTracker.Data.CompiledModels
                 fieldInfo: typeof(Character).GetField("<Wis>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0);
 
+            var xPBonus = runtimeEntityType.AddProperty(
+                "XPBonus",
+                typeof(decimal),
+                propertyInfo: typeof(Character).GetProperty("XPBonus", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(Character).GetField("<XPBonus>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0m);
+
             var key = runtimeEntityType.AddKey(
                 new[] { id });
             runtimeEntityType.SetPrimaryKey(key);
@@ -196,29 +205,6 @@ namespace OSRTracker.Data.CompiledModels
         }
 
         public static RuntimeSkipNavigation CreateSkipNavigation2(RuntimeEntityType declaringEntityType, RuntimeEntityType targetEntityType, RuntimeEntityType joinEntityType)
-        {
-            var skipNavigation = declaringEntityType.AddSkipNavigation(
-                "Session",
-                targetEntityType,
-                joinEntityType.FindForeignKey(
-                    new[] { joinEntityType.FindProperty("CharactersId") },
-                    declaringEntityType.FindKey(new[] { declaringEntityType.FindProperty("Id") }),
-                    declaringEntityType),
-                true,
-                false,
-                typeof(IEnumerable<Session>));
-
-            var inverse = targetEntityType.FindSkipNavigation("Characters");
-            if (inverse != null)
-            {
-                skipNavigation.Inverse = inverse;
-                inverse.Inverse = skipNavigation;
-            }
-
-            return skipNavigation;
-        }
-
-        public static RuntimeSkipNavigation CreateSkipNavigation3(RuntimeEntityType declaringEntityType, RuntimeEntityType targetEntityType, RuntimeEntityType joinEntityType)
         {
             var skipNavigation = declaringEntityType.AddSkipNavigation(
                 "SessionTrack",

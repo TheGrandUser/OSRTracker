@@ -29,6 +29,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
    private readonly ILogger<WelcomeStateViewModel> logger;
    private readonly IAppInfoService appInfoService;
    private readonly IDialogService dialogService;
+   private readonly ITimeSource timeSource;
 
    public AdvancedCollectionView CampaignsView { get; }
 
@@ -41,13 +42,15 @@ public partial class WelcomeStateViewModel : MainStateViewModel
       ILocalSettingsService localSettingsService,
       ILogger<WelcomeStateViewModel> logger,
       IAppInfoService appInfoService,
-      IDialogService dialogService)
+      IDialogService dialogService,
+      ITimeSource timeSource)
    {
       this.appStateService = appStateService;
       this.localSettingsService = localSettingsService;
       this.logger = logger;
       this.appInfoService = appInfoService;
       this.dialogService = dialogService;
+      this.timeSource = timeSource;
       CampaignsView = new AdvancedCollectionView(recentCampaigns);
       CampaignsView.SortDescriptions.Add(new SortDescription(nameof(RecentFile.LastAccessed), SortDirection.Ascending));
 
@@ -70,7 +73,8 @@ public partial class WelcomeStateViewModel : MainStateViewModel
          localSettingsService,
          logger,
          services.GetRequiredService<IAppInfoService>(),
-         services.GetRequiredService<IDialogService>());
+         services.GetRequiredService<IDialogService>(),
+         services.GetRequiredService<ITimeSource>());
    }
 
    private static async Task<List<RecentFile>> LoadMRU(ILocalSettingsService localSettingsService)
@@ -86,7 +90,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
             return [];
          }
 
-         return recentFiles;
+         return recentFiles.DistinctBy(rf => rf.Path).ToList();
       }
       catch (Exception ex)
       {
@@ -141,7 +145,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
          {
             recentFile.Version = appInfoService.GetAppVersion();
             recentFile.SystemName = campaign.SystemName;
-            recentFile.LastAccessed = DateTime.UtcNow;
+            recentFile.LastAccessed = timeSource.GetUtcNow();
 
             await SaveMRU();
          }
@@ -164,16 +168,13 @@ public partial class WelcomeStateViewModel : MainStateViewModel
 
          using var busy = SendBusy();
 
-         var inputRequest = new InputTextRequest("Campaign Name", "Enter a name for your campaign.", Path.GetFileNameWithoutExtension(pickResult.Path));
-
-         var name = await WeakReferenceMessenger.Default.Send(inputRequest);
+         
+         var name = await dialogService.GetInputAsync("Campaign Name", "Enter a name for your campaign.", Path.GetFileNameWithoutExtension(pickResult.Path));
 
          if (string.IsNullOrEmpty(name)) { return; }
 
 
-         var systemRequest = new SelectRpgSystemRequest();
-
-         var systemResponse = await WeakReferenceMessenger.Default.Send(systemRequest);
+         var systemResponse = await dialogService.ShowSelectRpgSystemDialogAsync();
 
          if (systemResponse is SelectRpgResponse.Cancelled)
          {
@@ -198,7 +199,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
             var recentFile = new RecentFile()
             {
                FutureAccessToken = faToken,
-               LastAccessed = DateTime.UtcNow,
+               LastAccessed = timeSource.GetUtcNow(),
                CampaignName = name,
                SystemName = rpgSystem?.SystemName,
                Path = file.Path,
@@ -229,7 +230,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
          var existingRecent = recentCampaigns.FirstOrDefault(f => f.Path == pickResult.Path);
          if (existingRecent is not null)
          {
-            existingRecent.LastAccessed = DateTime.UtcNow;
+            existingRecent.LastAccessed = timeSource.GetUtcNow();
 
             await SaveMRU();
          }
@@ -253,7 +254,7 @@ public partial class WelcomeStateViewModel : MainStateViewModel
             var recentFile = new RecentFile()
             {
                FutureAccessToken = faToken,
-               LastAccessed = DateTime.UtcNow,
+               LastAccessed = timeSource.GetUtcNow(),
                CampaignName = campaign.Name,
                Path = file.Path,
                Token = token,

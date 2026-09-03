@@ -12,7 +12,7 @@ public class GamePlayData
    public DelveData? Delve { get; init; }
    public SessionDelveData? SessionDelve { get; init; }
    public required List<CharacterDto> Characters { get; init; }
-   public required List<ClassDefinition> ClassDefinitions { get; init; }
+   public required List<ClassLevels> ClassDefinitions { get; init; }
    public required List<GeneralXPAward> GeneralXPAwards { get; init; }
    public required List<MonsterEntry> MonsterEntries { get; init; }
    public required List<TreasureEntryDto> TreasureEntries { get; init; }

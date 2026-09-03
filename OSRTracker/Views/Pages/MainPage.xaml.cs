@@ -23,11 +23,11 @@ namespace OSRTracker.Views.Pages.Main;
 /// </summary>
 public sealed partial class MainPage : Page
 {
-   public MainViewModel ViewModel { get; }
+   public MainPageViewModel ViewModel { get; }
 
    public MainPage()
    {
-      ViewModel = App.GetService<MainViewModel>();
+      ViewModel = App.GetService<MainPageViewModel>();
       DataContext = ViewModel;
       InitializeComponent();
    }

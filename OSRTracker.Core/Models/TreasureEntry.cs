@@ -13,6 +13,20 @@ public readonly record struct TreasureEntryId(int Value) : IEntityId<TreasureEnt
    public override string ToString() => $"Treasure Entry {Value}";
 }
 
+public enum TreasureEntryApplicationStatus
+{
+   NotApplied,
+   Applied,
+   ApparentValueApplied
+}
+
+public enum TreasureSale
+{
+   NoSold,
+   Sold,
+   SoldWithoutUse
+}
+
 public class TreasureEntry
 {
    public TreasureEntryId Id { get; set; }
@@ -25,7 +39,7 @@ public class TreasureEntry
    public string Description { get; set; } = string.Empty;
    public int Quantiy { get; set; }
 
-   public decimal ApparentValue { get; set; }
+   public decimal Value { get; set; }
    public MagicItemDetails? MagicItemDetails { get; set; }
 
    public decimal Weight { get; set; }
@@ -33,9 +47,12 @@ public class TreasureEntry
    public LocationReference Location { get; set; } = null!;
 
    public string? Notes { get; set; }
+
+   public TreasureEntryApplicationStatus ApplicationStatus { get; set; }
+   public TreasureSale SaleStatus { get; set; }
 }
 
-public record MagicItemDetails(decimal? TrueValue, IdentificationStatus IdentificationStatus);
+public record MagicItemDetails(decimal ApparentValue, IdentificationStatus IdentificationStatus);
 
 public enum IdentificationStatus
 {

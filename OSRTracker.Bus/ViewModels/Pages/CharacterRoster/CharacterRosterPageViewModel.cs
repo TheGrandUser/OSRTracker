@@ -18,7 +18,7 @@ using System.Diagnostics;
 
 namespace OSRTracker.ViewModels.Pages.CharacterRoster;
 
-public partial class CharacterRosterViewModel : ObservableRecipient, INavigationAware
+public partial class CharacterRosterPageViewModel : ObservableRecipient, INavigationAware
 {
    private readonly List<AvailableClass> availableClasses = [];
    private readonly ObservableCollection<CharacterVMWrapper> characters = [];
@@ -26,7 +26,7 @@ public partial class CharacterRosterViewModel : ObservableRecipient, INavigation
    private CancellationTokenSource? pageLifetimeCTS;
    private AdvancedCollectionView charactersView;
 
-   public CharacterRosterViewModel(IAppDbContextFactory appDbContextFactory)
+   public CharacterRosterPageViewModel(IAppDbContextFactory appDbContextFactory)
    {
       this.appDbContextFactory = appDbContextFactory;
 

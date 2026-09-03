@@ -23,7 +23,7 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(Delve),
                 baseEntityType,
                 propertyCount: 5,
-                navigationCount: 5,
+                navigationCount: 6,
                 foreignKeyCount: 1,
                 unnamedIndexCount: 1,
                 keyCount: 1);
@@ -39,6 +39,8 @@ namespace OSRTracker.Data.CompiledModels
                 int (DelveId x) => x.Value,
                 DelveId (int id) => new DelveId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
             var locationDescription = runtimeEntityType.AddProperty(
                 "LocationDescription",

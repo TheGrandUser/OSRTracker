@@ -34,6 +34,8 @@ namespace OSRTracker.Data.CompiledModels
                 int (CurrencyDefinitionId x) => x.Value,
                 CurrencyDefinitionId (int id) => new CurrencyDefinitionId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
             var countPerUnitWeight = runtimeEntityType.AddProperty(
                 "CountPerUnitWeight",

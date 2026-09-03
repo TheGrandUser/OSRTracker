@@ -39,7 +39,7 @@ public partial class TreasureViewModel : UpdateableElementViewModel
    private int quantity;
    private decimal apparentValue;
 
-   private decimal trueValue;
+   private decimal value;
    private IdentificationVM identificationStatus;
 
    private decimal weight;
@@ -68,9 +68,9 @@ public partial class TreasureViewModel : UpdateableElementViewModel
       description = data.Description;
       quantity = data.Quantity;
 
-      apparentValue = data.ApparentValue;
+      value = data.Value;
 
-      trueValue = data.MagicItemTrueValue ?? 0;
+      apparentValue = data.MagicItemApparentValue ?? 0;
       identificationStatus = data.MagicItemIdentificationStatus.HasValue
          ? IdentificationVM.Identifications[(int)data.MagicItemIdentificationStatus.Value]
          : IdentificationVM.FullyIdentified;
@@ -96,7 +96,7 @@ public partial class TreasureViewModel : UpdateableElementViewModel
 
    public string Description { get => description; set => SetUpdatableProperty(ref description, value); }
    public int Quantity { get => quantity; set => SetUpdatableProperty(ref quantity, value); }
-   public double ApparentValue { get => (double)apparentValue; set => SetUpdatableProperty(ref apparentValue, (decimal)value); }
+   public double Value { get => (double)value; set => SetUpdatableProperty(ref this.value, (decimal)value); }
    public double Weight { get => (double)weight; set => SetUpdatableProperty(ref weight, (decimal)value); }
 
    public TreasureLocationTypeViewModel SelectedLocationType { get => locationType; set => SetUpdatableProperty(ref locationType, value); }
@@ -104,11 +104,9 @@ public partial class TreasureViewModel : UpdateableElementViewModel
    public string StoreLocation { get => storeLocation; set => SetUpdatableProperty(ref storeLocation, value); }
 
    [ObservableProperty]
-   [MemberNotNullWhen(true, nameof(TrueValue))]
-   [MemberNotNullWhen(true, nameof(TrueValue))]
    public partial bool IsMagicItem { get; set; }
 
-   public double TrueValue { get => IsMagicItem ? (double)trueValue : 0; set => SetUpdatableProperty(ref trueValue, (decimal)value); }
+   public double ApparentValue { get => IsMagicItem ? (double)apparentValue : 0; set => SetUpdatableProperty(ref apparentValue, (decimal)value); }
    public IdentificationVM Identification {
       get => IsMagicItem ? identificationStatus : IdentificationVM.FullyIdentified;
       set => SetUpdatableProperty(ref identificationStatus, value);
@@ -132,11 +130,11 @@ public partial class TreasureViewModel : UpdateableElementViewModel
 
       entity.Description = description;
       entity.Quantiy = quantity;
-      entity.ApparentValue = apparentValue;
+      entity.Value = value;
 
       if (IsMagicItem)
       {
-         entity.MagicItemDetails = new MagicItemDetails(trueValue, identificationStatus.Value);
+         entity.MagicItemDetails = new MagicItemDetails(apparentValue, identificationStatus.Value);
       }
       else
       {

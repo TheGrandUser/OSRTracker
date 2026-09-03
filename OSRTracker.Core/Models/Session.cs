@@ -29,7 +29,7 @@ public class Session
    public DateTime Date { get; set; }
    public string? Title { get; set; }
 
-   public List<Character> Characters { get; set; } = [];
+   public List<SessionCharacter> Characters { get; set; } = [];
    public List<SessionDelve> Delves { get; set; } = [];
 
 
@@ -42,4 +42,15 @@ public enum SessionStatus
 {
    Active = 0,
    Finished,
+}
+
+public class SessionCharacter
+{
+   public SessionId SessionId { get; set; }
+   public Session Session { get; set; } = null!;
+   public CharacterId CharacterId { get; set; }
+   public Character Character { get; set; } = null!;
+
+
+   public int AppliedXP { get; set; }
 }

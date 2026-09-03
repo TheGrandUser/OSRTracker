@@ -19,8 +19,8 @@ public class SessionDelve
    public required SessionId SessionId { get; set; }
    public required DelveId DelveId { get; set; }
 
-   public required Session Session { get; set; }
-   public required Delve Delve { get; set; }
+   public Session Session { get; set; } = null!;
+   public Delve Delve { get; set; } = null!;
 
    public string Notes { get; set; } = string.Empty;
 

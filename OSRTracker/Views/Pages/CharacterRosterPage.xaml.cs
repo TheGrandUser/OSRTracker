@@ -23,11 +23,11 @@ namespace OSRTracker.Views.Pages;
 /// </summary>
 public sealed partial class CharacterRosterPage : Page
 {
-   public CharacterRosterViewModel ViewModel { get; }
+   public CharacterRosterPageViewModel ViewModel { get; }
 
    public CharacterRosterPage()
    {
-      ViewModel = App.GetService<CharacterRosterViewModel>();
+      ViewModel = App.GetService<CharacterRosterPageViewModel>();
       DataContext = ViewModel;
       InitializeComponent();
 

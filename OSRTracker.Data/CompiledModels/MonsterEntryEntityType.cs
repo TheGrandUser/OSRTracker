@@ -22,7 +22,7 @@ namespace OSRTracker.Data.CompiledModels
                 "OSRTracker.Models.MonsterEntry",
                 typeof(MonsterEntry),
                 baseEntityType,
-                propertyCount: 7,
+                propertyCount: 8,
                 navigationCount: 2,
                 foreignKeyCount: 2,
                 unnamedIndexCount: 2,
@@ -39,6 +39,8 @@ namespace OSRTracker.Data.CompiledModels
                 int (MonsterEntryId x) => x.Value,
                 MonsterEntryId (int id) => new MonsterEntryId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
             var delveId = runtimeEntityType.AddProperty(
                 "DelveId",
@@ -46,6 +48,13 @@ namespace OSRTracker.Data.CompiledModels
                 propertyInfo: typeof(MonsterEntry).GetProperty("DelveId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(MonsterEntry).GetField("<DelveId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 nullable: true);
+
+            var hasBeenApplied = runtimeEntityType.AddProperty(
+                "HasBeenApplied",
+                typeof(bool),
+                propertyInfo: typeof(MonsterEntry).GetProperty("HasBeenApplied", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MonsterEntry).GetField("<HasBeenApplied>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: false);
 
             var name = runtimeEntityType.AddProperty(
                 "Name",

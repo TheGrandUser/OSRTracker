@@ -39,6 +39,8 @@ namespace OSRTracker.Data.CompiledModels
                 int (SessionDelveId x) => x.Value,
                 SessionDelveId (int id) => new SessionDelveId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
             var delveId = runtimeEntityType.AddProperty(
                 "DelveId",

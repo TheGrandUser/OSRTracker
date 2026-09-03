@@ -29,6 +29,7 @@
     <None Remove="Views\Dialogs\InputPromptDialog.xaml" />
     <None Remove="Views\MainPage.xaml" />
     <None Remove="Views\Pages\CharacterRosterPage.xaml" />
+    <None Remove="Views\Pages\GamePlay\ApplyDelveXPDialog.xaml" />
     <None Remove="Views\Pages\GamePlay\ApplySessionXPDialog.xaml" />
     <None Remove="Views\Pages\Main\CampaignStateView.xaml" />
     <None Remove="Views\Pages\Main\CreateSessionTrackDialog.xaml" />
@@ -136,6 +137,12 @@
 
   <ItemGroup>
     <Folder Include="Views\Pages\SystemEditor\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Pages\GamePlay\ApplyDelveXPDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

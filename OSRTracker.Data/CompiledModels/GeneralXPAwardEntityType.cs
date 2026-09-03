@@ -22,7 +22,7 @@ namespace OSRTracker.Data.CompiledModels
                 "OSRTracker.Models.GeneralXPAward",
                 typeof(GeneralXPAward),
                 baseEntityType,
-                propertyCount: 5,
+                propertyCount: 6,
                 navigationCount: 2,
                 skipNavigationCount: 1,
                 foreignKeyCount: 2,
@@ -40,6 +40,8 @@ namespace OSRTracker.Data.CompiledModels
                 int (GeneralXPAwardId x) => x.Value,
                 GeneralXPAwardId (int id) => new GeneralXPAwardId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
             var amount = runtimeEntityType.AddProperty(
                 "Amount",
@@ -60,6 +62,13 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(string),
                 propertyInfo: typeof(GeneralXPAward).GetProperty("Description", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(GeneralXPAward).GetField("<Description>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            var hasBeenApplied = runtimeEntityType.AddProperty(
+                "HasBeenApplied",
+                typeof(bool),
+                propertyInfo: typeof(GeneralXPAward).GetProperty("HasBeenApplied", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(GeneralXPAward).GetField("<HasBeenApplied>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: false);
 
             var sessionId = runtimeEntityType.AddProperty(
                 "SessionId",

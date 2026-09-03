@@ -15,7 +15,7 @@ public readonly record struct MonsterEntryId(int Value) : IEntityId<MonsterEntry
 
 public class MonsterEntry
 {
-    public MonsterEntryId Id { get; set; }
+   public MonsterEntryId Id { get; set; }
    public SessionId SessionId { get; set; }
    public required Session Session { get; set; }
 
@@ -23,8 +23,9 @@ public class MonsterEntry
    public Delve? Delve { get; set; }
 
    public required string Name { get; set; }
-    public int Quantity { get; set; }
+   public int Quantity { get; set; }
 
-    public int XPValue { get; set; }
-    public string? Notes { get; set; }
+   public int XPValue { get; set; }
+   public string? Notes { get; set; }
+   public bool HasBeenApplied { get; set; }
 }

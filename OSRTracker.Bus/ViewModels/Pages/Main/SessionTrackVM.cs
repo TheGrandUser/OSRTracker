@@ -8,22 +8,6 @@ using OSRTracker.Models;
 
 namespace OSRTracker.ViewModels.Pages.Main;
 
-public sealed class SessionTrackData
-{
-   public SessionTrackId Id { get; set; }
-   public string Name { get; set; } = string.Empty;
-   public string? GroupDescription { get; set; }
-   public SessionId? CurrentSessionId { get; set; }
-   public string? CurrentSessionNumber { get; set; }
-   public string? CurrentSessionTitle { get; set; }
-
-
-   public bool HasDelve => CurrentDelveId.HasValue;
-
-   public DelveId? CurrentDelveId { get; set; }
-   public string? CurrentDelve { get; set; }
-}
-
 public enum SessionState
 {
    NoSession,
@@ -31,7 +15,7 @@ public enum SessionState
    ActiveSession,
 }
 
-public sealed partial class SessionTrackVM(IAppStateService appStateService, IAppDbContextFactory appDbContextFactory) : SessionTrackItem
+public sealed partial class SessionTrackVM(IAppDbContextFactory appDbContextFactory) : SessionTrackItem
 {
    public SessionTrackId Id { get; set; }
    [ObservableProperty]
@@ -41,7 +25,8 @@ public sealed partial class SessionTrackVM(IAppStateService appStateService, IAp
 
    public bool HasSession => CurrentSessionId.HasValue;
 
-   public bool IsActiveSession => this.Id == appStateService.ActiveSessionTrackId;
+   [ObservableProperty]
+   public partial bool IsActiveSession { get; set; }
 
    public SessionId? CurrentSessionId {
       get;
@@ -76,10 +61,11 @@ public sealed partial class SessionTrackVM(IAppStateService appStateService, IAp
 
    public ObservableCollection<CharacterSummaryVM> Characters { get; set; } = [];
 
-   internal void OnActiveSessionChanged()
+   internal void OnActiveSessionChanged(SessionTrackId? activeSessionTrackId)
    {
+      IsActiveSession = Id == activeSessionTrackId;
+
       OnPropertyChanged(nameof(HasSession));
-      OnPropertyChanged(nameof(IsActiveSession));
    }
 
    public void DragOverHandler(object sender, DragEventArgs args)

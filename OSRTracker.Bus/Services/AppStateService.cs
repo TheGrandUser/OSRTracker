@@ -35,10 +35,14 @@ public class AppStateService(IServiceProvider serviceProvider, IAppDbContextFact
 
       dbContextFactory.SetDbPath(path);
 
+
+      await Task.Run(async () =>
+      {
+         using var migrateDbContext = dbContextFactory.CreateDbContext();
+         await migrateDbContext.Database.MigrateAsync();
+      });
+
       using var dbContext = dbContextFactory.CreateDbContext();
-
-      await dbContext.Database.MigrateAsync();
-
       var campaign = new CampaignSettings()
       {
          Name = campaignName,
@@ -93,14 +97,18 @@ public class AppStateService(IServiceProvider serviceProvider, IAppDbContextFact
       
       dbContextFactory.SetDbPath(path);
 
-      using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
       var gotDbTime = watch.Elapsed;
 
-      await dbContext.Database.MigrateAsync();
+      await Task.Run(async () =>
+      {
+         using var migrateDbContext = await dbContextFactory.CreateDbContextAsync();
+         await migrateDbContext.Database.MigrateAsync();
+      });
 
       var afterMigrateCheckTime = watch.Elapsed;
 
+      using var dbContext = await dbContextFactory.CreateDbContextAsync();
       var campaign = await dbContext.CampaignSettings.FindAsync(new CampaignId(1));
 
       Campaign = campaign;

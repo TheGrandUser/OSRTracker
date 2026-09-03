@@ -22,7 +22,7 @@ namespace OSRTracker.Data.CompiledModels
                 "OSRTracker.Models.TreasureEntry",
                 typeof(TreasureEntry),
                 baseEntityType,
-                propertyCount: 8,
+                propertyCount: 10,
                 complexPropertyCount: 2,
                 navigationCount: 2,
                 foreignKeyCount: 2,
@@ -40,13 +40,15 @@ namespace OSRTracker.Data.CompiledModels
                 int (TreasureEntryId x) => x.Value,
                 TreasureEntryId (int id) => new TreasureEntryId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
 
-            var apparentValue = runtimeEntityType.AddProperty(
-                "ApparentValue",
-                typeof(decimal),
-                propertyInfo: typeof(TreasureEntry).GetProperty("ApparentValue", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                fieldInfo: typeof(TreasureEntry).GetField("<ApparentValue>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                sentinel: 0m);
+            var applicationStatus = runtimeEntityType.AddProperty(
+                "ApplicationStatus",
+                typeof(TreasureEntryApplicationStatus),
+                propertyInfo: typeof(TreasureEntry).GetProperty("ApplicationStatus", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(TreasureEntry).GetField("<ApplicationStatus>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            applicationStatus.SetSentinelFromProviderValue(0);
 
             var delveId = runtimeEntityType.AddProperty(
                 "DelveId",
@@ -75,12 +77,26 @@ namespace OSRTracker.Data.CompiledModels
                 fieldInfo: typeof(TreasureEntry).GetField("<Quantiy>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0);
 
+            var saleStatus = runtimeEntityType.AddProperty(
+                "SaleStatus",
+                typeof(TreasureSale),
+                propertyInfo: typeof(TreasureEntry).GetProperty("SaleStatus", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(TreasureEntry).GetField("<SaleStatus>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            saleStatus.SetSentinelFromProviderValue(0);
+
             var sessionId = runtimeEntityType.AddProperty(
                 "SessionId",
                 typeof(SessionId),
                 propertyInfo: typeof(TreasureEntry).GetProperty("SessionId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(TreasureEntry).GetField("<SessionId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
             sessionId.SetSentinelFromProviderValue(0);
+
+            var value = runtimeEntityType.AddProperty(
+                "Value",
+                typeof(decimal),
+                propertyInfo: typeof(TreasureEntry).GetProperty("Value", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(TreasureEntry).GetField("<Value>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0m);
 
             var weight = runtimeEntityType.AddProperty(
                 "Weight",
@@ -119,10 +135,13 @@ namespace OSRTracker.Data.CompiledModels
                 var complexType = complexProperty.ComplexType;
                 var characterId = complexType.AddProperty(
                     "CharacterId",
-                    typeof(int?),
+                    typeof(CharacterId?),
                     propertyInfo: typeof(LocationReference).GetProperty("CharacterId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                     fieldInfo: typeof(LocationReference).GetField("<CharacterId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                     nullable: true);
+                characterId.SetValueConverter(new ValueConverter<CharacterId?, int?>(
+                    int? (CharacterId? x) => (x.HasValue ? ((int? )(x.Value.Value)) : null),
+                    CharacterId? (int? id) => (id.HasValue ? ((CharacterId? )(new CharacterId(id.Value))) : null)));
                 characterId.AddAnnotation("Relational:ColumnName", "LocCharacterId");
 
                 var storeDescription = complexType.AddProperty(
@@ -165,19 +184,19 @@ namespace OSRTracker.Data.CompiledModels
                     propertyCount: 2);
 
                 var complexType = complexProperty.ComplexType;
+                var apparentValue = complexType.AddProperty(
+                    "ApparentValue",
+                    typeof(decimal),
+                    propertyInfo: typeof(MagicItemDetails).GetProperty("ApparentValue", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                    fieldInfo: typeof(MagicItemDetails).GetField("<ApparentValue>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                    sentinel: 0m);
+
                 var identificationStatus = complexType.AddProperty(
                     "IdentificationStatus",
                     typeof(IdentificationStatus),
                     propertyInfo: typeof(MagicItemDetails).GetProperty("IdentificationStatus", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                     fieldInfo: typeof(MagicItemDetails).GetField("<IdentificationStatus>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
                 identificationStatus.SetSentinelFromProviderValue(0);
-
-                var trueValue = complexType.AddProperty(
-                    "TrueValue",
-                    typeof(decimal?),
-                    propertyInfo: typeof(MagicItemDetails).GetProperty("TrueValue", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                    fieldInfo: typeof(MagicItemDetails).GetField("<TrueValue>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
-                    nullable: true);
 
                 complexType.AddAnnotation("Relational:FunctionName", null);
                 complexType.AddAnnotation("Relational:Schema", null);

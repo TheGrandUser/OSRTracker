@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
@@ -9,18 +7,9 @@ using OSRTracker.Contracts.Services;
 using OSRTracker.Services;
 using OSRTracker.Data.Contracts.Services;
 using OSRTracker.Models;
-using OSRTracker.ViewModels;
-using OSRTracker.ViewModels.Pages;
-using OSRTracker.ViewModels.Pages.CharacterRoster;
-using OSRTracker.ViewModels.Pages.Main;
-using OSRTracker.ViewModels.Pages.SystemEditor;
 using OSRTracker.Views;
-using OSRTracker.Views.Pages;
-using OSRTracker.Views.Pages.Main;
 using Windows.ApplicationModel;
-using OSRTracker.ViewModels.Pages.GamePlay;
-using OSRTracker.Views.Pages.GamePlay;
-using OSRTracker.ViewModels.Pages.GamePlay.Data;
+using OSRTracker.Data.Services;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -101,39 +90,29 @@ public partial class App : Application
 
 
          // Core Services
+         services.AddTransient<ISessionManager, SessionManager>();
          services.AddTransient<IRpgSystemFileService, RpgSystemFileService>();
+         services.AddTransient<ITimeSource, SystemTimeService>();
          services.AddSingleton<IFileService, FileService>();
 
          services.AddSingleton<IAppStateService, AppStateService>();
 
          services.AddSingleton<IAppDbContextFactory, AppDbContextFactory2>();
 
-         services.AddTransient<IGamePlayDataRepo, GamePlayDataRepo>();
+         services.AddViews();
+         services.AddMappers();
+
          services.AddTransient<IAppInfoService, AppInfoService>();
          services.AddTransient<IDialogService, DialogService>();
-
-         // Views and ViewModels
-         services.AddTransient<ShellPage>();
-         services.AddTransient<ShellViewModel>();
-
-         services.AddTransient<MainViewModel>();
-         services.AddTransient<WelcomeStateViewModel>();
-         services.AddTransient<CampaignStateViewModel>();
-         services.AddTransient<MainPage>();
-
-         services.AddTransient<SystemEditorViewModel>();
-         services.AddTransient<SystemEditorPage>();
-
-         services.AddTransient<CharacterRosterViewModel>();
-         services.AddTransient<CharacterRosterPage>();
-
-         services.AddTransient<GamePlayViewModel>();
-         services.AddTransient<GamePlayPage>();
+         services.AddTransient<IXPCalculationService, XPCalculationService>();
 
          // Configuration
          services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
-      }).
-      Build();
+      })
+
+      
+      
+      .Build();
 
       UnhandledException += App_UnhandledException;
    }

@@ -11,7 +11,7 @@ namespace OSRTracker.Data.CompiledModels
     public partial class AppDbContextModel
     {
         private AppDbContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("8b362745-41a7-4796-928f-66f3f5e1e284"), entityTypeCount: 17)
+            : base(skipDetectChanges: false, modelId: new Guid("25b5a0e2-d3cb-4294-9b93-6e15d0c695a8"), entityTypeCount: 18)
         {
         }
 
@@ -19,17 +19,18 @@ namespace OSRTracker.Data.CompiledModels
         {
             var attributeDefinitionClassDefinition = AttributeDefinitionClassDefinitionEntityType.Create(this);
             var characterGeneralXPAward = CharacterGeneralXPAwardEntityType.Create(this);
-            var characterSession = CharacterSessionEntityType.Create(this);
             var attributeDefinition = AttributeDefinitionEntityType.Create(this);
             var campaignSettings = CampaignSettingsEntityType.Create(this);
             var character = CharacterEntityType.Create(this);
             var classDefinition = ClassDefinitionEntityType.Create(this);
             var currencyDefinition = CurrencyDefinitionEntityType.Create(this);
             var delve = DelveEntityType.Create(this);
+            var delveCharacter = DelveCharacterEntityType.Create(this);
             var generalXPAward = GeneralXPAwardEntityType.Create(this);
             var levelXPRequirement = LevelXPRequirementEntityType.Create(this);
             var monsterEntry = MonsterEntryEntityType.Create(this);
             var session = SessionEntityType.Create(this);
+            var sessionCharacter = SessionCharacterEntityType.Create(this);
             var sessionDelve = SessionDelveEntityType.Create(this);
             var sessionTrack = SessionTrackEntityType.Create(this);
             var sessionTrackCharacter = SessionTrackCharacterEntityType.Create(this);
@@ -39,16 +40,18 @@ namespace OSRTracker.Data.CompiledModels
             AttributeDefinitionClassDefinitionEntityType.CreateForeignKey2(attributeDefinitionClassDefinition, attributeDefinition);
             CharacterGeneralXPAwardEntityType.CreateForeignKey1(characterGeneralXPAward, character);
             CharacterGeneralXPAwardEntityType.CreateForeignKey2(characterGeneralXPAward, generalXPAward);
-            CharacterSessionEntityType.CreateForeignKey1(characterSession, character);
-            CharacterSessionEntityType.CreateForeignKey2(characterSession, session);
             CharacterEntityType.CreateForeignKey1(character, classDefinition);
             DelveEntityType.CreateForeignKey1(delve, sessionTrack);
+            DelveCharacterEntityType.CreateForeignKey1(delveCharacter, character);
+            DelveCharacterEntityType.CreateForeignKey2(delveCharacter, delve);
             GeneralXPAwardEntityType.CreateForeignKey1(generalXPAward, delve);
             GeneralXPAwardEntityType.CreateForeignKey2(generalXPAward, session);
             LevelXPRequirementEntityType.CreateForeignKey1(levelXPRequirement, classDefinition);
             MonsterEntryEntityType.CreateForeignKey1(monsterEntry, delve);
             MonsterEntryEntityType.CreateForeignKey2(monsterEntry, session);
             SessionEntityType.CreateForeignKey1(session, sessionTrack);
+            SessionCharacterEntityType.CreateForeignKey1(sessionCharacter, character);
+            SessionCharacterEntityType.CreateForeignKey2(sessionCharacter, session);
             SessionDelveEntityType.CreateForeignKey1(sessionDelve, delve);
             SessionDelveEntityType.CreateForeignKey2(sessionDelve, session);
             SessionTrackCharacterEntityType.CreateForeignKey1(sessionTrackCharacter, character);
@@ -58,26 +61,25 @@ namespace OSRTracker.Data.CompiledModels
 
             AttributeDefinitionEntityType.CreateSkipNavigation1(attributeDefinition, classDefinition, attributeDefinitionClassDefinition);
             CharacterEntityType.CreateSkipNavigation1(character, generalXPAward, characterGeneralXPAward);
-            CharacterEntityType.CreateSkipNavigation2(character, session, characterSession);
-            CharacterEntityType.CreateSkipNavigation3(character, sessionTrack, sessionTrackCharacter);
+            CharacterEntityType.CreateSkipNavigation2(character, sessionTrack, sessionTrackCharacter);
             ClassDefinitionEntityType.CreateSkipNavigation1(classDefinition, attributeDefinition, attributeDefinitionClassDefinition);
             GeneralXPAwardEntityType.CreateSkipNavigation1(generalXPAward, character, characterGeneralXPAward);
-            SessionEntityType.CreateSkipNavigation1(session, character, characterSession);
             SessionTrackEntityType.CreateSkipNavigation1(sessionTrack, character, sessionTrackCharacter);
 
             AttributeDefinitionClassDefinitionEntityType.CreateAnnotations(attributeDefinitionClassDefinition);
             CharacterGeneralXPAwardEntityType.CreateAnnotations(characterGeneralXPAward);
-            CharacterSessionEntityType.CreateAnnotations(characterSession);
             AttributeDefinitionEntityType.CreateAnnotations(attributeDefinition);
             CampaignSettingsEntityType.CreateAnnotations(campaignSettings);
             CharacterEntityType.CreateAnnotations(character);
             ClassDefinitionEntityType.CreateAnnotations(classDefinition);
             CurrencyDefinitionEntityType.CreateAnnotations(currencyDefinition);
             DelveEntityType.CreateAnnotations(delve);
+            DelveCharacterEntityType.CreateAnnotations(delveCharacter);
             GeneralXPAwardEntityType.CreateAnnotations(generalXPAward);
             LevelXPRequirementEntityType.CreateAnnotations(levelXPRequirement);
             MonsterEntryEntityType.CreateAnnotations(monsterEntry);
             SessionEntityType.CreateAnnotations(session);
+            SessionCharacterEntityType.CreateAnnotations(sessionCharacter);
             SessionDelveEntityType.CreateAnnotations(sessionDelve);
             SessionTrackEntityType.CreateAnnotations(sessionTrack);
             SessionTrackCharacterEntityType.CreateAnnotations(sessionTrackCharacter);

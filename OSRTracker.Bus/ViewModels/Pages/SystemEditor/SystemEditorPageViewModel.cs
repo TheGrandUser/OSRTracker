@@ -19,7 +19,7 @@ using ThrottleDebounce;
 
 namespace OSRTracker.ViewModels.Pages.SystemEditor;
 
-public partial class SystemEditorViewModel : ObservableObject, INavigationAware
+public partial class SystemEditorPageViewModel : ObservableObject, INavigationAware
 {
    private readonly IAppDbContextFactory contextFactory;
    private readonly IRpgSystemFileService rpgSystemFileService;
@@ -33,7 +33,7 @@ public partial class SystemEditorViewModel : ObservableObject, INavigationAware
    private readonly ObservableCollection<AttributeDefinitionViewModel> attributes = [];
    private readonly ObservableCollection<AttributeDefinition> attributeDefinitions = [];
 
-   public SystemEditorViewModel(IAppDbContextFactory contextFactory, IRpgSystemFileService rpgSystemFileService, IDialogService dialogService)
+   public SystemEditorPageViewModel(IAppDbContextFactory contextFactory, IRpgSystemFileService rpgSystemFileService, IDialogService dialogService)
    {
       this.contextFactory = contextFactory;
       this.rpgSystemFileService = rpgSystemFileService;

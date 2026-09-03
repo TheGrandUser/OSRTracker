@@ -23,11 +23,11 @@ namespace OSRTracker.Views.Pages;
 /// </summary>
 public sealed partial class SystemEditorPage : Page
 {
-   public SystemEditorViewModel ViewModel { get; }
+   public SystemEditorPageViewModel ViewModel { get; }
 
    public SystemEditorPage()
    {
-      ViewModel = App.GetService<SystemEditorViewModel>();
+      ViewModel = App.GetService<SystemEditorPageViewModel>();
       InitializeComponent();
    }
 }

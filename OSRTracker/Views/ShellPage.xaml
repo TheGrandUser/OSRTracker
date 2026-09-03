@@ -46,27 +46,27 @@
             TODO: Update item icons by updating FontIcon.Glyph properties.
             https://docs.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font#icon-list
             -->
-        <NavigationViewItem x:Uid="Shell_Main" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.Main.MainViewModel">
+        <NavigationViewItem x:Uid="Shell_Main" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.Main.MainPageViewModel">
           <NavigationViewItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
           </NavigationViewItem.Icon>
         </NavigationViewItem>
         
-        <NavigationViewItem x:Uid="Shell_SystemEditor" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.SystemEditor.SystemEditorViewModel"
+        <NavigationViewItem x:Uid="Shell_SystemEditor" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.SystemEditor.SystemEditorPageViewModel"
                             IsEnabled="{x:Bind ViewModel.IsProjectOpened, Mode=OneWay}">
           <NavigationViewItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe713;"/>
           </NavigationViewItem.Icon>
         </NavigationViewItem>
         
-        <NavigationViewItem x:Uid="Shell_CharacterRoster" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.CharacterRoster.CharacterRosterViewModel"
+        <NavigationViewItem x:Uid="Shell_CharacterRoster" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.CharacterRoster.CharacterRosterPageViewModel"
                             IsEnabled="{x:Bind ViewModel.IsProjectOpened, Mode=OneWay}">
           <NavigationViewItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe716;"/>
           </NavigationViewItem.Icon>
         </NavigationViewItem>
         
-        <NavigationViewItem x:Uid="Shell_GamePlay" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.GamePlay.GamePlayViewModel"
+        <NavigationViewItem x:Uid="Shell_GamePlay" helpers:NavigationHelper.NavigateTo="OSRTracker.ViewModels.Pages.GamePlay.GamePlayPageViewModel"
                             IsEnabled="{x:Bind ViewModel.IsProjectOpened, Mode=OneWay}">
           <NavigationViewItem.Icon>
             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe902;"/>

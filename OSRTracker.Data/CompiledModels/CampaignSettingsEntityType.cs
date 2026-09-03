@@ -4,6 +4,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using OSRTracker.Contracts.Services;
 using OSRTracker.Models;
 
 #pragma warning disable 219, 612, 618
@@ -20,7 +21,7 @@ namespace OSRTracker.Data.CompiledModels
                 "OSRTracker.Models.CampaignSettings",
                 typeof(CampaignSettings),
                 baseEntityType,
-                propertyCount: 3,
+                propertyCount: 5,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -34,6 +35,15 @@ namespace OSRTracker.Data.CompiledModels
                 int (CampaignId x) => x.Value,
                 CampaignId (int id) => new CampaignId(id)));
             id.SetSentinelFromProviderValue(0);
+            id.AddAnnotation("Relational:ColumnType", "INTEGER");
+            id.AddAnnotation("Sqlite:ValueGenerationStrategy", SqliteValueGenerationStrategy.Autoincrement);
+
+            var delveCalcMethod = runtimeEntityType.AddProperty(
+                "DelveCalcMethod",
+                typeof(DelveCalculationMethod),
+                propertyInfo: typeof(CampaignSettings).GetProperty("DelveCalcMethod", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(CampaignSettings).GetField("<DelveCalcMethod>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            delveCalcMethod.SetSentinelFromProviderValue(0);
 
             var name = runtimeEntityType.AddProperty(
                 "Name",
@@ -46,6 +56,13 @@ namespace OSRTracker.Data.CompiledModels
                 typeof(string),
                 propertyInfo: typeof(CampaignSettings).GetProperty("SystemName", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(CampaignSettings).GetField("<SystemName>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            var xPForFirstLevel = runtimeEntityType.AddProperty(
+                "XPForFirstLevel",
+                typeof(int),
+                propertyInfo: typeof(CampaignSettings).GetProperty("XPForFirstLevel", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(CampaignSettings).GetField("<XPForFirstLevel>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
 
             var key = runtimeEntityType.AddKey(
                 new[] { id });

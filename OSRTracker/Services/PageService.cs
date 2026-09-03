@@ -22,10 +22,10 @@ public class PageService : IPageService
 
    public PageService()
    {
-      Configure<MainViewModel, MainPage>();
-      Configure<SystemEditorViewModel, SystemEditorPage>();
-      Configure<CharacterRosterViewModel, CharacterRosterPage>();
-      Configure<GamePlayViewModel, GamePlayPage>();
+      Configure<MainPageViewModel, MainPage>();
+      Configure<SystemEditorPageViewModel, SystemEditorPage>();
+      Configure<CharacterRosterPageViewModel, CharacterRosterPage>();
+      Configure<GamePlayPageViewModel, GamePlayPage>();
    }
 
    public Type GetPageType(string key)

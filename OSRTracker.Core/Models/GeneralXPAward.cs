@@ -26,4 +26,6 @@ public class GeneralXPAward
    public List<Character> Characters { get; set; } = [];
 
    public string Description { get; set; } = string.Empty;
+
+   public bool HasBeenApplied { get; set; }
 }

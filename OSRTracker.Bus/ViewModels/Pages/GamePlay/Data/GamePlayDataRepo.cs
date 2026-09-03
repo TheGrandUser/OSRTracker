@@ -13,6 +13,7 @@ public interface IGamePlayDataRepo
 {
    Task<List<SessionTrackItem>> GetSessionTracks();
    Task<GamePlayData?> GetGamePlayDataAsync(SessionTrackId sessionTrackId);
+   Task<SessionTrackId> GetDefaultSessionTrackId();
 }
 
 public class GamePlayDataRepo(IAppDbContextFactory dbContextFactory) : IGamePlayDataRepo
@@ -59,16 +60,17 @@ public class GamePlayDataRepo(IAppDbContextFactory dbContextFactory) : IGamePlay
          return null;
       }
 
-      var classes = (await connection.QueryAsync<ClassDefinition>("""
-         SELECT cd.Id, cd.Name, cd.Description, cd.HitDie, cd.PrimaryAbility, cd.SavingThrowProficiencies, cd.SkillProficiencies
+      var classes = (await connection.QueryAsync<ClassLevels>("""
+         SELECT cd.Id, cd.Name, cd.LevelXP
+         FROM ClassDefinitions as cd
          """)).ToList();
 
       var characters = (await connection.QueryAsync<CharacterDto>("""
-         SELECT c.Id, c.Name, c.CurrentXP as XP, cd.Level, cd.Id as ClassId, cd.Name as ClassName, sc.CharactersId IS NOT NULL as InSession, c.XPBonus
+         SELECT c.Id, c.Name, c.CurrentXP as XP, c.Level, cd.Id as ClassId, sc.CharacterId IS NOT NULL as InSession, c.XPBonus
          FROM Characters as c
          JOIN SessionTracksCharacters stc ON stc.SessionTrackId = @SessionTrackId AND stc.CharacterId = c.Id
          LEFT JOIN ClassDefinitions cd ON cd.Id = c.ClassId
-         LEFT JOIN SessionCharacters sc ON sc.SessionId = @SessionId AND sc.CharactersId = c.Id
+         LEFT JOIN SessionCharacters sc ON sc.SessionId = @SessionId AND sc.CharacterId = c.Id
          """,
          new { SessionTrackId = sessionTrackId, sessionTrackDto.SessionId })).ToList();
 
@@ -120,11 +122,11 @@ public class GamePlayDataRepo(IAppDbContextFactory dbContextFactory) : IGamePlay
          }
 
          var treasureQuery = await connection.QueryAsync<TreasureEntryDto>("""
-            SELECT te.Id, te.ApparentValue, te.Description, te.LocType as LocationType, te.LocCharacterId, te.LocStore, 
-            	    te.MagicItemDetails_IdentificationStatus as IsMagicItemIdentified, te.MagicItemDetails_TrueValue MagicItemTrueValue
+            SELECT te.Id, te.Value, te.Description, te.LocType as LocationType, te.LocCharacterId, te.LocStore, 
+            	    te.MagicItemDetails_IdentificationStatus as IsMagicItemIdentified, te.MagicItemDetails_ApparentValue as MagicItemTrueValue,
             	    te.Notes, te.Quantiy as Quantity, te.Weight, te.DelveId
             FROM TreasureEntries as te
-            WHERE te.SessionId = 1
+            WHERE te.SessionId = @SessionId
             """, new { SessionId = sessionTrackDto.SessionId.Value });
 
          foreach (var te in treasureQuery)
@@ -171,4 +173,15 @@ public class GamePlayDataRepo(IAppDbContextFactory dbContextFactory) : IGamePlay
       return data;
    }
 
+   public async Task<SessionTrackId> GetDefaultSessionTrackId()
+   {
+      using var dbContext = dbContextFactory.CreateDbContext();
+      await dbContext.Database.OpenConnectionAsync();
+
+      var connection = dbContext.Database.GetDbConnection();
+
+      var id = await connection.QueryFirstOrDefaultAsync<int>("""SELECT st.Id FROM SessionTracks st ORDER BY st.Id LIMIT 1""");
+
+      return new SessionTrackId(id);
+   }
 }

@@ -23,11 +23,11 @@ namespace OSRTracker.Views.Pages.GamePlay;
 /// </summary>
 public sealed partial class GamePlayPage : Page
 {
-   public GamePlayViewModel ViewModel { get; set; }
+   public GamePlayPageViewModel ViewModel { get; set; }
 
    public GamePlayPage()
    {
-      ViewModel = App.GetService<GamePlayViewModel>();
+      ViewModel = App.GetService<GamePlayPageViewModel>();
       DataContext = ViewModel;
       InitializeComponent();
    }

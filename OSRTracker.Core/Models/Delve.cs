@@ -29,10 +29,23 @@ public class Delve
    public List<TreasureEntry> Treasures { get; set; } = [];
    public List<MonsterEntry> Monsters { get; set; } = [];
    public List<GeneralXPAward> GeneralXPAwards { get; set; } = [];
+
+   public List<DelveCharacter> Characters { get; set; } = [];
 }
 
 public enum DelveStatus
 {
    Active,
    Completed,
+}
+
+public class DelveCharacter
+{
+   public required DelveId DelveId { get; set; }
+   public Delve Delve { get; set; } = null!;
+   public required CharacterId CharacterId { get; set; }
+   public Character Character { get; set; } = null!;
+
+
+   public int AppliedXP { get; set; }
 }

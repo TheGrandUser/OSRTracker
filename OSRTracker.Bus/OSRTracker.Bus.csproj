@@ -1,14 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <RootNamespace>OSRTracker</RootNamespace>
-    <UseWinUI>true</UseWinUI>
-    <WinUISDKReferences>false</WinUISDKReferences>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<RootNamespace>OSRTracker</RootNamespace>
+		<UseWinUI>true</UseWinUI>
+		<WinUISDKReferences>false</WinUISDKReferences>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-  <ItemGroup>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.Collections" Version="8.2.251219" />
 		<PackageReference Include="Dapper" Version="2.1.79" />
@@ -22,10 +24,10 @@
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.2.0" />
 		<PackageReference Include="ThrottleDebounce" Version="2.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.9" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OSRTracker.Core\OSRTracker.Core.csproj" />
-    <ProjectReference Include="..\OSRTracker.Data\OSRTracker.Data.csproj" />
-    <ProjectReference Include="..\WinUIEx.Generators\WinUIEx.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-  </ItemGroup>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\OSRTracker.Core\OSRTracker.Core.csproj" />
+		<ProjectReference Include="..\OSRTracker.Data\OSRTracker.Data.csproj" />
+		<ProjectReference Include="..\WinUIEx.Generators\WinUIEx.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
 </Project>

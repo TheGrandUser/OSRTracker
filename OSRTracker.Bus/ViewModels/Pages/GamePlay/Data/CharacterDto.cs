@@ -10,7 +10,6 @@ public class CharacterDto
 
    public int Level { get; set; }
    public ClassDefinitionId? ClassId { get; set; }
-   public string? ClassName { get; set; } = string.Empty;
 
    public bool InSession { get; set; }
    public decimal XPBonus { get; set; }

@@ -37,28 +37,80 @@
     
     -->
 
-    <ComboBox ItemsSource="{x:Bind ViewModel.SessionTracks}" SelectedItem="{x:Bind ViewModel.CurrentTrackItem, Mode=TwoWay}" />
+    <Grid.RowDefinitions>
 
-    <TextBox Text="{Binding CurrentTrack.TrackName, FallbackValue='', Mode=TwoWay}" Style="{StaticResource InlineTitleTextBoxStyle}" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
 
-    <TextBox Text="{Binding CurrentTrack.GroupDescription, FallbackValue='', Mode=TwoWay}" Height="80"
-             Header="Group Description"/>
+    </Grid.RowDefinitions>
 
-    
-    
 
-    <TextBox Text="{x:Bind ViewModel.CurrentSession.SessionTitle, FallbackValue='', Mode=TwoWay}" Style="{StaticResource InlineSubtitleTextBoxStyle}"
-             Header="{x:Bind ViewModel.CurrentSession.SessionNumber, Mode=OneWay}" />
-    <TextBox Text="{x:Bind ViewModel.CurrentSession.SessionNotes, FallbackValue='', Mode=TwoWay}" Height="80"
-             Header="Session Notes"/>
 
-    <TextBox Text="{x:Bind ViewModel.CurrentDelve.LocationName, FallbackValue='', Mode=TwoWay}" Header="Location Name" />
-    <TextBox Text="{x:Bind ViewModel.CurrentDelve.LocationDescription, FallbackValue='', Mode=TwoWay}" Header=" Location Description" Height="80" />
+    <Grid>
 
-    <TextBox Text="{x:Bind ViewModel.CurrentSessionDelve.Notes, FallbackValue='', Mode=TwoWay}" Header="Session/Delve Notes" />
-    
+      <!--<VisualStateManager.VisualStateGroups>
 
-    <tv:TableView ItemsSource="{x:Bind ViewModel.Characters}" AutoGenerateColumns="False">
+        <VisualStateGroup x:Name="LayoutGroup">
+
+          <VisualState x:Name="Narrow">
+
+            <VisualState.StateTriggers>
+              <AdaptiveTrigger MinWindowWidth="0" />
+            </VisualState.StateTriggers>
+
+            <VisualState.Setters>
+              
+              <Setter Target=""
+              
+            </VisualState.Setters>
+            
+          </VisualState>
+          
+        </VisualStateGroup>
+        
+      </VisualStateManager.VisualStateGroups>-->
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
+        <RowDefinition />
+        <RowDefinition />
+        <RowDefinition />
+        <RowDefinition />
+      </Grid.RowDefinitions>
+
+      <ComboBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" x:Name="currentTrackComboBox" ItemsSource="{x:Bind ViewModel.SessionTracks}" SelectedItem="{x:Bind ViewModel.CurrentTrackItem, Mode=TwoWay}"
+                DisplayMemberPath="Name"
+                Header="Session Track" />
+
+      <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="trackNameTextBox" Text="{Binding CurrentTrack.TrackName, FallbackValue='', Mode=TwoWay}" Style="{StaticResource InlineTitleTextBoxStyle}" 
+               Header="Track Name"/>
+
+      <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" x:Name="groupDescriptionTextBox" Text="{Binding CurrentTrack.GroupDescription, FallbackValue='', Mode=TwoWay}" Height="80"
+               TextWrapping="Wrap"
+               Header="Group Description"/>
+
+
+      <TextBox Grid.Row="3" Grid.Column="0" x:Name="sessionTitleTextBox" Text="{x:Bind ViewModel.CurrentSession.SessionTitle, FallbackValue='', Mode=TwoWay}" Style="{StaticResource InlineSubtitleTextBoxStyle}"
+               Header="{x:Bind ViewModel.CurrentSession.SessionNumber, Mode=OneWay}" />
+      <TextBox Grid.Row="4" Grid.Column="0" x:Name="sessionNotesTextBox" Text="{x:Bind ViewModel.CurrentSession.SessionNotes, FallbackValue='', Mode=TwoWay}" Height="80"
+               Header="Session Notes"/>
+
+      <TextBox Grid.Row="3" Grid.Column="1" x:Name="locationNameTextBox" Text="{x:Bind ViewModel.CurrentDelve.LocationName, FallbackValue='', Mode=TwoWay}" Header="Location Name" />
+      <TextBox Grid.Row="4" Grid.Column="1" x:Name="locationDescriptionTextBox" Text="{x:Bind ViewModel.CurrentDelve.LocationDescription, FallbackValue='', Mode=TwoWay}" Header="Location Description" Height="80" />
+
+      <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" x:Name="sessionDelveNotesTextBox" Text="{x:Bind ViewModel.CurrentSessionDelve.Notes, FallbackValue='', Mode=TwoWay}" Header="Session/Delve Notes" />
+    </Grid>
+
+
+    <tv:TableView ItemsSource="{x:Bind ViewModel.Characters}" AutoGenerateColumns="False" Grid.Row="1">
       <tv:TableView.Columns>
         <tv:TableViewTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" />
         <tv:TableViewNumberColumn Binding="{Binding Path=Level}" Header="Level" IsReadOnly="True" />
@@ -72,75 +124,85 @@
       </tv:TableView.Columns>
     </tv:TableView>
 
-    <tv:TableView ItemsSource="{x:Bind ViewModel.Monsters}" AutoGenerateColumns="False">
-      <tv:TableView.Columns>
-        <tv:TableViewTextColumn Binding="{Binding Path=Name}" Header="Name" />
-        <tv:TableViewNumberColumn Binding="{Binding Path=Quantity}" Header="Quanity" />
-        <tv:TableViewNumberColumn Binding="{Binding Path=XPValue}" Header="XP Value" />
-        <tv:TableViewTextColumn Binding="{Binding Path=Notes}" Header="Notes" />
-      </tv:TableView.Columns>
-    </tv:TableView>
-    
-    <tv:TableView ItemsSource="{x:Bind ViewModel.GeneralXP}" AutoGenerateColumns="False">
-      <tv:TableView.Columns>
-        <tv:TableViewTextColumn Binding="{Binding Path=Description}" Header="Description" />
-        <tv:TableViewNumberColumn Binding="{Binding Path=Amount}" Header="Amount" />
-      </tv:TableView.Columns>
-    </tv:TableView>
+    <controls:GridSplitter Grid.Row="2" />
 
-    <tv:TableView ItemsSource="{x:Bind ViewModel.Treasure}" AutoGenerateColumns="False">
-      <tv:TableView.Columns>
-        <tv:TableViewTextColumn Binding="{Binding Path=Description}" Header="Description" />
-        <tv:TableViewNumberColumn Binding="{Binding Path=Quantity}" Header="Quantity" />
-        <tv:TableViewNumberColumn Binding="{Binding Path=ApparentValue}" Header="Apparent Value" />
-        <tv:TableViewNumberColumn Binding="{Binding Path=Weight}" Header="Weight" />
+    <TabView Grid.Row="3">
 
-        <tv:TableViewComboBoxColumn Binding="{Binding Path=SelectedLocationType}" ItemsSource="{x:Bind vm:TreasureLocationTypeViewModel.Locations}" DisplayMemberPath="Label" Header="Loc Type" />
-        <tv:TableViewTemplateColumn Header="Holder">
+      <TabViewItem Header="Monsters" IsClosable="False">
+        <tv:TableView ItemsSource="{x:Bind ViewModel.Monsters}" AutoGenerateColumns="False">
+          <tv:TableView.Columns>
+            <tv:TableViewTextColumn Binding="{Binding Path=Name}" Header="Name" />
+            <tv:TableViewNumberColumn Binding="{Binding Path=Quantity}" Header="Quanity" />
+            <tv:TableViewNumberColumn Binding="{Binding Path=XPValue}" Header="XP Value" />
+            <tv:TableViewTextColumn Binding="{Binding Path=Notes}" Header="Notes" />
+          </tv:TableView.Columns>
+        </tv:TableView>
+      </TabViewItem>
 
-          <tv:TableViewTemplateColumn.CellTemplate>
-            <DataTemplate x:DataType="vm:TreasureViewModel">
-              <TextBlock Text="{x:Bind Holder.Name}" VerticalAlignment="Center" />
-            </DataTemplate>
-          </tv:TableViewTemplateColumn.CellTemplate>
+      <TabViewItem Header="Treasure" IsClosable="False">
+        <tv:TableView ItemsSource="{x:Bind ViewModel.GeneralXP}" AutoGenerateColumns="False">
+          <tv:TableView.Columns>
+            <tv:TableViewTextColumn Binding="{Binding Path=Description}" Header="Description" />
+            <tv:TableViewNumberColumn Binding="{Binding Path=Amount}" Header="Amount" />
+          </tv:TableView.Columns>
+        </tv:TableView>
+      </TabViewItem>
 
-          <tv:TableViewTemplateColumn.EditingTemplate>
-            <DataTemplate x:DataType="vm:TreasureViewModel">
-              <ComboBox ItemsSource="{Binding DataContent.Characters, ElementName=RootPage}"
+      <TabViewItem Header="General XP" IsClosable="False">
+        <tv:TableView ItemsSource="{x:Bind ViewModel.Treasure}" AutoGenerateColumns="False">
+          <tv:TableView.Columns>
+            <tv:TableViewTextColumn Binding="{Binding Path=Description}" Header="Description" />
+            <tv:TableViewNumberColumn Binding="{Binding Path=Value}" Header="True Value" />
+            <tv:TableViewNumberColumn Binding="{Binding Path=Quantity}" Header="Quantity" />
+            <tv:TableViewNumberColumn Binding="{Binding Path=Weight}" Header="Weight" />
+
+            <tv:TableViewComboBoxColumn Binding="{Binding Path=SelectedLocationType}" ItemsSource="{x:Bind vm:TreasureLocationTypeViewModel.Locations}" DisplayMemberPath="Label" Header="Loc Type" />
+            <tv:TableViewTemplateColumn Header="Holder">
+
+              <tv:TableViewTemplateColumn.CellTemplate>
+                <DataTemplate x:DataType="vm:TreasureViewModel">
+                  <TextBlock Text="{x:Bind Holder.Name}" VerticalAlignment="Center" />
+                </DataTemplate>
+              </tv:TableViewTemplateColumn.CellTemplate>
+
+              <tv:TableViewTemplateColumn.EditingTemplate>
+                <DataTemplate x:DataType="vm:TreasureViewModel">
+                  <ComboBox ItemsSource="{Binding DataContent.Characters, ElementName=RootPage}"
                         SelectedItem="{Binding Holder, Mode=TwoWay}"
                         DisplayMemberPath="Name"
                         IsEnabled="{Binding Path=SelectedLocationType, Converter={StaticResource IsCharacterLoc}}"
                         />
-            </DataTemplate>
-          </tv:TableViewTemplateColumn.EditingTemplate>
+                </DataTemplate>
+              </tv:TableViewTemplateColumn.EditingTemplate>
 
-        </tv:TableViewTemplateColumn>
-        <tv:TableViewTemplateColumn Header="Store Location">
+            </tv:TableViewTemplateColumn>
+            <tv:TableViewTemplateColumn Header="Store Location">
 
-          <tv:TableViewTemplateColumn.CellTemplate>
-            <DataTemplate x:DataType="vm:TreasureViewModel">
-              <TextBlock Text="{x:Bind StoreLocation}" VerticalAlignment="Center" />
-            </DataTemplate>
-          </tv:TableViewTemplateColumn.CellTemplate>
+              <tv:TableViewTemplateColumn.CellTemplate>
+                <DataTemplate x:DataType="vm:TreasureViewModel">
+                  <TextBlock Text="{x:Bind StoreLocation}" VerticalAlignment="Center" />
+                </DataTemplate>
+              </tv:TableViewTemplateColumn.CellTemplate>
 
-          <tv:TableViewTemplateColumn.EditingTemplate>
-            <DataTemplate x:DataType="vm:TreasureViewModel">
-              <TextBox Text="{x:Bind StoreLocation}" IsEnabled="{Binding Path=SelectedLocationType, Converter={StaticResource IsCharacterLoc}}" />
-            </DataTemplate>
-          </tv:TableViewTemplateColumn.EditingTemplate>
+              <tv:TableViewTemplateColumn.EditingTemplate>
+                <DataTemplate x:DataType="vm:TreasureViewModel">
+                  <TextBox Text="{x:Bind StoreLocation}" IsEnabled="{Binding Path=SelectedLocationType, Converter={StaticResource IsCharacterLoc}}" />
+                </DataTemplate>
+              </tv:TableViewTemplateColumn.EditingTemplate>
 
-        </tv:TableViewTemplateColumn>
-        
-        <tv:TableViewCheckBoxColumn Binding="{Binding Path=IsMagicItem}" Header="Is Magic Item" />
-        <tv:TableViewNumberColumn Binding="{Binding Path=TrueValue}" Header="True Value" />
-        <tv:TableViewComboBoxColumn Binding="{Binding Path=Identification}" ItemsSource="{x:Bind vm:IdentificationVM.Identifications}" DisplayMemberPath="Label" Header="Identification" />
+            </tv:TableViewTemplateColumn>
 
-        <tv:TableViewTextColumn Binding="{Binding Path=Notes}" Header="Notes" />
-        
-      </tv:TableView.Columns>
-    </tv:TableView>
+            <tv:TableViewCheckBoxColumn Binding="{Binding Path=IsMagicItem}" Header="Is Magic Item" />
+            <tv:TableViewNumberColumn Binding="{Binding Path=ApparentValue}" Header="Apparent Value" />
+            <tv:TableViewComboBoxColumn Binding="{Binding Path=Identification}" ItemsSource="{x:Bind vm:IdentificationVM.Identifications}" DisplayMemberPath="Label" Header="Identification" />
 
+            <tv:TableViewTextColumn Binding="{Binding Path=Notes}" Header="Notes" />
 
+          </tv:TableView.Columns>
+        </tv:TableView>
+      </TabViewItem>
+
+    </TabView>
 
   </Grid>
 </Page>
